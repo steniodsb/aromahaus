@@ -1,8 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Check, ShoppingBag } from "lucide-react";
 import { formatBRL, cn } from "@/lib/utils";
+import { useCart } from "@/lib/cart/cart-context";
 import { useStoreConfig } from "@/lib/store-config-context";
 import { Stars } from "@/components/store/stars";
 import { WishlistButton } from "@/components/store/wishlist-button";
@@ -11,12 +15,19 @@ import type { Product, ProductWithDetails } from "@/lib/types";
 /**
  * Card de produto.
  *
- * O título é a FRAGRÂNCIA e o olho é o formato: em uma página de difusores,
- * "Difusor de Varetas" se repete em oito cards e não ajuda ninguém a escolher
- * — o que diferencia é o cheiro.
+ * Título, preço e botão de compra, como em qualquer loja: o cliente decide no
+ * card e só abre a página se quiser ler sobre a fragrância.
  *
- * O bloco de preço mostra o parcelamento junto com o valor porque é assim que
- * se compra no Brasil: muita gente decide pela parcela, não pelo total.
+ * O botão muda conforme o produto tem ou não tamanho:
+ *
+ * - **sem tamanho** (sabonete, home spray, refil, kit) → põe na sacola ali
+ *   mesmo, sem sair da vitrine;
+ * - **com mais de um tamanho** (difusor 250/500 ml) → leva para a página, que
+ *   é onde a escolha existe. Escolher por ele e mandar o de 250 ml seria
+ *   decidir no lugar do cliente o item mais caro ou mais barato da linha.
+ *
+ * O título é a FRAGRÂNCIA e o olho é o formato: numa página de difusores,
+ * "Difusor de Varetas" se repete em oito cards e não ajuda ninguém a escolher.
  */
 export function ProductCard({
   product,
@@ -29,6 +40,9 @@ export function ProductCard({
   priority?: boolean;
 }) {
   const { maxInstallments, interestFreeInstallments } = useStoreConfig();
+  const { addItem } = useCart();
+  const router = useRouter();
+  const [added, setAdded] = useState(false);
 
   const variants = "variants" in product ? product.variants : [];
   const rating = "rating_avg" in product ? product.rating_avg : null;
@@ -62,8 +76,46 @@ export function ProductCard({
   const title = parts.length > 1 ? parts.slice(1).join(" — ") : product.name;
   const eyebrow = parts.length > 1 ? parts[0] : null;
 
+  // Um tamanho só cadastrado ainda é compra direta — a escolha é obrigatória
+  // apenas quando existe mais de uma opção.
+  const unica = variants.length === 1 ? variants[0] : null;
+  const precisaEscolher = variants.length > 1;
+
+  function comprar() {
+    if (soldOut || onRequest) return;
+
+    if (precisaEscolher) {
+      router.push(`/produto/${product.slug}`);
+      return;
+    }
+
+    addItem({
+      id: unica ? unica.id : product.id,
+      productId: product.id,
+      variantId: unica?.id ?? null,
+      variantLabel: unica?.label ?? null,
+      slug: product.slug,
+      name: product.name,
+      price: unica ? Number(unica.price) : Number(product.price),
+      image: cover,
+      stock: unica ? unica.stock : product.stock,
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  }
+
+  const rotulo = soldOut
+    ? "Esgotado"
+    : onRequest
+      ? "Consultar"
+      : precisaEscolher
+        ? "Escolher tamanho"
+        : added
+          ? "Na sacola"
+          : "Adicionar à sacola";
+
   return (
-    <div className="group relative flex h-full flex-col">
+    <article className="group relative flex h-full flex-col">
       <WishlistButton
         productId={product.id}
         initialSaved={saved}
@@ -72,7 +124,7 @@ export function ProductCard({
 
       <Link
         href={`/produto/${product.slug}`}
-        className="flex h-full flex-col overflow-hidden rounded-sm bg-linen-50 transition-shadow duration-300 hover:shadow-[0_18px_40px_-26px_rgba(43,39,34,0.55)]"
+        className="flex flex-1 flex-col overflow-hidden rounded-sm bg-linen-50 transition-shadow duration-300 group-hover:shadow-[0_18px_40px_-26px_rgba(43,39,34,0.55)]"
       >
         <div className="relative aspect-[4/5] overflow-hidden bg-linen-100">
           <Image
@@ -96,18 +148,17 @@ export function ProductCard({
             />
           ) : null}
 
-          {/* Selos. No máximo dois, empilhados — três viram poluição. */}
-          <div className="absolute left-0 top-3 flex flex-col items-start gap-1.5">
-            {discount > 0 && !soldOut && (
+          {/* Selos. No máximo um — dois viram poluição. */}
+          <div className="absolute left-0 top-3">
+            {discount > 0 && !soldOut ? (
               <span className="bg-champagne-600 px-2.5 py-1 text-[0.625rem] font-medium uppercase tracking-[0.12em] text-linen-50">
                 −{discount}%
               </span>
-            )}
-            {product.featured && !soldOut && discount === 0 && (
+            ) : product.featured && !soldOut ? (
               <span className="bg-lilac-400 px-2.5 py-1 text-[0.625rem] font-medium uppercase tracking-[0.12em] text-linen-50">
                 Favorito da casa
               </span>
-            )}
+            ) : null}
           </div>
 
           {soldOut && (
@@ -117,19 +168,12 @@ export function ProductCard({
               </span>
             </div>
           )}
-
-          {/* Chamada que sobe no hover — o atalho para quem já decidiu. */}
-          {!soldOut && (
-            <span className="pointer-events-none absolute inset-x-3 bottom-3 hidden translate-y-3 rounded-full bg-linen-900/90 py-2.5 text-center text-[0.625rem] uppercase tracking-[0.18em] text-linen-50 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 lg:block">
-              Ver fragrância
-            </span>
-          )}
         </div>
 
-        <div className="flex flex-1 flex-col px-1 pb-1 pt-4">
+        <div className="flex flex-1 flex-col px-1 pt-4">
           {eyebrow ? <p className="eyebrow mb-2">{eyebrow}</p> : null}
 
-          <h3 className="font-display text-xl leading-tight text-ink">{title}</h3>
+          <h3 className="font-display text-base leading-snug text-ink">{title}</h3>
 
           <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
             {product.olfactory_family ? (
@@ -148,7 +192,7 @@ export function ProductCard({
             ) : (
               <>
                 {discount > 0 && (
-                  <span className="block text-xs text-linen-500 line-through">
+                  <span className="numeral block text-xs text-linen-500 line-through">
                     {formatBRL(compareAt)}
                   </span>
                 )}
@@ -156,9 +200,9 @@ export function ProductCard({
                   {fromPrice ? (
                     <span className="text-[0.6875rem] text-linen-600">a partir de</span>
                   ) : null}
-                  <span className="text-lg text-ink">{formatBRL(price)}</span>
+                  <span className="numeral text-lg text-ink">{formatBRL(price)}</span>
                 </div>
-                <span className="mt-0.5 block text-xs text-linen-600">
+                <span className="numeral mt-0.5 block text-xs text-linen-600">
                   {maxInstallments}x de {formatBRL(parcela)}
                   {semJuros ? " sem juros" : ""}
                 </span>
@@ -167,6 +211,29 @@ export function ProductCard({
           </div>
         </div>
       </Link>
-    </div>
+
+      {/* Fora do link: botão dentro de âncora é HTML inválido, e o clique de
+          comprar não pode virar navegação. */}
+      <button
+        type="button"
+        onClick={comprar}
+        disabled={soldOut}
+        className={cn(
+          "mt-4 inline-flex w-full items-center justify-center gap-2 border px-4 py-3 text-[0.625rem] uppercase tracking-[0.16em] transition-colors",
+          soldOut
+            ? "cursor-not-allowed border-line text-linen-500"
+            : added
+              ? "border-champagne-600 bg-champagne-600 text-linen-50"
+              : "border-linen-900 text-ink hover:bg-linen-900 hover:text-linen-50",
+        )}
+      >
+        {added ? (
+          <Check className="h-3.5 w-3.5" strokeWidth={2} />
+        ) : soldOut ? null : (
+          <ShoppingBag className="h-3.5 w-3.5" strokeWidth={1.5} />
+        )}
+        {rotulo}
+      </button>
+    </article>
   );
 }

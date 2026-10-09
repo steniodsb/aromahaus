@@ -106,7 +106,7 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
                     {s.eyebrow}
                   </p>
 
-                  <h1 className="font-display mt-4 text-[clamp(2.25rem,6vw,4.5rem)] leading-[1.02] text-linen-50">
+                  <h1 className="font-display-xl mt-4 text-[clamp(2.25rem,6vw,4.5rem)] leading-[1.02] text-linen-50">
                     {s.title}
                     {s.titleAccent ? (
                       <span className="mt-1 block italic text-champagne-300">

@@ -97,7 +97,7 @@ export function ProductPurchase({
       {/* ── Preço ───────────────────────────────────────────────────────── */}
       <div>
         <div className="flex flex-wrap items-baseline gap-3">
-          <span className="font-display text-4xl text-ink">{formatBRL(price)}</span>
+          <span className="numeral text-4xl text-ink">{formatBRL(price)}</span>
           {discount > 0 && (
             <>
               <span className="text-lg text-linen-500 line-through">

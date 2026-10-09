@@ -27,7 +27,7 @@ export function PromoBanner({ promo }: { promo?: PromoData | null }) {
           {p.eyebrow && (
             <p className="eyebrow !text-champagne-300">{p.eyebrow}</p>
           )}
-          <h2 className="font-display mt-4 text-[clamp(1.75rem,3.4vw,2.75rem)] leading-tight text-linen-50">
+          <h2 className="font-display-xl mt-4 text-[clamp(1.75rem,3.4vw,2.75rem)] leading-tight text-linen-50">
             {p.title}
           </h2>
           <span className="mt-8 inline-block border border-linen-50/60 px-8 py-3 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors group-hover:border-champagne-400 group-hover:text-champagne-300">

@@ -49,7 +49,7 @@ export default function CarrinhoPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="font-display rule mb-10 text-[clamp(2rem,4.5vw,3rem)] text-ink">
+      <h1 className="font-display-xl rule mb-10 text-[clamp(2rem,4.5vw,3rem)] text-ink">
         Sua sacola
       </h1>
 
@@ -167,7 +167,7 @@ export default function CarrinhoPage() {
           </div>
           <div className="mt-5 flex items-baseline justify-between border-t border-line pt-5">
             <span className="text-sm text-linen-700">Total</span>
-            <span className="font-display text-2xl text-ink">
+            <span className="numeral text-2xl text-ink">
               {formatBRL(subtotal)}
             </span>
           </div>

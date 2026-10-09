@@ -15,7 +15,7 @@ export async function ContactSection() {
       <div className="mx-auto grid max-w-5xl items-end gap-10 px-6 sm:grid-cols-2">
         <div>
           <p className="eyebrow !text-champagne-400">Atendimento</p>
-          <h2 className="font-display mt-4 text-[clamp(1.875rem,4vw,3rem)] leading-tight text-linen-50">
+          <h2 className="font-display-xl mt-4 text-[clamp(1.875rem,4vw,3rem)] leading-tight text-linen-50">
             Não sabe qual escolher?
           </h2>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-linen-400">

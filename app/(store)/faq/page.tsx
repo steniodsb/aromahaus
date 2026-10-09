@@ -1,47 +1,84 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { GuideSection } from "@/components/store/guide-section";
 import { whatsappLink } from "@/lib/utils";
 import { getFaq } from "@/lib/pages";
 
 export const metadata: Metadata = {
-  title: "Perguntas Frequentes (FAQ)",
+  title: "Perguntas frequentes",
   description:
-    "Tire suas dúvidas sobre as peças, kits de coding e retrofit, compatibilidade, pagamento e prazos da Aroma Haus.",
+    "Duração do difusor, quantas varetas usar, como funciona o refil, embrulho de presente, prazo de entrega e trocas na Aroma Haus.",
 };
 
 export default async function FaqPage() {
   const faq = await getFaq();
 
-  return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
-      <h1 className="mb-8 text-3xl font-bold text-ink">
-        Perguntas Frequentes
-      </h1>
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
 
-      <div className="space-y-3">
-        {faq.map((item) => (
-          <details
-            key={item.question}
-            className="group border border-linen-200 bg-linen-50 p-4"
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <div className="mx-auto max-w-3xl px-6 py-14">
+        <p className="eyebrow">Ajuda</p>
+        <h1 className="font-display-xl rule mt-4 text-[clamp(2rem,4.5vw,3rem)] text-ink">
+          Perguntas frequentes
+        </h1>
+        <p className="mt-7 max-w-xl text-[0.9375rem] leading-relaxed text-linen-700">
+          O que mais perguntam antes de comprar. Se a sua dúvida não estiver
+          aqui, chama no WhatsApp — respondemos sem enrolação.
+        </p>
+
+        <div className="mt-10 divide-y divide-line border-y border-line">
+          {faq.map((item) => (
+            <details key={item.question} className="group py-5">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-[0.9375rem] text-ink marker:hidden">
+                {item.question}
+                <span
+                  aria-hidden="true"
+                  className="mt-0.5 shrink-0 text-champagne-600 transition-transform group-open:rotate-45"
+                >
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-linen-700">
+                {item.answer}
+              </p>
+            </details>
+          ))}
+        </div>
+
+        <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3">
+          <a
+            href={whatsappLink("Olá! Tenho uma dúvida sobre os produtos.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
           >
-            <summary className="cursor-pointer list-none font-semibold text-ink marker:hidden">
-              {item.question}
-            </summary>
-            <p className="mt-3 leading-relaxed text-linen-600">{item.answer}</p>
-          </details>
-        ))}
+            Falar no WhatsApp
+          </a>
+          <Link
+            href="/trocas-e-devolucoes"
+            className="border-b border-champagne-500 pb-1 text-[0.6875rem] uppercase tracking-[0.18em] text-linen-700 transition-colors hover:text-ink"
+          >
+            Trocas e devoluções
+          </Link>
+        </div>
       </div>
 
-      <p className="mt-8 text-center text-linen-600">
-        Não encontrou sua dúvida?{" "}
-        <a
-          href={whatsappLink("Olá! Tenho uma dúvida.")}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold text-champagne-700 hover:underline"
-        >
-          Fale conosco no WhatsApp
-        </a>
-      </p>
-    </div>
+      {/* "Qual eu compro" é a dúvida mais comum de todas — mora aqui. */}
+      <GuideSection />
+    </>
   );
 }

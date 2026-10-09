@@ -71,7 +71,7 @@ export default async function AdminEstoquePage(
 
       <div className="mb-5 grid gap-3 sm:grid-cols-3">
         <div className="rounded border border-linen-200 bg-linen-50 p-4">
-          <p className="font-display text-3xl text-ink">{todos.length}</p>
+          <p className="numeral text-3xl text-ink">{todos.length}</p>
           <p className="text-sm text-linen-600">Produtos ativos</p>
         </div>
         <div className={`rounded border p-4 ${baixos.length ? "border-amber-300 bg-warning/10" : "border-linen-200 bg-linen-50"}`}>
@@ -83,7 +83,7 @@ export default async function AdminEstoquePage(
           </p>
         </div>
         <div className="rounded border border-linen-200 bg-linen-50 p-4">
-          <p className="font-display text-3xl text-ink">
+          <p className="numeral text-3xl text-ink">
             {comCusto.length ? formatBRL(capital) : "—"}
           </p>
           <p className="text-sm text-linen-600">

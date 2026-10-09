@@ -66,7 +66,7 @@ export function Reviews({
       {count > 0 && (
         <div className="mt-9 grid gap-10 lg:grid-cols-[16rem_1fr]">
           <div>
-            <p className="font-display text-5xl leading-none text-ink">
+            <p className="numeral text-5xl leading-none text-ink">
               {avg!.toFixed(1).replace(".", ",")}
             </p>
             <Stars value={avg} size="md" className="mt-3" />

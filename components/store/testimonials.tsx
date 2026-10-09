@@ -21,7 +21,7 @@ export function Testimonials({ reviews }: { reviews: Item[] }) {
       <div className="mx-auto max-w-7xl px-6 py-20">
         <div className="mb-12 text-center">
           <p className="eyebrow !text-champagne-400">Quem já levou para casa</p>
-          <h2 className="font-display mt-4 text-[clamp(1.75rem,3.6vw,2.75rem)] text-linen-50">
+          <h2 className="font-display-xl mt-4 text-[clamp(1.75rem,3.6vw,2.75rem)] text-linen-50">
             O que dizem por aí
           </h2>
         </div>

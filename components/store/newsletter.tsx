@@ -12,7 +12,7 @@ export function Newsletter() {
     <section className="surface-linen border-t border-line">
       <div className="mx-auto max-w-2xl px-6 py-20 text-center">
         <p className="eyebrow">Carta da Haus</p>
-        <h2 className="font-display mt-5 text-[clamp(1.75rem,3.5vw,2.5rem)] leading-tight text-ink">
+        <h2 className="font-display-xl mt-5 text-[clamp(1.75rem,3.5vw,2.5rem)] leading-tight text-ink">
           Lançamentos, edições limitadas e o que sai do forno primeiro
         </h2>
         <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-linen-700">

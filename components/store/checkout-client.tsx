@@ -264,7 +264,7 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="font-display rule mb-10 text-[clamp(2rem,4.5vw,3rem)] text-ink">Finalizar compra</h1>
+      <h1 className="font-display-xl rule mb-10 text-[clamp(2rem,4.5vw,3rem)] text-ink">Finalizar compra</h1>
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">

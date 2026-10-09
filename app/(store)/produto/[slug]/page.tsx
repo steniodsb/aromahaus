@@ -144,7 +144,7 @@ export default async function ProductPage(props: PageProps<"/produto/[slug]">) {
 
         <div>
           {format ? <p className="eyebrow">{format}</p> : null}
-          <h1 className="font-display mt-3 text-[clamp(2rem,4.5vw,3rem)] leading-tight text-ink">
+          <h1 className="font-display-xl mt-3 text-[clamp(2rem,4.5vw,3rem)] leading-tight text-ink">
             {title}
           </h1>
 

@@ -58,7 +58,7 @@ export function PromoMosaic({ tiles }: { tiles: PromoTile[] }) {
                 <p className="text-[0.625rem] uppercase tracking-[0.2em] text-champagne-300">
                   {t.eyebrow}
                 </p>
-                <h3 className="font-display mt-3 text-[clamp(1.5rem,2.6vw,2.125rem)] leading-tight text-linen-50">
+                <h3 className="font-display-xl mt-3 text-[clamp(1.5rem,2.6vw,2.125rem)] leading-tight text-linen-50">
                   {t.title}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-linen-300">{t.text}</p>

@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import {
   getFeaturedProducts,
   getBanners,
@@ -9,7 +8,6 @@ import {
   getMiniBanners,
   getPromoBanner,
   getHomeSections,
-  getFragrances,
   getLatestReviews,
   getWishlistIds,
   withProductDetails,
@@ -17,13 +15,11 @@ import {
 import { mergeHomeSections, type HomeSectionKey } from "@/lib/store-defaults";
 import { Hero, type HeroSlide } from "@/components/store/hero";
 import { TrustStrip } from "@/components/store/trust-strip";
-import { FragranceStrip } from "@/components/store/fragrance-strip";
 import { CategoryCircles } from "@/components/store/category-circles";
 import { ProductCarousel } from "@/components/store/product-carousel";
 import { PromoMosaic, type PromoTile } from "@/components/store/promo-mosaic";
 import { TypeBanners } from "@/components/store/type-banners";
 import { PromoBanner } from "@/components/store/promo-banner";
-import { GuideSection } from "@/components/store/guide-section";
 import { Testimonials } from "@/components/store/testimonials";
 import { ContactSection } from "@/components/store/contact-section";
 import type { ProductWithDetails } from "@/lib/types";
@@ -101,6 +97,7 @@ const DEFAULT_SLIDES: HeroSlide[] = [
   },
 ];
 
+/** Os dois banners de promoção, entre as vitrines de produto. */
 const PROMO_TILES: PromoTile[] = [
   {
     image: "/home/promo-kits.webp",
@@ -133,28 +130,26 @@ export default async function Home() {
     mini,
     promo,
     savedSections,
-    fragrances,
     reviews,
     savedIds,
   ] = await Promise.all([
-    getFeaturedProducts(10),
+    getFeaturedProducts(12),
     getBanners(),
-    getBestSellers(10),
-    getNewArrivals(10),
-    getPromotions(10),
+    getBestSellers(12),
+    getNewArrivals(12),
+    getPromotions(12),
     getCategoryCircles(FORMAT_SLUGS),
     getMiniBanners(),
     getPromoBanner(),
     getHomeSections(),
-    getFragrances(),
     getLatestReviews(3),
     getWishlistIds(),
   ]);
 
-  // Variantes e notas em uma passada só para as quatro vitrines juntas: sem
-  // isto seriam oito consultas, e vários produtos apareceriam em mais de uma
-  // seção buscando exatamente os mesmos dados.
-  const all = [...featuredRaw, ...bestSellersRaw, ...newArrivalsRaw, ...promotionsRaw];
+  // Variantes e notas em uma passada só para as vitrines juntas: sem isto
+  // seriam oito consultas, e vários produtos apareceriam em mais de uma seção
+  // buscando exatamente os mesmos dados.
+  const all = [...bestSellersRaw, ...promotionsRaw, ...newArrivalsRaw, ...featuredRaw];
   const unique = [...new Map(all.map((p) => [p.id, p])).values()];
   const detailed = new Map((await withProductDetails(unique)).map((p) => [p.id, p]));
   const hydrate = (list: { id: string }[]) =>
@@ -162,9 +157,6 @@ export default async function Home() {
       .map((p) => detailed.get(p.id))
       .filter((p): p is ProductWithDetails => Boolean(p));
 
-  // A arte de categoria tem precedência sobre a imagem do banco, mas só para
-  // os cinco formatos conhecidos — categoria nova criada no painel continua
-  // usando a imagem que o admin subir.
   const formats = formatsRaw.map((c) => ({
     ...c,
     image: CATEGORY_ART[c.slug] ?? c.image,
@@ -182,49 +174,61 @@ export default async function Home() {
       }))
     : DEFAULT_SLIDES;
 
-  // Seções de produtos governadas pelo admin (ordem, título, visibilidade).
-  const productsByKey: Record<HomeSectionKey, ProductWithDetails[]> = {
-    featured: hydrate(featuredRaw),
+  // A ORDEM da home é fixa; o painel controla o título de cada vitrine e se
+  // ela aparece. Antes a ordem também saía do painel, e as peças promocionais
+  // caíam em lugares diferentes conforme o que estivesse ligado — os banners
+  // precisam de endereço certo para a página ter ritmo.
+  const produtos: Record<HomeSectionKey, ProductWithDetails[]> = {
     bestsellers: hydrate(bestSellersRaw),
     promotions: hydrate(promotionsRaw),
     newarrivals: hydrate(newArrivalsRaw),
+    featured: hydrate(featuredRaw),
   };
-  const sections = mergeHomeSections(savedSections).filter(
-    (s) => s.enabled && productsByKey[s.key].length > 0,
-  );
+  const config = new Map(mergeHomeSections(savedSections).map((s) => [s.key, s]));
+
+  function Vitrine({ chave }: { chave: HomeSectionKey }) {
+    const cfg = config.get(chave);
+    const lista = produtos[chave];
+    if (!cfg?.enabled || lista.length === 0) return null;
+    return (
+      <div className="mx-auto max-w-7xl px-6">
+        <ProductCarousel products={lista} title={cfg.title} savedIds={savedIds} />
+      </div>
+    );
+  }
 
   return (
     <>
+      {/* 1. Banners */}
       <Hero slides={slides} />
+
+      {/* 2. Frete grátis, cupom, parcelamento */}
       <TrustStrip />
+
+      {/* 3. Categorias */}
       <CategoryCircles circles={formats} />
 
-      {sections.map((sec, idx) => (
-        <Fragment key={sec.key}>
-          <div className="mx-auto max-w-7xl px-6">
-            <ProductCarousel
-              products={productsByKey[sec.key]}
-              title={sec.title}
-              savedIds={savedIds}
-            />
-          </div>
-          {idx === 0 && <PromoMosaic tiles={PROMO_TILES} />}
-          {idx === 1 && <FragranceStrip fragrances={fragrances} />}
-          {idx === 2 && <PromoBanner promo={promo} />}
-        </Fragment>
-      ))}
+      {/* Atalhos extras — só quando o painel cadastrou mini banners. */}
+      {mini?.length ? <TypeBanners banners={mini} /> : null}
 
-      {sections.length === 0 && (
-        <>
-          <PromoMosaic tiles={PROMO_TILES} />
-          <FragranceStrip fragrances={fragrances} />
-          <PromoBanner promo={promo} />
-        </>
-      )}
+      {/* 4. Catálogo: mais vendidos e promoções */}
+      <Vitrine chave="bestsellers" />
+      <Vitrine chave="promotions" />
 
-      <GuideSection />
-      <TypeBanners banners={mini} />
+      {/* 5. Banners de promoção */}
+      <PromoMosaic tiles={PROMO_TILES} />
+
+      {/* 6. Lançamentos */}
+      <Vitrine chave="newarrivals" />
+      <Vitrine chave="featured" />
+
+      {/* 7. Banner de kits */}
+      <PromoBanner promo={promo} />
+
+      {/* 8. Depoimentos */}
       <Testimonials reviews={reviews} />
+
+      {/* 9. Contato */}
       <ContactSection />
     </>
   );

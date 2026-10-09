@@ -24,7 +24,7 @@ export default async function ContatoPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-14">
       <p className="eyebrow">Atendimento</p>
-      <h1 className="font-display rule mt-4 text-[clamp(2rem,4.5vw,3rem)] leading-tight text-ink">
+      <h1 className="font-display-xl rule mt-4 text-[clamp(2rem,4.5vw,3rem)] leading-tight text-ink">
         Fale com a gente
       </h1>
       <p className="mt-7 max-w-xl text-[0.9375rem] leading-relaxed text-linen-700">

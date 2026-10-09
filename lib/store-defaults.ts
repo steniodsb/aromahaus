@@ -31,11 +31,11 @@ export interface PromoBanner {
 
 export const DEFAULT_PROMO: PromoBanner = {
   enabled: true,
-  image: "/home/promo.webp",
-  eyebrow: "Feito à mão, em pequenos lotes",
-  title: "Perfumaria por Galvão Amorim",
-  ctaLabel: "Conheça a Haus",
-  ctaHref: "/sobre",
+  image: "/home/promo-kits.webp",
+  eyebrow: "Kits & presentes",
+  title: "Pronto para presentear, com embrulho e cartão",
+  ctaLabel: "Ver kits",
+  ctaHref: "/presentes",
 };
 
 // ── Seções/tags da home ───────────────────────────────────────────────────
@@ -48,10 +48,13 @@ export interface HomeSection {
 }
 
 export const DEFAULT_HOME_SECTIONS: HomeSection[] = [
-  { key: "featured", title: "Seleção da casa", enabled: true },
-  { key: "bestsellers", title: "Os mais queridos", enabled: true },
-  { key: "promotions", title: "Em oferta", enabled: true },
-  { key: "newarrivals", title: "Chegou agora", enabled: true },
+  { key: "bestsellers", title: "Mais vendidos", enabled: true },
+  { key: "promotions", title: "Promoções", enabled: true },
+  { key: "newarrivals", title: "Lançamentos", enabled: true },
+  // Desligada por padrão: a home já abre com três vitrines, e uma quarta
+  // empurra depoimentos e contato para longe demais do topo. Quem quiser
+  // destacar uma curadoria liga aqui.
+  { key: "featured", title: "Seleção da casa", enabled: false },
 ];
 
 /** Mescla o que o admin salvou com os padrões, garantindo que toda seção

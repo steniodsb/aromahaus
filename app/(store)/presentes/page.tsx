@@ -167,7 +167,7 @@ export default async function PresentesPage() {
         />
         <div className="absolute inset-0 bg-linen-900/75" />
         <div className="relative mx-auto max-w-2xl px-6 py-20 text-center">
-          <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-tight text-linen-50">
+          <h2 className="font-display-xl text-[clamp(1.75rem,4vw,2.75rem)] leading-tight text-linen-50">
             Não sabe qual fragrância a pessoa gosta?
           </h2>
           <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-linen-300">

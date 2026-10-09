@@ -49,7 +49,7 @@ export function GuideSection() {
         <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-xl">
             <p className="eyebrow">Na dúvida</p>
-            <h2 className="font-display mt-3 text-[clamp(1.75rem,3.6vw,2.75rem)] leading-tight text-ink">
+            <h2 className="font-display-xl mt-3 text-[clamp(1.75rem,3.6vw,2.75rem)] leading-tight text-ink">
               Cada um resolve um problema diferente
             </h2>
           </div>

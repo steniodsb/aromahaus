@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Jost } from "next/font/google";
+import { Jost } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart/cart-context";
 
-/** Interface, navegação e textos corridos. Geométrica, discretamente Bauhaus — combina com o "Haus". */
+/**
+ * Jost em tudo: interface e títulos.
+ *
+ * A marca é um logotipo tipográfico — "AROMA HAUS" em geométrica leve, caixa
+ * alta e muito espaçada. Uma serifada nos títulos criava duas vozes na mesma
+ * página e a do logo perdia. Com uma família só, todo título é a assinatura
+ * da casa repetida; o peso e o espaçamento é que separam hierarquia.
+ */
 const jost = Jost({
   variable: "--font-sans",
   subsets: ["latin"],
-  display: "swap",
-});
-
-/** Títulos e nomes de fragrância. Serifada de alto contraste, editorial. */
-const cormorant = Cormorant_Garamond({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["200", "300", "400", "500"],
   display: "swap",
 });
 
@@ -53,7 +53,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${jost.variable} ${cormorant.variable} h-full antialiased`}
+      className={`${jost.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-ink">
         <CartProvider>{children}</CartProvider>

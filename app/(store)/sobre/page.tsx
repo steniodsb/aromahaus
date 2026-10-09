@@ -35,7 +35,7 @@ export default function SobrePage() {
           <div className="order-2 flex flex-col justify-center px-6 py-16 sm:px-10 lg:order-1 lg:py-24 lg:pr-16">
             <BrandMark className="h-12 w-auto text-champagne-600" />
             <p className="eyebrow mt-8">A Haus</p>
-            <h1 className="font-display mt-5 text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.08] text-ink">
+            <h1 className="font-display-xl mt-5 text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.08] text-ink">
               Uma casa tem cheiro antes de ter mobília
             </h1>
             <p className="mt-7 max-w-md text-[0.9375rem] leading-relaxed text-linen-700">
@@ -88,7 +88,7 @@ export default function SobrePage() {
       <section className="surface-linen border-y border-line">
         <div className="mx-auto max-w-3xl px-6 py-20 text-center">
           <p className="eyebrow">O perfumista</p>
-          <h2 className="font-display mt-5 text-[clamp(1.75rem,3.6vw,2.75rem)] leading-tight text-ink">
+          <h2 className="font-display-xl mt-5 text-[clamp(1.75rem,3.6vw,2.75rem)] leading-tight text-ink">
             Galvão Amorim
           </h2>
           <p className="mx-auto mt-7 max-w-xl text-[0.9375rem] leading-relaxed text-linen-700">
@@ -107,7 +107,7 @@ export default function SobrePage() {
 
       {/* ── Chamada ──────────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-5xl px-6 py-20 text-center">
-        <h2 className="font-display text-[clamp(1.75rem,3.6vw,2.75rem)] leading-tight text-ink">
+        <h2 className="font-display-xl text-[clamp(1.75rem,3.6vw,2.75rem)] leading-tight text-ink">
           Comece pela fragrância
         </h2>
         <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-linen-700">

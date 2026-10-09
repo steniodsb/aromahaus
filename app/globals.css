@@ -91,7 +91,7 @@
   --color-warning: var(--warning);
 
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-display), ui-serif, Georgia, serif;
+  --font-display: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ============================================================================
@@ -119,15 +119,46 @@ body {
 /* ============================================================================
    Tipografia de marca
    ----------------------------------------------------------------------------
-   Cormorant Garamond (display) para títulos e nomes de produto; Jost (sans)
-   para interface. O Cormorant é miúdo por natureza, então sobe um pouco de
-   tamanho e desce o peso para não parecer pesado.
+   Todo título repete a construção do logotipo: Jost leve, caixa alta e
+   espaçamento largo. O espaçamento é em `em`, então acompanha o tamanho da
+   fonte sozinho — e encolhe nos títulos grandes, porque texto grande já tem
+   respiro de sobra e muito tracking começa a desmontar a palavra.
    ========================================================================== */
 
 .font-display {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-weight: 300;
-  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+}
+
+/* A partir de ~1.75rem o tracking cheio afasta demais as letras. */
+.font-display.text-3xl,
+.font-display.text-4xl,
+.font-display.text-5xl,
+.font-display.text-6xl {
+  letter-spacing: 0.06em;
+  line-height: 1.22;
+}
+
+/* Títulos de abertura (hero, topo de página), onde a palavra precisa ficar
+   inteira aos olhos antes do espaçamento chamar atenção. */
+.font-display-xl {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 200;
+  text-transform: uppercase;
+  letter-spacing: 0.045em;
+  line-height: 1.16;
+}
+
+/* Números — preço, contador, nota. Caixa alta não significa nada num
+   algarismo, e o espaçamento de título atrapalha a leitura do valor. */
+.numeral {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Olho-de-texto: a linha curta em caixa alta acima de um título. */

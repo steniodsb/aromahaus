@@ -31,7 +31,7 @@ export default async function FavoritosPage() {
         <span className="text-linen-700">Lista de desejos</span>
       </nav>
 
-      <h1 className="font-display rule mb-10 text-[clamp(2rem,4.5vw,3rem)] text-ink">
+      <h1 className="font-display-xl rule mb-10 text-[clamp(2rem,4.5vw,3rem)] text-ink">
         Lista de desejos
       </h1>
 

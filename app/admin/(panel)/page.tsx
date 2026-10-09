@@ -47,7 +47,7 @@ export default async function AdminDashboard() {
             <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-champagne-200/45 text-champagne-700">
               <Icon className="h-5 w-5" />
             </div>
-            <div className="font-display text-3xl text-ink">{value}</div>
+            <div className="numeral text-3xl text-ink">{value}</div>
             <div className="text-sm text-linen-600">{label}</div>
           </Link>
         ))}

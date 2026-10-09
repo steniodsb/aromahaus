@@ -48,7 +48,7 @@ export function CollectionHeader({
         </nav>
 
         <p className={cn("eyebrow", eyebrowSkin)}>{eyebrow}</p>
-        <h1 className="font-display mt-4 text-[clamp(2rem,5vw,3.5rem)] leading-[1.05]">
+        <h1 className="font-display-xl mt-4 text-[clamp(2rem,5vw,3.5rem)] leading-[1.05]">
           {title}
         </h1>
         <p className={cn("mt-5 max-w-xl text-[0.9375rem] leading-relaxed", textSkin)}>

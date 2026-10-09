@@ -39,7 +39,7 @@ export default async function ProdutosPage(props: PageProps<"/produtos">) {
     <div className="mx-auto max-w-7xl px-6 py-12">
       <header className="mb-10">
         <p className="eyebrow">Catálogo</p>
-        <h1 className="font-display rule mt-4 text-[clamp(2rem,4.5vw,3rem)] leading-tight text-ink">
+        <h1 className="font-display-xl rule mt-4 text-[clamp(2rem,4.5vw,3rem)] leading-tight text-ink">
           {title}
         </h1>
       </header>

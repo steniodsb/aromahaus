@@ -56,7 +56,7 @@ export default async function CategoryPage(
       </nav>
 
       <header className="mb-12 max-w-2xl">
-        <h1 className="font-display rule text-[clamp(2rem,4.5vw,3rem)] leading-tight text-ink">
+        <h1 className="font-display-xl rule text-[clamp(2rem,4.5vw,3rem)] leading-tight text-ink">
           {category.name}
         </h1>
         {category.description ? (
