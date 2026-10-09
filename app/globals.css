@@ -1,0 +1,259 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   AROMA HAUS — sistema visual "Linho & Champagne"
+   ----------------------------------------------------------------------------
+   A paleta vem das próprias embalagens: a cerâmica off-white com rosas em
+   relevo lilás, o vidro âmbar do difusor com tampa dourada e o cenário de
+   linho/greige das fotos. Neutros quentes dominam; o dourado é acento, nunca
+   preenchimento; o lilás aparece em doses pequenas (notas olfativas, selos).
+   ========================================================================== */
+
+:root {
+  /* ── Linho: neutro quente, a espinha dorsal da marca ──────────────────── */
+  --linen-50: #fbf9f6;
+  --linen-100: #f5f1ea;
+  --linen-200: #ebe5da;
+  --linen-300: #dcd4c6;
+  --linen-400: #c4baa9;
+  --linen-500: #a89d8b;
+  --linen-600: #857b6b;
+  --linen-700: #635b4f;
+  --linen-800: #433e36;
+  --linen-900: #2b2722;
+
+  /* ── Champagne: o dourado da tampa do difusor (acento principal) ──────── */
+  --champagne-200: #f0e4ca;
+  --champagne-300: #e3cfa4;
+  --champagne-400: #d4b87f;
+  --champagne-500: #c2a05e;
+  --champagne-600: #a5854a;
+  --champagne-700: #826838;
+
+  /* ── Lilás: as rosas em relevo da cerâmica (acento secundário) ────────── */
+  --lilac-100: #efebf3;
+  --lilac-200: #ddd6e4;
+  --lilac-300: #c6bbd2;
+  --lilac-400: #aea0be;
+  --lilac-600: #7d6f8d;
+
+  /* ── Semântico ────────────────────────────────────────────────────────── */
+  --background: var(--linen-50);
+  --foreground: var(--linen-900);
+  --muted: var(--linen-600);
+  --border: var(--linen-200);
+  --brand: var(--champagne-500);
+  --brand-dark: var(--champagne-600);
+
+  /* Estados — dessaturados para não brigar com a paleta quente */
+  --success: #5c7a5e;
+  --danger: #9c4a3f;
+  --warning: #b07d3a;
+
+  --radius: 2px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-linen-50: var(--linen-50);
+  --color-linen-100: var(--linen-100);
+  --color-linen-200: var(--linen-200);
+  --color-linen-300: var(--linen-300);
+  --color-linen-400: var(--linen-400);
+  --color-linen-500: var(--linen-500);
+  --color-linen-600: var(--linen-600);
+  --color-linen-700: var(--linen-700);
+  --color-linen-800: var(--linen-800);
+  --color-linen-900: var(--linen-900);
+
+  --color-champagne-200: var(--champagne-200);
+  --color-champagne-300: var(--champagne-300);
+  --color-champagne-400: var(--champagne-400);
+  --color-champagne-500: var(--champagne-500);
+  --color-champagne-600: var(--champagne-600);
+  --color-champagne-700: var(--champagne-700);
+
+  --color-lilac-100: var(--lilac-100);
+  --color-lilac-200: var(--lilac-200);
+  --color-lilac-300: var(--lilac-300);
+  --color-lilac-400: var(--lilac-400);
+  --color-lilac-600: var(--lilac-600);
+
+  --color-ink: var(--linen-900);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
+}
+
+/* ============================================================================
+   Base
+   ========================================================================== */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, Arial, sans-serif;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--champagne-200);
+  color: var(--linen-900);
+}
+
+:focus-visible {
+  outline: 2px solid var(--champagne-600);
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   Tipografia de marca
+   ----------------------------------------------------------------------------
+   Cormorant Garamond (display) para títulos e nomes de produto; Jost (sans)
+   para interface. O Cormorant é miúdo por natureza, então sobe um pouco de
+   tamanho e desce o peso para não parecer pesado.
+   ========================================================================== */
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+/* Olho-de-texto: a linha curta em caixa alta acima de um título. */
+.eyebrow {
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--linen-600);
+}
+
+/* Filete decorativo sob títulos de seção. */
+.rule::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  margin-top: 1rem;
+  background: var(--champagne-500);
+}
+.rule-center::after {
+  margin-inline: auto;
+}
+
+/* ============================================================================
+   Superfícies
+   ========================================================================== */
+
+/* Papel levemente texturizado, usado em seções de destaque. */
+.surface-linen {
+  background-color: var(--linen-100);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(133, 123, 107, 0.035) 0 1px,
+      transparent 1px 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(133, 123, 107, 0.035) 0 1px,
+      transparent 1px 3px
+    );
+}
+
+/* Seção escura (rodapé, editoriais) com o mesmo tecido, em negativo. */
+.surface-ink {
+  background-color: var(--linen-900);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.022) 0 1px,
+      transparent 1px 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.022) 0 1px,
+      transparent 1px 3px
+    );
+}
+
+/* Brilho quente para cabeçalhos de seção escura. */
+.glow-champagne {
+  position: relative;
+  isolation: isolate;
+}
+.glow-champagne::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(55% 55% at 12% 8%, rgba(194, 160, 94, 0.18), transparent 62%),
+    radial-gradient(45% 45% at 88% 92%, rgba(174, 160, 190, 0.14), transparent 62%);
+}
+
+/* Fio dourado sutil — divisores e molduras de imagem. */
+.hairline-gold {
+  box-shadow: inset 0 0 0 1px rgba(194, 160, 94, 0.35);
+}
+
+/* ============================================================================
+   Animações
+   ========================================================================== */
+
+@keyframes aroma-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-rise {
+  animation: aroma-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes aroma-drift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1.2deg);
+  }
+}
+
+.animate-drift {
+  animation: aroma-drift 9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise,
+  .animate-drift {
+    animation: none;
+  }
+}
+
+/* Esconde a barra de rolagem em carrosséis horizontais. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
