@@ -54,8 +54,14 @@ de linho das fotos da marca.
 | `champagne-200…700` | dourado — acento, selos, CTA do banner |
 | `lilac-100…600` | lilás das rosas — selos e detalhes |
 
-Tipografia: **Cormorant Garamond** (display, `.font-display`) e **Jost**
-(interface). Tokens em [`app/globals.css`](app/globals.css); a marca em
+Tipografia: **Marcellus** nos títulos (`.font-display`, `.font-display-xl`) e
+**Jost** no resto — interface, navegação, botões, olhos-de-texto e o logotipo.
+Números usam `.numeral`, que fica no sans: a serifada tem algarismos estreitos
+demais para alinhar coluna de preço. Marcellus tem um peso só e nenhum
+itálico, por isso `font-synthesis: none` — sem ele o navegador fabrica negrito
+e oblíquo esticando o desenho.
+
+Tokens em [`app/globals.css`](app/globals.css); a marca em
 [`components/site/brand.tsx`](components/site/brand.tsx) (símbolo em SVG +
 logotipo em texto, nítido em qualquer tamanho).
 

@@ -1,20 +1,34 @@
 import type { Metadata } from "next";
-import { Jost } from "next/font/google";
+import { Jost, Marcellus } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart/cart-context";
 
 /**
- * Jost em tudo: interface e títulos.
+ * Jost: interface, navegação, botões, preços e o logotipo.
  *
- * A marca é um logotipo tipográfico — "AROMA HAUS" em geométrica leve, caixa
- * alta e muito espaçada. Uma serifada nos títulos criava duas vozes na mesma
- * página e a do logo perdia. Com uma família só, todo título é a assinatura
- * da casa repetida; o peso e o espaçamento é que separam hierarquia.
+ * Geométrica e discretamente Bauhaus — combina com o "Haus" e é o que está
+ * escrito na assinatura da marca.
  */
 const jost = Jost({
   variable: "--font-sans",
   subsets: ["latin"],
   weight: ["200", "300", "400", "500"],
+  display: "swap",
+});
+
+/**
+ * Marcellus: títulos.
+ *
+ * Desenhada a partir das capitais romanas de inscrição — sóbria e firme, sem
+ * o contraste dramático de uma didone. Tem um peso só e NÃO tem itálico: por
+ * isso `font-synthesis: none` no CSS, senão o navegador inventa um negrito e
+ * um oblíquo falsos, que é exatamente o que faz uma fonte bonita parecer
+ * estranha na tela.
+ */
+const marcellus = Marcellus({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["400"],
   display: "swap",
 });
 
@@ -53,7 +67,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${jost.variable} h-full antialiased`}
+      className={`${jost.variable} ${marcellus.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-ink">
         <CartProvider>{children}</CartProvider>

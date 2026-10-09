@@ -101,15 +101,18 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
               <div className="absolute inset-0 bg-gradient-to-t from-linen-900/92 from-35% via-linen-900/45 to-transparent sm:bg-gradient-to-r sm:from-linen-900/75 sm:from-0% sm:via-linen-900/25 sm:to-transparent" />
 
               <div className="relative mx-auto flex min-h-[30rem] max-w-7xl items-end px-6 pb-14 sm:min-h-[34rem] sm:items-center sm:pb-0 lg:min-h-[38rem]">
-                <div className="max-w-xl">
+                <div className="max-w-2xl">
                   <p className="text-[0.6875rem] uppercase tracking-[0.24em] text-champagne-300">
                     {s.eyebrow}
                   </p>
 
-                  <h1 className="font-display-xl mt-4 text-[clamp(2.25rem,6vw,4.5rem)] leading-[1.02] text-linen-50">
+                  <h1 className="font-display-xl mt-4 text-[clamp(2rem,5vw,3.75rem)] text-linen-50">
                     {s.title}
                     {s.titleAccent ? (
-                      <span className="mt-1 block italic text-champagne-300">
+                      // Sem itálico: Marcellus não tem um, e o oblíquo que o
+                      // navegador fabricaria entorta o desenho. A segunda
+                      // linha se separa pela cor, que já basta.
+                      <span className="mt-1 block text-champagne-300">
                         {s.titleAccent}
                       </span>
                     ) : null}

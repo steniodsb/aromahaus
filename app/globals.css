@@ -91,7 +91,7 @@
   --color-warning: var(--warning);
 
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
 }
 
 /* ============================================================================
@@ -102,7 +102,10 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, Arial, sans-serif;
-  font-synthesis-weight: none;
+  /* Marcellus tem um peso só e nenhum itálico. Sem isto, o navegador
+     fabrica negrito e oblíquo esticando o desenho — é o que faz uma fonte
+     elegante parecer deformada. */
+  font-synthesis: none;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -119,69 +122,37 @@ body {
 /* ============================================================================
    Tipografia de marca
    ----------------------------------------------------------------------------
-   Todo título repete a construção do logotipo: Jost leve, caixa alta e
-   espaçamento largo. O espaçamento é em `em`, então acompanha o tamanho da
-   fonte sozinho — e encolhe nos títulos grandes, porque texto grande já tem
-   respiro de sobra e muito tracking começa a desmontar a palavra.
+   Marcellus nos títulos, Jost em todo o resto — interface, navegação, botões,
+   olhos-de-texto e o logotipo. Duas vozes com papéis claros: a serifada fala,
+   a geométrica organiza.
+
+   Títulos em caixa normal, de propósito. Em caixa alta e com espaçamento
+   largo, uma frase de hero vira um bloco que o olho soletra em vez de ler.
    ========================================================================== */
 
 .font-display {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  line-height: 1.3;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 1.28;
 }
 
-/* A partir de ~1.75rem o tracking cheio afasta demais as letras. */
-.font-display.text-3xl,
-.font-display.text-4xl,
-.font-display.text-5xl,
-.font-display.text-6xl {
-  letter-spacing: 0.06em;
-  line-height: 1.22;
-}
-
-/* Títulos de abertura (hero, topo de página), onde a palavra precisa ficar
-   inteira aos olhos antes do espaçamento chamar atenção. */
+/* Títulos de abertura (hero, topo de página). Texto grande precisa de menos
+   entrelinha e de um leve aperto entre as letras. */
 .font-display-xl {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 200;
-  text-transform: uppercase;
-  letter-spacing: 0.045em;
-  line-height: 1.16;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.1;
 }
 
-/* Números — preço, contador, nota. Caixa alta não significa nada num
-   algarismo, e o espaçamento de título atrapalha a leitura do valor. */
+/* Números — preço, total, nota, contador. Ficam no sans: a serifada tem
+   algarismos estreitos demais para alinhar coluna de preço. */
 .numeral {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
   letter-spacing: 0;
   font-variant-numeric: tabular-nums;
-}
-
-/* Olho-de-texto: a linha curta em caixa alta acima de um título. */
-.eyebrow {
-  font-size: 0.6875rem;
-  line-height: 1;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-weight: 500;
-  color: var(--linen-600);
-}
-
-/* Filete decorativo sob títulos de seção. */
-.rule::after {
-  content: "";
-  display: block;
-  width: 2.5rem;
-  height: 1px;
-  margin-top: 1rem;
-  background: var(--champagne-500);
-}
-.rule-center::after {
-  margin-inline: auto;
 }
 
 /* ============================================================================
