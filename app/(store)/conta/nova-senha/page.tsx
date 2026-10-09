@@ -1,13 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 export default function NewPasswordPage() {
   const router = useRouter();
-  const [supabase] = useState(() => createClient());
+
+  // O cliente nasce no primeiro USO, não na renderização.
+  //
+  // Antes era `useState(() => createClient())`, e o inicializador do
+  // `useState` roda também na renderização do servidor — o que fazia o Next
+  // construir um cliente de BROWSER durante o prerender e derrubava o build
+  // inteiro quando faltava uma variável de ambiente no host. A sessão de
+  // recuperação só existe no browser de qualquer jeito.
+  const clientRef = useRef<ReturnType<typeof createClient> | null>(null);
+  const getSupabase = useMemo(
+    () => () => (clientRef.current ??= createClient()),
+    [],
+  );
+
   const [status, setStatus] = useState<"checking" | "ok" | "invalid">("checking");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -17,6 +30,7 @@ export default function NewPasswordPage() {
   // fragmento da URL, que o client processa ao montar. Só liberamos o form
   // depois de confirmar que ela existe.
   useEffect(() => {
+    const supabase = getSupabase();
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) setStatus("ok");
     });
@@ -28,7 +42,7 @@ export default function NewPasswordPage() {
       data.subscription.unsubscribe();
       clearTimeout(timer);
     };
-  }, [supabase]);
+  }, [getSupabase]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,7 +52,7 @@ export default function NewPasswordPage() {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password });
+    const { error } = await getSupabase().auth.updateUser({ password });
     if (error) {
       setError("Não foi possível redefinir. Solicite um novo link.");
       setLoading(false);

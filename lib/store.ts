@@ -1,6 +1,33 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+/**
+ * Lê uma chave de `settings` sem nunca derrubar a página.
+ *
+ * Estas três configurações são lidas no layout da LOJA INTEIRA. Quando elas
+ * estouravam, não caía uma seção: caía todo o site, e no build caía o deploy
+ * com um erro que não dizia qual variável faltava. O resto das consultas já
+ * falhava em silêncio (ver `lib/queries.ts`); aqui estava a exceção.
+ *
+ * Falhar em silêncio aqui é seguro porque todo valor sensível tem um padrão
+ * conservador: sem configuração, a loja não promete frete grátis e não anuncia
+ * parcelamento que não existe.
+ */
+async function lerSetting<T>(key: string): Promise<Partial<T>> {
+  try {
+    const admin = createAdminClient();
+    const { data } = await admin
+      .from("settings")
+      .select("value")
+      .eq("key", key)
+      .maybeSingle();
+    return (data?.value ?? {}) as Partial<T>;
+  } catch (err) {
+    console.error(`[store] não consegui ler settings.${key}:`, err);
+    return {};
+  }
+}
+
 /** Dados públicos da loja (usados em e-mails e no remetente do frete). */
 export interface StoreInfo {
   name: string;
@@ -60,9 +87,7 @@ const CHECKOUT_DEFAULTS: CheckoutConfig = {
 
 /** Lê settings.checkout, com fallback para os padrões. */
 export async function getCheckoutConfig(): Promise<CheckoutConfig> {
-  const admin = createAdminClient();
-  const { data } = await admin.from("settings").select("value").eq("key", "checkout").maybeSingle();
-  const s = (data?.value ?? {}) as Partial<CheckoutConfig>;
+  const s = await lerSetting<CheckoutConfig>("checkout");
 
   const max = Number(s.max_installments);
   const free = Number(s.interest_free_installments);
@@ -86,9 +111,7 @@ function siteUrl() {
 
 /** Lê settings.store, com fallback para variáveis de ambiente / padrões. */
 export async function getStoreInfo(): Promise<StoreInfo> {
-  const admin = createAdminClient();
-  const { data } = await admin.from("settings").select("value").eq("key", "store").maybeSingle();
-  const s = (data?.value ?? {}) as Partial<StoreInfo>;
+  const s = await lerSetting<StoreInfo>("store");
   return {
     name: s.name || process.env.NEXT_PUBLIC_STORE_NAME || "Aroma Haus",
     email: s.email || process.env.STORE_EMAIL || "contato@aromahaus.com.br",
@@ -110,9 +133,9 @@ export async function getStoreInfo(): Promise<StoreInfo> {
 
 /** Lê settings.shipping, com fallback para variáveis de ambiente. */
 export async function getShippingOrigin(): Promise<ShippingOrigin> {
-  const admin = createAdminClient();
-  const { data } = await admin.from("settings").select("value").eq("key", "shipping").maybeSingle();
-  const s = (data?.value ?? {}) as Partial<ShippingOrigin> & { free_above?: number };
+  const s = (await lerSetting<ShippingOrigin>("shipping")) as Partial<ShippingOrigin> & {
+    free_above?: number;
+  };
   const threshold = Number(s.free_shipping_threshold ?? s.free_above);
   return {
     from_cep: (s.from_cep || process.env.MELHORENVIO_FROM_CEP || "").replace(/\D/g, ""),

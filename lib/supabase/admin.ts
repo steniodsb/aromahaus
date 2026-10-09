@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
+import { supabaseServiceRoleKey, supabaseUrl } from "@/lib/supabase/env";
 
 /**
  * Privileged Supabase client using the SERVICE ROLE key — bypasses RLS.
@@ -7,11 +8,7 @@ import { createClient } from "@supabase/supabase-js";
  * webhooks). The `server-only` import guarantees it can never reach the client.
  */
 export function createAdminClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      auth: { autoRefreshToken: false, persistSession: false },
-    },
-  );
+  return createClient(supabaseUrl(), supabaseServiceRoleKey(), {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
 }

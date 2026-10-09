@@ -158,3 +158,26 @@ As tags entram só na loja (o painel admin nunca é rastreado).
 3. Comprar um produto de teste → confere e-mail "recebido".
 4. Pagar (sandbox MP) → confere status "pago", estoque baixado e e-mail "aprovado".
 5. Preencher origem do frete → gerar etiqueta → confere PDF, rastreio e e-mail "enviado".
+
+## Deploy na Vercel
+
+O build **não quebra** sem as variáveis, mas a loja sobe vazia: sem catálogo,
+sem login e sem checkout. Em **Settings → Environment Variables**, marque os
+três ambientes (Production, Preview, Development) e crie, no mínimo:
+
+| Variável | Valor |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | URL do projeto no Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | chave `anon` |
+| `SUPABASE_SERVICE_ROLE_KEY` | chave `service_role` — **nunca** no client |
+| `NEXT_PUBLIC_SITE_URL` | a URL de produção, com `https://` |
+| `NEXT_PUBLIC_STORE_NAME` | `Aroma Haus` |
+| `STORE_EMAIL` | e-mail que recebe aviso de pedido |
+
+As `NEXT_PUBLIC_*` são **embutidas no bundle durante o build**: criar a
+variável não basta, é preciso rodar um deploy novo depois (Deployments →
+Redeploy, com o cache desmarcado).
+
+O resto — Mercado Pago, Melhor Envio e Resend — segue a tabela acima nesta
+página. Enquanto estiverem vazias, o checkout cai no fluxo por WhatsApp e a
+cotação de frete volta sem opções.
