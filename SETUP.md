@@ -57,7 +57,7 @@ Copie de `.env.example`. As que importam agora:
 | Variável | Onde pega | Obrigatória? |
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` / `..._ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API | ✅ (já configurado) |
-| `NEXT_PUBLIC_SITE_URL` | URL de produção (`https://aromahaus.vercel.app`) | ✅ |
+| `NEXT_PUBLIC_SITE_URL` | URL de produção (`https://aromahaus.steniowebdesigner.com`) | ✅ |
 | `MERCADOPAGO_ACCESS_TOKEN` | MP → Suas integrações → Credenciais | pagamento |
 | `NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY` | idem | pagamento |
 | `MERCADOPAGO_WEBHOOK_SECRET` | MP → Webhooks → assinatura secreta | pagamento |
@@ -136,8 +136,8 @@ Configure o SMTP próprio em **Supabase → Authentication → Emails → SMTP S
 | Sender | o mesmo remetente do `RESEND_FROM` (domínio verificado) |
 
 Depois, em **Authentication → URL Configuration**:
-- **Site URL**: `https://aromahaus.vercel.app` (ou o domínio final);
-- **Redirect URLs**: adicione `https://aromahaus.vercel.app/auth/confirm`
+- **Site URL**: `https://aromahaus.steniowebdesigner.com` (ou o domínio final);
+- **Redirect URLs**: adicione `https://aromahaus.steniowebdesigner.com/auth/confirm`
   (e `http://localhost:3000/auth/confirm` para testar local).
 
 Para conferir se saiu, veja **Logs → Auth** no Supabase.
@@ -160,6 +160,9 @@ As tags entram só na loja (o painel admin nunca é rastreado).
 5. Preencher origem do frete → gerar etiqueta → confere PDF, rastreio e e-mail "enviado".
 
 ## Deploy na Vercel
+
+> Atalho: o arquivo `vercel.env` na raiz do projeto já tem tudo
+> preenchido e pronto para colar. Ele não vai para o Git.
 
 O build **não quebra** sem as variáveis, mas a loja sobe vazia: sem catálogo,
 sem login e sem checkout. Em **Settings → Environment Variables**, marque os

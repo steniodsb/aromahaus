@@ -114,7 +114,7 @@ export async function getStoreInfo(): Promise<StoreInfo> {
   const s = await lerSetting<StoreInfo>("store");
   return {
     name: s.name || process.env.NEXT_PUBLIC_STORE_NAME || "Aroma Haus",
-    email: s.email || process.env.STORE_EMAIL || "contato@aromahaus.com.br",
+    email: s.email || process.env.STORE_EMAIL || "",
     // A env vem ANTES do e-mail de contato de propósito. Sem isso, no primeiro
     // deploy os avisos migrariam sozinhos do endereço que a loja recebe hoje
     // para o `email` de contato — que pode ser um alias sem caixa de verdade.
@@ -141,7 +141,7 @@ export async function getShippingOrigin(): Promise<ShippingOrigin> {
     from_cep: (s.from_cep || process.env.MELHORENVIO_FROM_CEP || "").replace(/\D/g, ""),
     from_name: s.from_name || "Aroma Haus",
     from_phone: s.from_phone || "",
-    from_email: s.from_email || process.env.STORE_EMAIL || "contato@aromahaus.com.br",
+    from_email: s.from_email || process.env.STORE_EMAIL || "",
     from_document: s.from_document || "",
     from_address: s.from_address || "",
     from_number: s.from_number || "",

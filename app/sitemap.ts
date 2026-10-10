@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.aromahaus.com.br";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://aromahaus.steniowebdesigner.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Tudo que tem endereço fixo e conteúdo próprio. As coleções entram porque

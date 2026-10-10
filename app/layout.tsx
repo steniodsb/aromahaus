@@ -32,7 +32,7 @@ const marcellus = Marcellus({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.aromahaus.com.br";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aromahaus.steniowebdesigner.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

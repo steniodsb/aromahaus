@@ -102,7 +102,7 @@ const INK = "#2b2722"; // linen-900
  * host não público, caímos para a produção, que serve os mesmos arquivos de
  * `public/`.
  */
-const EMAIL_ASSETS_FALLBACK = "https://aromahaus.vercel.app";
+const EMAIL_ASSETS_FALLBACK = "https://aromahaus.steniowebdesigner.com";
 
 function assetsBase(siteUrl: string): string {
   try {

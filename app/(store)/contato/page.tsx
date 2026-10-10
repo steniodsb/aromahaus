@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function ContatoPage() {
   const store = await getStoreInfo().catch(() => null);
-  const email = store?.email || "contato@aromahaus.com.br";
+  const email = store?.email?.trim() || null;
   const phone = store?.whatsapp
     ? store.whatsapp.replace(/^55/, "").replace(/(\d{2})(\d{4,5})(\d{4})/, "($1) $2-$3")
     : null;
@@ -52,16 +52,21 @@ export default async function ContatoPage() {
           </span>
         </a>
 
-        <a href={`mailto:${email}`} className={card}>
-          <Mail
-            className="mt-0.5 h-5 w-5 shrink-0 text-champagne-600"
-            strokeWidth={1.4}
-          />
-          <span>
-            <span className="block text-ink">E-mail</span>
-            <span className="mt-1 block text-sm text-linen-600">{email}</span>
-          </span>
-        </a>
+        {/* Sem e-mail configurado em Admin -> Configuracoes, o cartao nao
+            aparece. Publicar um endereco que nao existe e pior do que nao
+            oferecer o canal. */}
+        {email ? (
+          <a href={`mailto:${email}`} className={card}>
+            <Mail
+              className="mt-0.5 h-5 w-5 shrink-0 text-champagne-600"
+              strokeWidth={1.4}
+            />
+            <span>
+              <span className="block text-ink">E-mail</span>
+              <span className="mt-1 block text-sm text-linen-600">{email}</span>
+            </span>
+          </a>
+        ) : null}
 
         <a
           href="https://instagram.com/aromahaus"
