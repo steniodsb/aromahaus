@@ -121,19 +121,26 @@ export default async function AdminOrdersPage(
   };
 
   const aba = (ativa: boolean) =>
-    `rounded-full px-3 py-1 text-sm transition-colors ${
+    `rounded px-3 py-1 text-sm transition-colors ${
       ativa
-        ? "bg-champagne-600 font-semibold text-white"
-        : "border border-linen-300 text-linen-600 hover:border-champagne-500 hover:text-champagne-700"
+        ? "bg-linen-900 text-linen-50"
+        : "border border-linen-300 text-linen-600 transition-colors hover:border-linen-900 hover:text-ink"
     }`;
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-3xl text-ink">
-          {arquivados ? "Pedidos arquivados" : "Pedidos"}{" "}
-          <span className="text-base font-normal text-linen-500">({total})</span>
-        </h1>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl text-ink">
+            {arquivados ? "Pedidos arquivados" : "Pedidos"}{" "}
+            <span className="numeral text-base text-linen-500">({total})</span>
+          </h1>
+          <p className="mt-1 text-sm text-linen-600">
+            {arquivados
+              ? "Pedidos tirados da fila. Desarquive para voltar a trabalhar neles."
+              : "Fila de trabalho: confirme o pagamento, gere a etiqueta e acompanhe o envio de cada pedido."}
+          </p>
+        </div>
         <ListSearch
           action="/admin/pedidos"
           q={busca}
@@ -151,7 +158,7 @@ export default async function AdminOrdersPage(
               className={aba(statusFiltro === a.valor)}
             >
               {a.rotulo}{" "}
-              <span className={statusFiltro === a.valor ? "text-white/70" : "text-linen-500"}>
+              <span className={`numeral ${statusFiltro === a.valor ? "text-linen-50/70" : "text-linen-500"}`}>
                 {a.n}
               </span>
             </Link>
@@ -172,14 +179,14 @@ export default async function AdminOrdersPage(
               href="/admin/pedidos?arquivados=1"
               className="text-sm text-linen-600 hover:text-champagne-700"
             >
-              Ver {totalArquivados} arquivado{totalArquivados > 1 ? "s" : ""} →
+              Ver <span className="numeral">{totalArquivados}</span> arquivado{totalArquivados > 1 ? "s" : ""} →
             </Link>
           )
         )}
       </div>
 
       {semColunaArquivo && (
-        <p className="mb-3 rounded-lg bg-warning/10 px-4 py-2 text-sm text-amber-900">
+        <p className="mb-3 rounded bg-warning/10 px-4 py-2 text-sm text-warning">
           Arquivar ainda não está disponível: falta rodar a migração{" "}
           <code className="font-mono">0009_pedidos_arquivar.sql</code>. O resto
           da tela funciona normalmente.

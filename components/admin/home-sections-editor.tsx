@@ -7,7 +7,7 @@ import type { HomeSection } from "@/lib/store-defaults";
 
 const DESC: Record<string, string> = {
   featured: "Produtos marcados como “destaque” no cadastro do produto.",
-  bestsellers: "Itens compráveis priorizados (placeholder até haver dados de vendas).",
+  bestsellers: "Itens à venda priorizados. Ainda não usa o histórico real de vendas.",
   promotions: "Produtos com preço comparativo (preço “de/por”) — ou seja, em oferta.",
   newarrivals: "Produtos mais recentes, pela data de cadastro.",
 };
@@ -40,7 +40,7 @@ export function HomeSectionsEditor({ initial }: { initial: HomeSection[] }) {
     }
   }
 
-  const input = "w-full rounded-lg border border-linen-300 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const input = "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
 
   return (
     <div className="max-w-2xl space-y-3">
@@ -78,7 +78,7 @@ export function HomeSectionsEditor({ initial }: { initial: HomeSection[] }) {
       ))}
 
       <div className="flex items-center gap-3 pt-2">
-        <button type="button" onClick={handleSave} disabled={saving} className="rounded-lg bg-champagne-600 px-6 py-2 text-sm font-semibold text-white hover:bg-champagne-700 disabled:opacity-60">
+        <button type="button" onClick={handleSave} disabled={saving} className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-4 py-2 hover:bg-champagne-700 disabled:opacity-60">
           {saving ? "Salvando…" : "Salvar seções"}
         </button>
         {saved && <span className="text-sm text-success">Salvo!</span>}

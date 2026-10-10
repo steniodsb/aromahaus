@@ -13,19 +13,19 @@ export default function ImportarProdutosPage() {
       </Link>
       <h1 className="mb-2 font-display text-3xl text-ink">Importar planilha</h1>
       <p className="mb-6 max-w-2xl text-sm text-linen-600">
-        Atualiza preço, estoque e dimensões em lote. Cada linha acha o produto
+        Atualiza preço, estoque e dimensões em lote — útil para reajustar a coleção inteira de uma vez. Cada linha acha o produto
         pela coluna <strong>sku</strong>. A importação só{" "}
         <strong>atualiza</strong> — nunca cria produto novo.
       </p>
 
       <div className="mb-6 rounded border border-linen-200 bg-linen-50 p-5">
-        <h2 className="mb-2 font-semibold text-ink">Como montar a planilha</h2>
+        <h2 className="mb-2 font-display text-lg text-ink">Como montar a planilha</h2>
         <p className="mb-3 text-sm text-linen-600">
           O jeito mais seguro é{" "}
           <Link
             href="/admin/produtos/export"
             prefetch={false}
-            className="inline-flex items-center gap-1 font-medium text-champagne-700 hover:underline"
+            className="inline-flex items-center gap-1 text-champagne-700 hover:underline"
           >
             <Download className="h-3.5 w-3.5" /> baixar o CSV do catálogo
           </Link>

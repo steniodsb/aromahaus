@@ -22,7 +22,7 @@ export function ProductRowActions({
         title={featured ? "Remover destaque" : "Destacar na home"}
         disabled={pending}
         onClick={() => start(() => toggleProduct(id, "featured", !featured))}
-        className={featured ? "p-1.5 text-yellow-500" : "p-1.5 text-linen-500 hover:text-yellow-500"}
+        className={featured ? "p-1.5 text-champagne-500" : "p-1.5 text-linen-500 hover:text-champagne-500"}
       >
         <Star className="h-4 w-4" fill={featured ? "currentColor" : "none"} />
       </button>
@@ -45,7 +45,7 @@ export function ProductRowActions({
             start(() => deleteProduct(id));
           }
         }}
-        className="p-1.5 text-linen-500 hover:text-champagne-700"
+        className="p-1.5 text-linen-500 hover:text-danger"
       >
         <Trash2 className="h-4 w-4" />
       </button>

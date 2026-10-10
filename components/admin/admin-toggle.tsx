@@ -18,7 +18,7 @@ export function AdminToggle({
   const [error, setError] = useState<string | null>(null);
 
   if (ehVoce && isAdmin) {
-    return <span className="text-xs text-linen-500">é você</span>;
+    return <span className="text-xs text-linen-600">é você</span>;
   }
 
   return (
@@ -36,13 +36,13 @@ export function AdminToggle({
         }
         className={
           isAdmin
-            ? "rounded-lg border border-linen-300 px-2.5 py-1 text-xs text-linen-600 hover:border-champagne-500 hover:text-champagne-700 disabled:opacity-50"
-            : "rounded-lg bg-champagne-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-champagne-700 disabled:opacity-50"
+            ? "rounded border border-linen-300 px-3 py-1.5 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink disabled:opacity-50"
+            : "rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-3 py-1.5 hover:bg-champagne-700 disabled:opacity-50"
         }
       >
         {isAdmin ? "Remover admin" : "Tornar admin"}
       </button>
-      {error && <p className="max-w-[16rem] text-right text-xs text-champagne-700">{error}</p>}
+      {error && <p className="max-w-[16rem] text-right text-xs text-danger">{error}</p>}
     </div>
   );
 }

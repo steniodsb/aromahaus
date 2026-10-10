@@ -46,31 +46,39 @@ function CustomerLoginForm() {
     router.refresh();
   }
 
-  const input = "w-full border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600";
+  const input =
+    "w-full border border-line bg-transparent px-3 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-linen-500 focus:border-champagne-600";
+  const label =
+    "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
+  const button =
+    "w-full border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink disabled:opacity-60";
 
   return (
-    <div className="mx-auto max-w-sm px-4 py-12">
-      <h1 className="mb-1 text-2xl font-bold text-ink">Entrar</h1>
-      <p className="mb-6 text-sm text-linen-600">Acesse sua conta Aroma Haus.</p>
+    <div className="mx-auto max-w-sm px-6 py-12">
+      <p className="eyebrow">Minha conta</p>
+      <h1 className="font-display-xl rule mt-3 text-[clamp(1.75rem,4vw,2.25rem)] text-ink">Entrar</h1>
+      <p className="mb-8 mt-6 text-sm leading-relaxed text-linen-700">
+        Acompanhe seus pedidos e acesse sua lista de desejos.
+      </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-medium text-linen-700">E-mail</label>
-          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={input} />
+          <label htmlFor="email" className={label}>E-mail</label>
+          <input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={input} />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-linen-700">Senha</label>
-          <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className={input} />
+          <label htmlFor="password" className={label}>Senha</label>
+          <input id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} className={input} />
         </div>
-        {error && <p className="text-sm text-champagne-700">{error}</p>}
-        <button type="submit" disabled={loading} className="w-full bg-champagne-600 py-2.5 font-semibold text-white hover:bg-champagne-700 disabled:opacity-60">
+        {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+        <button type="submit" disabled={loading} className={button}>
           {loading ? "Entrando…" : "Entrar"}
         </button>
       </form>
 
-      <div className="mt-4 flex justify-between text-sm">
-        <Link href="/conta/recuperar" className="text-linen-600 hover:text-champagne-700">Esqueci a senha</Link>
-        <Link href={`/conta/cadastro?redirect=${encodeURIComponent(redirect)}`} className="font-medium text-champagne-700 hover:underline">Criar conta</Link>
+      <div className="mt-6 flex justify-between text-sm">
+        <Link href="/conta/recuperar" className="text-linen-700 transition-colors hover:text-champagne-700">Esqueci a senha</Link>
+        <Link href={`/conta/cadastro?redirect=${encodeURIComponent(redirect)}`} className="text-champagne-700 hover:underline">Criar conta</Link>
       </div>
     </div>
   );

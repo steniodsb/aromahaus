@@ -21,9 +21,9 @@ export default async function AdminBannersPage() {
   return (
     <div className="space-y-12">
       <section>
-        <h1 className="mb-2 font-display text-3xl text-ink">Banners da Home</h1>
+        <h1 className="mb-1 font-display text-3xl text-ink">Banners da Home</h1>
         <p className="mb-6 text-sm text-linen-600">
-          Slides do carrossel principal. Envie uma imagem do computador ou
+          Slides do carrossel principal, o primeiro contato do cliente com a loja. Envie uma imagem do computador ou
           reaproveite uma já cadastrada em Produtos. Sem banners, a home usa o
           padrão da marca.
         </p>
@@ -31,7 +31,7 @@ export default async function AdminBannersPage() {
       </section>
 
       <section>
-        <h2 className="mb-2 font-display text-2xl text-ink">Mini banners — &ldquo;Navegue por tipo&rdquo;</h2>
+        <h2 className="mb-1 font-display text-2xl text-ink">Mini banners — &ldquo;Navegue por formato&rdquo;</h2>
         <p className="mb-6 text-sm text-linen-600">
           Os cartões de categoria no meio da home. Sem nada cadastrado, a home usa
           os padrões da marca.
@@ -40,7 +40,7 @@ export default async function AdminBannersPage() {
       </section>
 
       <section>
-        <h2 className="mb-2 font-display text-2xl text-ink">Banner promocional (faixa larga)</h2>
+        <h2 className="mb-1 font-display text-2xl text-ink">Banner promocional (faixa larga)</h2>
         <p className="mb-6 text-sm text-linen-600">
           A faixa grande de destaque entre as seções de produtos. Desligue se não
           quiser exibir.

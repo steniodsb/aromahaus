@@ -11,18 +11,18 @@ export default async function AdminCategoriesPage() {
 
   return (
     <div>
-      <h1 className="mb-2 font-display text-3xl text-ink">
+      <h1 className="mb-1 font-display text-3xl text-ink">
         Categorias{" "}
-        <span className="text-base font-normal text-linen-500">
+        <span className="numeral text-base text-linen-500">
           ({principais} principa{principais === 1 ? "l" : "is"} ·{" "}
           {categories.length - principais} subcategorias)
         </span>
       </h1>
       <p className="mb-6 max-w-2xl text-sm text-linen-600">
-        <strong>Categoria principal</strong> é a seção que aparece no menu da
-        loja. <strong>Subcategoria</strong> fica dentro dela. Para criar o que
-        antes se chamava &ldquo;tipo&rdquo;, crie uma categoria principal — é a
-        mesma coisa, e agora sem campo duplicado.
+        <strong>Categoria principal</strong> é a seção do menu da loja (por
+        exemplo, Difusores ou Home sprays). <strong>Subcategoria</strong> fica
+        dentro dela (por exemplo, Refis). Organize aqui como o cliente navega
+        pela coleção.
       </p>
 
       <CategoryTree categories={categories} />

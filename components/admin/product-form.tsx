@@ -42,8 +42,8 @@ export function ProductForm({
   const [error, setError] = useState<string | null>(null);
 
   const input =
-    "w-full rounded-lg border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-sm font-medium text-linen-700";
+    "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
 
   return (
     <form
@@ -89,7 +89,7 @@ export function ProductForm({
           </div>
 
           <div className="rounded border border-linen-200 bg-linen-50 p-5">
-            <h3 className="mb-4 font-semibold text-ink">Preço e estoque</h3>
+            <h3 className="mb-4 font-display text-lg text-ink">Preço e estoque</h3>
             <p className="mb-4 text-xs text-linen-600">
               Deixe o preço em branco (ou 0) para o produto aparecer como
               “Sob consulta” com botão de WhatsApp até você definir o valor.
@@ -152,7 +152,7 @@ export function ProductForm({
           </div>
 
           <div className="rounded border border-linen-200 bg-linen-50 p-5">
-            <h3 className="mb-1 font-semibold text-ink">Perfumaria</h3>
+            <h3 className="mb-1 font-display text-lg text-ink">Perfumaria</h3>
             <p className="mb-4 text-xs text-linen-600">
               É o que a página de produto usa para montar a pirâmide olfativa e
               o que os filtros da vitrine usam como faceta. Um produto sem estes
@@ -270,7 +270,7 @@ export function ProductForm({
           </div>
 
           <div className="rounded border border-linen-200 bg-linen-50 p-5">
-            <h3 className="mb-1 font-semibold text-ink">Tamanhos</h3>
+            <h3 className="mb-1 font-display text-lg text-ink">Tamanhos</h3>
             <p className="mb-4 text-xs text-linen-600">
               Para produtos com mais de uma medida, como o difusor.
             </p>
@@ -278,7 +278,7 @@ export function ProductForm({
           </div>
 
           <div className="rounded border border-linen-200 bg-linen-50 p-5">
-            <h3 className="mb-4 font-semibold text-ink">SEO</h3>
+            <h3 className="mb-4 font-display text-lg text-ink">SEO</h3>
             <div className="mb-4">
               <label className={label}>Título SEO</label>
               <input name="seo_title" defaultValue={product?.seo_title ?? ""} className={input} />
@@ -293,7 +293,7 @@ export function ProductForm({
         {/* Sidebar */}
         <div className="space-y-4">
           <div className="rounded border border-linen-200 bg-linen-50 p-5">
-            <h3 className="mb-4 font-semibold text-ink">Organização</h3>
+            <h3 className="mb-4 font-display text-lg text-ink">Organização</h3>
             <div className="mb-4">
               <label className={label}>Categoria</label>
               <select name="category_id" defaultValue={product?.category_id ?? ""} className={input}>
@@ -305,23 +305,23 @@ export function ProductForm({
                 ))}
               </select>
             </div>
-            <label className="mb-2 flex items-center gap-2 text-sm">
+            <label className="mb-2 flex items-center gap-2 text-sm text-linen-700">
               <input type="checkbox" name="is_active" defaultChecked={product?.is_active ?? true} />
               Ativo (visível na loja)
             </label>
-            <label className="flex items-center gap-2 text-sm">
+            <label className="flex items-center gap-2 text-sm text-linen-700">
               <input type="checkbox" name="featured" defaultChecked={product?.featured ?? false} />
               Destaque na home
             </label>
           </div>
 
           <div className="rounded border border-linen-200 bg-linen-50 p-5">
-            <h3 className="mb-4 font-semibold text-ink">Imagens</h3>
+            <h3 className="mb-4 font-display text-lg text-ink">Imagens</h3>
             <GalleryField initial={product?.images ?? []} />
           </div>
 
           {error && (
-            <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
+            <p className="rounded bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
           )}
 
           <button

@@ -50,7 +50,7 @@ export function ImportForm() {
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            className="inline-flex items-center gap-2 rounded-lg border border-linen-300 px-4 py-2 text-sm font-medium text-linen-700 hover:border-champagne-500 hover:text-champagne-700"
+            className="inline-flex items-center gap-2 rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink"
           >
             <Upload className="h-4 w-4" /> Escolher CSV
           </button>
@@ -60,7 +60,7 @@ export function ImportForm() {
               type="button"
               disabled={busy}
               onClick={() => enviar(false)}
-              className="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-ink/90 disabled:opacity-60"
+              className="rounded bg-linen-900 px-4 py-2 text-xs uppercase tracking-[0.12em] text-linen-50 transition-colors hover:bg-champagne-700 disabled:opacity-60"
             >
               {busy ? "Lendo…" : "Simular"}
             </button>
@@ -73,19 +73,19 @@ export function ImportForm() {
       </div>
 
       {res?.error && (
-        <p className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger">{res.error}</p>
+        <p className="rounded bg-danger/10 px-4 py-3 text-sm text-danger">{res.error}</p>
       )}
 
       {res?.ok && (
         <div className="rounded border border-linen-200 bg-linen-50 p-5">
           {aplicado ? (
-            <p className="mb-4 flex items-center gap-2 font-semibold text-success">
+            <p className="mb-4 flex items-center gap-2 text-success">
               <CheckCircle2 className="h-5 w-5" />
-              {res.atualizados} produto{res.atualizados === 1 ? "" : "s"} atualizado
+              <span className="numeral">{res.atualizados}</span> produto{res.atualizados === 1 ? "" : "s"} atualizado
               {res.atualizados === 1 ? "" : "s"}.
             </p>
           ) : (
-            <h2 className="mb-4 font-semibold text-ink">Simulação — nada foi salvo ainda</h2>
+            <h2 className="mb-4 font-display text-lg text-ink">Simulação — nada foi salvo ainda</h2>
           )}
 
           <div className="mb-4 grid gap-3 sm:grid-cols-4">
@@ -96,9 +96,9 @@ export function ImportForm() {
           </div>
 
           {res.linhas.length > 0 && (
-            <div className="max-h-96 overflow-y-auto rounded-lg border border-linen-200">
+            <div className="max-h-96 overflow-y-auto rounded border border-linen-200">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-linen-100 text-left text-xs uppercase text-linen-600">
+                <thead className="sticky top-0 bg-linen-100 text-left text-[0.6875rem] uppercase tracking-[0.12em] text-linen-600">
                   <tr>
                     <th className="p-2">Linha</th>
                     <th className="p-2">SKU</th>
@@ -106,11 +106,11 @@ export function ImportForm() {
                     <th className="p-2">Mudanças</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-linen-200">
                   {res.linhas.map((l) => (
-                    <tr key={`${l.linha}-${l.sku}`} className="border-t border-linen-100">
-                      <td className="p-2 text-linen-500">{l.linha}</td>
-                      <td className="p-2 font-mono text-xs">{l.sku || "—"}</td>
+                    <tr key={`${l.linha}-${l.sku}`}>
+                      <td className="numeral p-2 text-linen-500">{l.linha}</td>
+                      <td className="numeral p-2 font-mono text-xs">{l.sku || "—"}</td>
                       <td className="p-2 text-linen-700">{l.nome || "—"}</td>
                       <td className="p-2">
                         {l.erro ? (
@@ -121,10 +121,10 @@ export function ImportForm() {
                         ) : (
                           <div className="flex flex-wrap gap-x-3 gap-y-1">
                             {Object.entries(l.mudancas).map(([campo, [antes, depois]]) => (
-                              <span key={campo} className="text-xs">
+                              <span key={campo} className="numeral text-xs">
                                 <span className="text-linen-600">{campo}:</span>{" "}
                                 <span className="text-linen-500 line-through">{antes}</span>{" "}
-                                <span className="font-semibold text-ink">{depois}</span>
+                                <span className="text-ink">{depois}</span>
                               </span>
                             ))}
                           </div>
@@ -142,7 +142,7 @@ export function ImportForm() {
               type="button"
               disabled={busy}
               onClick={() => enviar(true)}
-              className="mt-4 rounded-lg bg-champagne-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-champagne-700 disabled:opacity-60"
+              className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors mt-4 px-4 py-2 hover:bg-champagne-700 disabled:opacity-60"
             >
               {busy ? "Aplicando…" : `Aplicar ${res.atualizados} mudança${res.atualizados === 1 ? "" : "s"}`}
             </button>
@@ -150,7 +150,7 @@ export function ImportForm() {
 
           {!aplicado && res.atualizados === 0 && (
             <p className="mt-2 text-sm text-linen-600">
-              Nenhuma mudança para aplicar.
+              Nenhuma mudança para aplicar. Confira se a planilha tem valores diferentes dos atuais e se os SKUs batem com o catálogo.
             </p>
           )}
         </div>
@@ -172,11 +172,11 @@ function Resumo({
 }) {
   return (
     <div
-      className={`rounded-lg border p-3 ${
-        alerta ? "border-amber-300 bg-warning/10" : "border-linen-200 bg-linen-50"
+      className={`rounded border p-3 ${
+        alerta ? "border-warning/40 bg-warning/10" : "border-linen-200 bg-linen-50"
       }`}
     >
-      <p className={`text-xl font-bold ${destaque ? "text-champagne-700" : alerta ? "text-warning" : "text-ink"}`}>
+      <p className={`numeral text-xl ${destaque ? "text-champagne-700" : alerta ? "text-warning" : "text-ink"}`}>
         {n}
       </p>
       <p className="text-xs text-linen-600">{rotulo}</p>

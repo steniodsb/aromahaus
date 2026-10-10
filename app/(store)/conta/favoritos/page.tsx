@@ -17,7 +17,7 @@ export default async function FavoritosPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/conta/login?next=/conta/favoritos");
+  if (!user) redirect("/conta/login?redirect=/conta/favoritos");
 
   const products = await withProductDetails(await getWishlist());
 

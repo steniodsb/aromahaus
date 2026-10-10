@@ -39,19 +39,19 @@ export function MiniBannerEditor({ initial }: { initial: MiniBanner[] | null }) 
     }
   }
 
-  const input = "w-full rounded-lg border border-linen-300 px-3 py-2 text-sm outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-xs font-medium text-linen-600";
+  const input = "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
 
   return (
     <div className="space-y-4">
       {items.map((b, i) => (
         <div key={i} className="rounded border border-linen-200 bg-linen-50 p-4">
           <div className="mb-3 flex items-center justify-between">
-            <span className="text-sm font-semibold text-ink">Mini banner {i + 1}</span>
+            <span className="text-sm text-ink">Mini banner <span className="numeral">{i + 1}</span></span>
             <div className="flex items-center gap-1">
               <button type="button" onClick={() => move(i, -1)} className="rounded px-2 py-1 text-xs text-linen-600 hover:bg-linen-100">↑</button>
               <button type="button" onClick={() => move(i, 1)} className="rounded px-2 py-1 text-xs text-linen-600 hover:bg-linen-100">↓</button>
-              <button type="button" onClick={() => remove(i)} className="p-1.5 text-linen-500 hover:text-champagne-700">
+              <button type="button" onClick={() => remove(i)} className="p-1.5 text-linen-500 hover:text-danger">
                 <Trash2 className="h-4 w-4" />
               </button>
             </div>
@@ -59,11 +59,11 @@ export function MiniBannerEditor({ initial }: { initial: MiniBanner[] | null }) 
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <label className={label}>Texto *</label>
-              <input className={input} value={b.label} onChange={(e) => update(i, "label", e.target.value)} placeholder="Ex.: Multimídia & Som" />
+              <input className={input} value={b.label} onChange={(e) => update(i, "label", e.target.value)} placeholder="Ex.: Difusores de varetas" />
             </div>
             <div>
               <label className={label}>Link *</label>
-              <input className={input} value={b.href} onChange={(e) => update(i, "href", e.target.value)} placeholder="/categoria/pecas-multimidia" />
+              <input className={input} value={b.href} onChange={(e) => update(i, "href", e.target.value)} placeholder="/categoria/difusores" />
             </div>
             <div className="sm:col-span-2">
               <ImageField
@@ -78,10 +78,10 @@ export function MiniBannerEditor({ initial }: { initial: MiniBanner[] | null }) 
       ))}
 
       <div className="flex items-center gap-3">
-        <button type="button" onClick={() => setItems((s) => [...s, { ...EMPTY }])} className="inline-flex items-center gap-2 rounded-lg border border-linen-300 px-4 py-2 text-sm font-semibold text-ink hover:border-champagne-500">
+        <button type="button" onClick={() => setItems((s) => [...s, { ...EMPTY }])} className="inline-flex items-center gap-2 rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink">
           <Plus className="h-4 w-4" /> Adicionar mini banner
         </button>
-        <button type="button" onClick={handleSave} disabled={saving} className="rounded-lg bg-champagne-600 px-6 py-2 text-sm font-semibold text-white hover:bg-champagne-700 disabled:opacity-60">
+        <button type="button" onClick={handleSave} disabled={saving} className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-4 py-2 hover:bg-champagne-700 disabled:opacity-60">
           {saving ? "Salvando…" : "Salvar mini banners"}
         </button>
         {saved && <span className="text-sm text-success">Salvo!</span>}

@@ -10,16 +10,19 @@ export default async function AdminConfigPage() {
   const shipping = map.shipping ?? {};
   const checkout = map.checkout ?? {};
 
-  const input = "w-full rounded-lg border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-sm font-medium text-linen-700";
+  const input = "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
 
   return (
     <div>
-      <h1 className="mb-6 font-display text-3xl text-ink">Configurações da loja</h1>
+      <h1 className="font-display text-3xl text-ink">Configurações da loja</h1>
+      <p className="mb-6 mt-1 max-w-2xl text-sm text-linen-600">
+        Dados de contato, parcelamento e o endereço de onde saem as encomendas. O frete e as etiquetas dependem do remetente preenchido aqui.
+      </p>
 
       <SettingsForm>
         <div className="rounded border border-linen-200 bg-linen-50 p-5">
-          <h2 className="mb-4 font-semibold text-ink">Dados da loja</h2>
+          <h2 className="mb-4 font-display text-lg text-ink">Dados da loja</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className={label}>Nome</label>
@@ -67,7 +70,7 @@ export default async function AdminConfigPage() {
         </div>
 
         <div className="rounded border border-linen-200 bg-linen-50 p-5">
-          <h2 className="mb-1 font-semibold text-ink">Checkout — parcelamento</h2>
+          <h2 className="mb-1 font-display text-lg text-ink">Checkout — parcelamento</h2>
           <p className="mb-4 text-xs text-linen-600">
             O teto de parcelas vale de verdade: o checkout não oferece mais que
             isso.{" "}
@@ -108,7 +111,7 @@ export default async function AdminConfigPage() {
         </div>
 
         <div className="rounded border border-linen-200 bg-linen-50 p-5">
-          <h2 className="mb-1 font-semibold text-ink">Frete & remetente</h2>
+          <h2 className="mb-1 font-display text-lg text-ink">Frete & remetente</h2>
           <p className="mb-4 text-xs text-linen-600">
             O endereço abaixo é o remetente das etiquetas do Melhor Envio e a
             origem do cálculo de frete. Preencha para gerar etiquetas no painel.
@@ -116,7 +119,7 @@ export default async function AdminConfigPage() {
           <div className="grid gap-4 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label className={label}>Frete grátis acima de (R$) — 0 desativa</label>
-              <input name="free_shipping_threshold" type="number" step="0.01" defaultValue={String(shipping.free_shipping_threshold ?? shipping.free_above ?? 0)} className={input} />
+              <input name="free_shipping_threshold" type="number" step="0.01" defaultValue={String(shipping.free_shipping_threshold ?? shipping.free_above ?? 0)} className={`numeral ${input}`} />
             </div>
             <div className="sm:col-span-3">
               <label className={label}>CEP de origem</label>
@@ -172,7 +175,7 @@ export default async function AdminConfigPage() {
       </SettingsForm>
 
       <div className="mt-10 max-w-2xl rounded border border-linen-200 bg-linen-50 p-5">
-        <h2 className="mb-4 font-semibold text-ink">Segurança — alterar minha senha</h2>
+        <h2 className="mb-4 font-display text-lg text-ink">Segurança — alterar minha senha</h2>
         <AdminPasswordForm />
       </div>
     </div>

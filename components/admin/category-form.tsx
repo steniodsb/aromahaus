@@ -54,8 +54,8 @@ export function CategoryForm({
     }))
     .sort((a, b) => a.caminho.localeCompare(b.caminho, "pt-BR"));
 
-  const input = "w-full rounded-lg border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-sm font-medium text-linen-700";
+  const input = "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
 
   return (
     <form
@@ -135,10 +135,10 @@ export function CategoryForm({
           </div>
           <div>
             <label className={label}>Posição (ordem)</label>
-            <input name="position" type="number" defaultValue={category?.position ?? 0} className={input} />
+            <input name="position" type="number" defaultValue={category?.position ?? 0} className={`numeral ${input}`} />
           </div>
           <div className="flex items-center pt-7">
-            <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-linen-700">
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-linen-700">
               <input
                 type="checkbox"
                 name="is_active"
@@ -152,7 +152,7 @@ export function CategoryForm({
       </div>
 
       <div className="rounded border border-linen-200 bg-linen-50 p-5">
-        <h3 className="mb-3 font-semibold text-ink">Imagem (opcional)</h3>
+        <h3 className="mb-3 font-display text-lg text-ink">Imagem (opcional)</h3>
         <ImageField
           label="Imagem da categoria"
           value={imagem}
@@ -163,12 +163,12 @@ export function CategoryForm({
       </div>
 
       {error && (
-        <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
+        <p className="rounded bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
       )}
 
       <button
         disabled={saving}
-        className="rounded-lg bg-champagne-600 px-6 py-2.5 font-semibold text-white hover:bg-champagne-700 disabled:opacity-60"
+        className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-4 py-2 hover:bg-champagne-700 disabled:opacity-60"
       >
         {saving ? "Salvando…" : "Salvar categoria"}
       </button>

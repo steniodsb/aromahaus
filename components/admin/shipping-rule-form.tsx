@@ -19,8 +19,8 @@ export function ShippingRuleForm({ rule }: { rule?: ShippingRule | null }) {
   const [error, setError] = useState<string | null>(null);
 
   const input =
-    "w-full rounded-lg border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-sm font-medium text-linen-700";
+    "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
   const hint = "mt-1 text-xs text-linen-600";
 
   const selectedStates = new Set(rule?.states ?? []);
@@ -95,7 +95,7 @@ export function ShippingRuleForm({ rule }: { rule?: ShippingRule | null }) {
           </div>
 
           <div className="rounded border border-linen-200 bg-linen-50 p-5">
-            <h3 className="mb-1 font-semibold text-ink">Quando aplicar</h3>
+            <h3 className="mb-1 font-display text-lg text-ink">Quando aplicar</h3>
             <p className="mb-4 text-xs text-linen-600">
               Todas as condições preenchidas precisam bater ao mesmo tempo.
               Deixe em branco o que não quiser usar.
@@ -131,7 +131,7 @@ export function ShippingRuleForm({ rule }: { rule?: ShippingRule | null }) {
 
             <div className="mt-4">
               <label className={label}>Estados atendidos</label>
-              <div className="flex flex-wrap gap-x-4 gap-y-2 rounded-lg border border-linen-200 p-3">
+              <div className="flex flex-wrap gap-x-4 gap-y-2 rounded border border-linen-200 p-3">
                 {UFS.map((uf) => (
                   <label key={uf} className="flex items-center gap-1.5 text-sm text-linen-700">
                     <input
@@ -151,7 +151,7 @@ export function ShippingRuleForm({ rule }: { rule?: ShippingRule | null }) {
 
         <div className="space-y-4">
           <div className="rounded border border-linen-200 bg-linen-50 p-5">
-            <h3 className="mb-4 font-semibold text-ink">Validade</h3>
+            <h3 className="mb-4 font-display text-lg text-ink">Validade</h3>
             <div className="mb-4">
               <label className={label}>Início</label>
               <input
@@ -178,7 +178,7 @@ export function ShippingRuleForm({ rule }: { rule?: ShippingRule | null }) {
               name="priority"
               type="number"
               defaultValue={rule?.priority ?? 0}
-              className={input}
+              className={`numeral ${input}`}
             />
             <p className={hint}>
               Só uma regra é aplicada por pedido. Quando duas servem, ganha a de
@@ -187,7 +187,7 @@ export function ShippingRuleForm({ rule }: { rule?: ShippingRule | null }) {
           </div>
 
           <div className="rounded border border-linen-200 bg-linen-50 p-5">
-            <label className="flex items-center gap-2 text-sm font-medium text-linen-700">
+            <label className="flex items-center gap-2 text-sm text-linen-700">
               <input
                 type="checkbox"
                 name="is_active"
@@ -198,13 +198,13 @@ export function ShippingRuleForm({ rule }: { rule?: ShippingRule | null }) {
           </div>
 
           {error && (
-            <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
+            <p className="rounded bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={saving}
-            className="w-full rounded-full bg-champagne-600 px-6 py-3 font-semibold text-white hover:bg-champagne-700 disabled:opacity-60"
+            className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors w-full px-4 py-2 hover:bg-champagne-700 disabled:opacity-60"
           >
             {saving ? "Salvando…" : "Salvar regra"}
           </button>

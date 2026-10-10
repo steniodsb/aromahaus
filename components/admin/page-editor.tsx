@@ -12,8 +12,8 @@ export function PageEditor({ page }: { page: PageContent }) {
   const [salvo, setSalvo] = useState(false);
 
   const input =
-    "w-full rounded-lg border border-linen-300 px-3 py-2 text-sm outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-sm font-medium text-linen-700";
+    "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
 
   return (
     <form
@@ -31,7 +31,7 @@ export function PageEditor({ page }: { page: PageContent }) {
       <input type="hidden" name="slug" value={page.slug} />
 
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="font-semibold text-ink">{page.title}</h2>
+        <h2 className="font-display text-lg text-ink">{page.title}</h2>
         <Link
           href={`/${page.slug}`}
           target="_blank"
@@ -75,14 +75,14 @@ export function PageEditor({ page }: { page: PageContent }) {
       </div>
 
       {error && (
-        <p className="mb-3 rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
+        <p className="mb-3 rounded bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
       )}
 
       <div className="flex items-center gap-3">
         <button
           type="submit"
           disabled={saving}
-          className="rounded-lg bg-champagne-600 px-6 py-2 text-sm font-semibold text-white hover:bg-champagne-700 disabled:opacity-60"
+          className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-4 py-2 hover:bg-champagne-700 disabled:opacity-60"
         >
           {saving ? "Salvando…" : "Salvar página"}
         </button>

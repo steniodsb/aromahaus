@@ -30,7 +30,7 @@ export function CategoryRowActions({ id, isActive }: { id: string; isActive: boo
         onClick={() => {
           if (confirm("Excluir esta categoria?")) start(() => deleteCategory(id));
         }}
-        className="p-1.5 text-linen-500 hover:text-champagne-700"
+        className="p-1.5 text-linen-500 hover:text-danger"
       >
         <Trash2 className="h-4 w-4" />
       </button>

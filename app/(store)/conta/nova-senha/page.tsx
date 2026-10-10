@@ -62,11 +62,16 @@ export default function NewPasswordPage() {
     router.refresh();
   }
 
-  const input = "w-full border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600";
+  const input =
+    "w-full border border-line bg-transparent px-3 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-linen-500 focus:border-champagne-600";
+  const label =
+    "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
+  const button =
+    "w-full border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink disabled:opacity-60";
 
   if (status === "checking") {
     return (
-      <div className="mx-auto max-w-sm px-4 py-16 text-center text-linen-600">
+      <div className="mx-auto max-w-sm px-6 py-12 text-center text-sm text-linen-700">
         Validando o link…
       </div>
     );
@@ -74,12 +79,13 @@ export default function NewPasswordPage() {
 
   if (status === "invalid") {
     return (
-      <div className="mx-auto max-w-sm px-4 py-16 text-center">
-        <h1 className="mb-2 text-2xl font-bold text-ink">Link inválido</h1>
-        <p className="text-linen-600">
+      <div className="mx-auto max-w-sm px-6 py-12 text-center">
+        <p className="eyebrow">Recuperar senha</p>
+        <h1 className="font-display-xl mt-3 text-[clamp(1.75rem,4vw,2.25rem)] text-ink">Link inválido</h1>
+        <p className="mt-6 text-sm leading-relaxed text-linen-700">
           Este link de redefinição expirou ou já foi usado.
         </p>
-        <Link href="/conta/recuperar" className="mt-6 inline-block font-medium text-champagne-700 hover:underline">
+        <Link href="/conta/recuperar" className="mt-8 inline-block text-sm text-champagne-700 hover:underline">
           Pedir um novo link
         </Link>
       </div>
@@ -87,13 +93,17 @@ export default function NewPasswordPage() {
   }
 
   return (
-    <div className="mx-auto max-w-sm px-4 py-12">
-      <h1 className="mb-1 text-2xl font-bold text-ink">Nova senha</h1>
-      <p className="mb-6 text-sm text-linen-600">Defina uma nova senha para sua conta.</p>
+    <div className="mx-auto max-w-sm px-6 py-12">
+      <p className="eyebrow">Recuperar senha</p>
+      <h1 className="font-display-xl rule mt-3 text-[clamp(1.75rem,4vw,2.25rem)] text-ink">Nova senha</h1>
+      <p className="mb-8 mt-6 text-sm leading-relaxed text-linen-700">
+        Escolha uma senha com pelo menos 6 caracteres.
+      </p>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input type="password" required placeholder="Nova senha" value={password} onChange={(e) => setPassword(e.target.value)} className={input} />
-        {error && <p className="text-sm text-champagne-700">{error}</p>}
-        <button type="submit" disabled={loading} className="w-full bg-champagne-600 py-2.5 font-semibold text-white hover:bg-champagne-700 disabled:opacity-60">
+        <label htmlFor="password" className={label}>Nova senha</label>
+        <input id="password" type="password" autoComplete="new-password" required placeholder="Nova senha" value={password} onChange={(e) => setPassword(e.target.value)} className={input} />
+        {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+        <button type="submit" disabled={loading} className={button}>
           {loading ? "Salvando…" : "Salvar nova senha"}
         </button>
       </form>

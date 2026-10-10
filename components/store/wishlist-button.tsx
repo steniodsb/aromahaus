@@ -42,7 +42,7 @@ export function WishlistButton({
       const res = await toggleWishlist(productId);
       if (res.needsAuth) {
         setSaved(!next);
-        router.push(`/conta/login?next=${encodeURIComponent(pathname)}`);
+        router.push(`/conta/login?redirect=${encodeURIComponent(pathname)}`);
         return;
       }
       if (!res.ok) setSaved(!next);

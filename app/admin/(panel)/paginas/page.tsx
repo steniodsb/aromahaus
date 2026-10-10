@@ -13,7 +13,7 @@ export default async function AdminPagesPage() {
 
   return (
     <div>
-      <h1 className="mb-2 font-display text-3xl text-ink">Páginas</h1>
+      <h1 className="mb-1 font-display text-3xl text-ink">Páginas</h1>
       <p className="mb-6 max-w-2xl text-sm text-linen-600">
         Textos institucionais da loja. Editar aqui publica na hora, sem deploy.
         As páginas <strong>Quem somos</strong> e <strong>Contato</strong> não

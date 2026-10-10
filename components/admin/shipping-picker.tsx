@@ -117,7 +117,7 @@ export function ShippingPicker({
       <button
         type="button"
         onClick={() => setAberto(true)}
-        className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-champagne-700 hover:underline"
+        className="mt-2 inline-flex items-center gap-1.5 text-xs text-champagne-700 hover:underline"
       >
         <Pencil className="h-3 w-3" /> Trocar transportadora
       </button>
@@ -129,8 +129,8 @@ export function ShippingPicker({
 
   return (
     <div
-      className={`mt-3 rounded-lg border p-3 ${
-        trocando ? "border-linen-300 bg-linen-100" : "border-amber-300 bg-warning/10"
+      className={`mt-3 rounded border p-3 ${
+        trocando ? "border-linen-300 bg-linen-100" : "border-warning/40 bg-warning/10"
       }`}
     >
       {trocando ? (
@@ -138,7 +138,7 @@ export function ShippingPicker({
           Trocando a transportadora de <strong>{servicoAtual}</strong>.
         </p>
       ) : (
-        <p className="mb-2 flex items-start gap-1.5 text-xs text-amber-900">
+        <p className="mb-2 flex items-start gap-1.5 text-xs text-warning">
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           Este pedido foi fechado sem transportadora. Escolha uma para conseguir
           gerar a etiqueta.
@@ -147,7 +147,7 @@ export function ShippingPicker({
 
       {/* As duas vias, sempre visíveis: quem já sabe que vai despachar por fora
           não precisa esperar a cotação falhar para descobrir o caminho. */}
-      <div className="mb-3 flex gap-1 rounded-lg bg-linen-50 p-1 text-xs">
+      <div className="mb-3 flex gap-1 rounded bg-linen-50 p-1 text-xs">
         {(
           [
             ["cotar", "Cotar no Melhor Envio"],
@@ -161,7 +161,7 @@ export function ShippingPicker({
               setModo(valor);
               setError(null);
             }}
-            className={`flex-1 rounded-md px-2 py-1.5 font-medium transition-colors ${
+            className={`flex-1 rounded px-2 py-1.5 transition-colors ${
               modo === valor
                 ? "bg-linen-900 text-linen-50"
                 : "text-linen-600 hover:text-champagne-700"
@@ -184,7 +184,7 @@ export function ShippingPicker({
               <button
                 type="button"
                 onClick={() => cotar()}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-champagne-600 bg-linen-50 py-2 text-sm font-semibold text-champagne-700 hover:bg-champagne-600 hover:text-white"
+                className="flex w-full items-center justify-center gap-2 rounded border border-champagne-600 bg-linen-50 py-2 text-xs uppercase tracking-[0.12em] text-champagne-700 transition-colors hover:bg-champagne-600 hover:text-linen-50"
               >
                 <Truck className="h-4 w-4" /> Cotar frete para este endereço
               </button>
@@ -192,7 +192,7 @@ export function ShippingPicker({
 
           {cotacoes && (
             <div className="space-y-2">
-              <div className="max-h-56 space-y-1 overflow-y-auto rounded-lg bg-linen-50 p-2">
+              <div className="max-h-56 space-y-1 overflow-y-auto rounded bg-linen-50 p-2">
                 {cotacoes.map((c) => (
                   <label
                     key={c.id}
@@ -208,18 +208,18 @@ export function ShippingPicker({
                     <span className="flex-1 text-linen-700">
                       {c.company} {c.name}
                       <span className="ml-1 text-xs text-linen-500">
-                        até {c.deliveryTime} dia(s)
+                        até <span className="numeral">{c.deliveryTime}</span> dia(s)
                       </span>
                     </span>
-                    <span className="font-medium text-ink">{formatBRL(c.price)}</span>
+                    <span className="numeral text-ink">{formatBRL(c.price)}</span>
                   </label>
                 ))}
               </div>
 
               {jaPago && escolhida && (
-                <p className="text-xs text-amber-900">
+                <p className="text-xs text-warning">
                   O pedido já foi pago, então o total <strong>não muda</strong> —
-                  o frete de {formatBRL(escolhida.price)} fica registrado como
+                  o frete de <span className="numeral">{formatBRL(escolhida.price)}</span> fica registrado como
                   absorvido pela loja, na nota interna.
                 </p>
               )}
@@ -228,7 +228,7 @@ export function ShippingPicker({
                 type="button"
                 disabled={busy || !escolhida}
                 onClick={() => salvar(false)}
-                className="w-full rounded-lg bg-champagne-600 py-2 text-sm font-semibold text-white hover:bg-champagne-700 disabled:opacity-60"
+                className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors w-full py-2 hover:bg-champagne-700 disabled:opacity-60"
               >
                 {busy ? "Salvando…" : "Definir transportadora"}
               </button>
@@ -240,18 +240,18 @@ export function ShippingPicker({
       {modo === "manual" && (
         <div className="space-y-2">
           <div>
-            <label className="mb-1 block text-xs font-medium text-linen-700">
+            <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">
               Transportadora / serviço
             </label>
             <input
               value={nomeManual}
               onChange={(e) => setNomeManual(e.target.value)}
               placeholder="Correios PAC, Jadlog .Package, retirada na loja…"
-              className="w-full rounded-lg border border-linen-300 px-3 py-2 text-sm"
+              className="w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-linen-700">
+            <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">
               Valor do frete (R$)
             </label>
             <input
@@ -259,11 +259,11 @@ export function ShippingPicker({
               onChange={(e) => setPrecoManual(e.target.value)}
               inputMode="decimal"
               placeholder="0,00"
-              className="w-full rounded-lg border border-linen-300 px-3 py-2 text-sm"
+              className="numeral w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600"
             />
           </div>
 
-          <p className="rounded-lg bg-linen-50 px-2 py-1.5 text-xs text-linen-600">
+          <p className="rounded bg-linen-50 px-2 py-1.5 text-xs text-linen-600">
             {jaPago ? (
               <>
                 O pedido já foi pago: o total <strong>não muda</strong>. O valor
@@ -282,7 +282,7 @@ export function ShippingPicker({
             type="button"
             disabled={busy || !nomeManual.trim() || !Number.isFinite(precoValido)}
             onClick={() => salvar(true)}
-            className="w-full rounded-lg bg-champagne-600 py-2 text-sm font-semibold text-white hover:bg-champagne-700 disabled:opacity-60"
+            className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors w-full py-2 hover:bg-champagne-700 disabled:opacity-60"
           >
             {busy ? "Salvando…" : "Salvar transportadora"}
           </button>
@@ -290,16 +290,16 @@ export function ShippingPicker({
       )}
 
       {error && (
-        <p className="mt-2 rounded-lg bg-danger/10 px-2 py-1.5 text-xs text-danger">{error}</p>
+        <p className="mt-2 rounded bg-danger/10 px-2 py-1.5 text-xs text-danger">{error}</p>
       )}
 
       {trocando && (
         <button
           type="button"
           onClick={() => setAberto(false)}
-          className="mt-2 w-full text-center text-xs text-linen-600 hover:text-champagne-700"
+          className="mt-2 w-full rounded border border-linen-300 py-2 text-center text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink"
         >
-          cancelar
+          Cancelar
         </button>
       )}
     </div>

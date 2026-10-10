@@ -42,7 +42,7 @@ export function ProductBulk({
           onChange={() => onChange(ids)}
           className="accent-champagne-600"
         />
-        Selecionar os {ids.length} desta página
+        Selecionar os <span className="numeral">{ids.length}</span> desta página
       </label>
     );
   }
@@ -56,16 +56,16 @@ export function ProductBulk({
   };
 
   return (
-    <div className="rounded-lg border border-champagne-600/30 bg-linen-100 p-3">
+    <div className="rounded border border-champagne-600/30 bg-linen-100 p-3">
       <div className="flex flex-wrap items-center gap-3">
-        <label className="flex items-center gap-2 text-sm font-medium text-ink">
+        <label className="flex items-center gap-2 text-sm text-ink">
           <input
             type="checkbox"
             checked={todosMarcados}
             onChange={() => onChange(todosMarcados ? [] : ids)}
             className="accent-champagne-600"
           />
-          {selecionados.length} selecionado{selecionados.length > 1 ? "s" : ""}
+          <span className="numeral">{selecionados.length}</span> selecionado{selecionados.length > 1 ? "s" : ""}
         </label>
 
         <select
@@ -74,7 +74,7 @@ export function ProductBulk({
             setAcao(e.target.value as Acao);
             setConfirmando(false);
           }}
-          className="rounded-lg border border-linen-300 px-2 py-1.5 text-sm outline-none focus:border-champagne-600"
+          className="rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600"
         >
           <option value="ativar">Ativar</option>
           <option value="desativar">Desativar</option>
@@ -88,7 +88,7 @@ export function ProductBulk({
             value={percentual}
             onChange={(e) => setPercentual(e.target.value)}
             placeholder="ex.: 10 ou -5"
-            className="w-28 rounded-lg border border-linen-300 px-2 py-1.5 text-sm outline-none focus:border-champagne-600"
+            className="numeral w-28 rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600"
           />
         )}
 
@@ -114,23 +114,23 @@ export function ProductBulk({
                 }
                 setBusy(false);
               }}
-              className="rounded-lg bg-champagne-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-champagne-700 disabled:opacity-60"
+              className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-4 py-2 hover:bg-champagne-700 disabled:opacity-60"
             >
               {busy ? "Aplicando…" : "Confirmar"}
             </button>
             <button
               type="button"
               onClick={() => setConfirmando(false)}
-              className="text-sm text-linen-600 hover:text-champagne-700"
+              className="rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink"
             >
-              cancelar
+              Cancelar
             </button>
           </div>
         ) : (
           <button
             type="button"
             onClick={() => setConfirmando(true)}
-            className="rounded-lg border border-champagne-600 px-3 py-1.5 text-sm font-semibold text-champagne-700 hover:bg-champagne-600 hover:text-white"
+            className="rounded border border-champagne-600 px-4 py-2 text-xs text-champagne-700 transition-colors hover:bg-champagne-600 hover:text-linen-50"
           >
             {rotulo[acao]}
           </button>
@@ -139,7 +139,7 @@ export function ProductBulk({
         <button
           type="button"
           onClick={() => onChange([])}
-          className="ml-auto text-sm text-linen-600 hover:text-champagne-700"
+          className="ml-auto text-xs text-linen-600 hover:text-champagne-700"
         >
           limpar seleção
         </button>
@@ -152,7 +152,7 @@ export function ProductBulk({
         </p>
       )}
 
-      {error && <p className="mt-2 text-sm text-champagne-700">{error}</p>}
+      {error && <p className="mt-2 text-sm text-danger">{error}</p>}
     </div>
   );
 }

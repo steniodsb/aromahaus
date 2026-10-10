@@ -24,12 +24,12 @@ export function PromoBannerEditor({ initial }: { initial: PromoBanner | null }) 
     }
   }
 
-  const input = "w-full rounded-lg border border-linen-300 px-3 py-2 text-sm outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-xs font-medium text-linen-600";
+  const input = "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
 
   return (
     <div className="rounded border border-linen-200 bg-linen-50 p-4">
-      <label className="mb-4 flex items-center gap-2 text-sm font-medium text-ink">
+      <label className="mb-4 flex items-center gap-2 text-sm text-ink">
         <input type="checkbox" checked={p.enabled} onChange={(e) => set("enabled", e.target.checked)} className="h-4 w-4 accent-champagne-600" />
         Exibir banner promocional na home
       </label>
@@ -44,8 +44,8 @@ export function PromoBannerEditor({ initial }: { initial: PromoBanner | null }) 
           />
         </div>
         <div>
-          <label className={label}>Tag (eyebrow)</label>
-          <input className={input} value={p.eyebrow} onChange={(e) => set("eyebrow", e.target.value)} placeholder="Peças originais" />
+          <label className={label}>Etiqueta acima do título</label>
+          <input className={input} value={p.eyebrow} onChange={(e) => set("eyebrow", e.target.value)} placeholder="Edição limitada" />
         </div>
         <div>
           <label className={label}>Título *</label>
@@ -62,7 +62,7 @@ export function PromoBannerEditor({ initial }: { initial: PromoBanner | null }) 
       </div>
 
       <div className="mt-4 flex items-center gap-3">
-        <button type="button" onClick={handleSave} disabled={saving} className="rounded-lg bg-champagne-600 px-6 py-2 text-sm font-semibold text-white hover:bg-champagne-700 disabled:opacity-60">
+        <button type="button" onClick={handleSave} disabled={saving} className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-4 py-2 hover:bg-champagne-700 disabled:opacity-60">
           {saving ? "Salvando…" : "Salvar banner promocional"}
         </button>
         {saved && <span className="text-sm text-success">Salvo!</span>}

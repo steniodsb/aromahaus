@@ -101,13 +101,13 @@ export function GalleryField({ initial }: { initial: string[] }) {
           {imagens.map((url, i) => (
             <div
               key={url}
-              className="group relative aspect-square overflow-hidden rounded-lg border border-linen-200 bg-linen-100"
+              className="group relative aspect-square overflow-hidden rounded border border-linen-200 bg-linen-100"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="" className="h-full w-full object-cover" />
 
               {i === 0 && (
-                <span className="absolute left-1 top-1 rounded bg-ink/80 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                <span className="absolute left-1 top-1 rounded bg-ink/80 px-1.5 py-0.5 text-[10px] text-white">
                   Capa
                 </span>
               )}
@@ -147,7 +147,7 @@ export function GalleryField({ initial }: { initial: string[] }) {
       )}
 
       {imagens.length === 0 && (
-        <div className="mb-3 flex aspect-video items-center justify-center rounded-lg border border-dashed border-linen-300 text-linen-300">
+        <div className="mb-3 flex aspect-video items-center justify-center rounded border border-dashed border-linen-300 text-linen-300">
           <ImageIcon className="h-8 w-8" />
         </div>
       )}
@@ -167,22 +167,22 @@ export function GalleryField({ initial }: { initial: string[] }) {
         type="button"
         disabled={enviando > 0}
         onClick={() => fileRef.current?.click()}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-linen-300 px-3 py-2 text-sm font-medium text-linen-700 hover:border-champagne-500 hover:text-champagne-700 disabled:opacity-50"
+        className="inline-flex w-full items-center justify-center gap-2 rounded border border-linen-300 px-3 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink disabled:opacity-50"
       >
         <Upload className="h-4 w-4" />
         {enviando > 0 ? `Enviando ${enviando}…` : "Enviar imagens"}
       </button>
 
       {error && (
-        <p className="mt-2 rounded-lg bg-danger/10 px-2 py-1.5 text-xs text-danger">{error}</p>
+        <p className="mt-2 rounded bg-danger/10 px-2 py-1.5 text-xs text-danger">{error}</p>
       )}
       {aviso && (
-        <p className="mt-2 rounded-lg bg-warning/10 px-2 py-1.5 text-xs text-amber-800">{aviso}</p>
+        <p className="mt-2 rounded bg-warning/10 px-2 py-1.5 text-xs text-warning">{aviso}</p>
       )}
 
       <div className="mt-2 space-y-2">
         <UploadHint spec="produto" />
-        <p className="text-xs text-linen-500">
+        <p className="text-xs text-linen-600">
           A primeira imagem é a capa. Use as setas ao passar o mouse para
           reordenar.
         </p>

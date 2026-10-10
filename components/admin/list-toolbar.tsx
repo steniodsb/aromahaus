@@ -32,10 +32,10 @@ export function ListSearch({
           name="q"
           defaultValue={q}
           placeholder={placeholder}
-          className="w-56 rounded-lg border border-linen-300 py-2 pl-8 pr-3 text-sm outline-none focus:border-champagne-600"
+          className="w-56 rounded border border-linen-300 bg-linen-50 py-2 pl-8 pr-3 text-sm outline-none focus:border-champagne-600"
         />
       </div>
-      <button className="rounded-lg border border-linen-300 px-3 py-2 text-sm font-medium text-linen-700 hover:border-champagne-500 hover:text-champagne-700">
+      <button className="rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink">
         Buscar
       </button>
       {q && (
@@ -76,12 +76,12 @@ export function Pagination({
   const fim = Math.min(page * perPage, total);
 
   const btn =
-    "rounded-lg border border-linen-300 px-3 py-1.5 text-sm text-linen-700 hover:border-champagne-500 hover:text-champagne-700";
-  const off = "rounded-lg border border-linen-200 px-3 py-1.5 text-sm text-linen-300";
+    "rounded border border-linen-300 px-3 py-1.5 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink";
+  const off = "rounded border border-linen-200 px-3 py-1.5 text-xs text-linen-300";
 
   return (
     <div className="mt-4 flex items-center justify-between gap-3">
-      <p className="text-xs text-linen-600">
+      <p className="numeral text-xs text-linen-600">
         {inicio}–{fim} de {total}
       </p>
       <div className="flex items-center gap-2">
@@ -92,7 +92,7 @@ export function Pagination({
         ) : (
           <span className={off}>Anterior</span>
         )}
-        <span className="text-sm text-linen-600">
+        <span className="numeral text-sm text-linen-600">
           {page} / {paginas}
         </span>
         {page < paginas ? (

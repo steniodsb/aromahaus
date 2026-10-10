@@ -44,7 +44,7 @@ import {
 type Resultado = { error: string } | undefined;
 
 const BTN_ACAO =
-  "inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-linen-600 transition-colors hover:bg-linen-100 hover:text-champagne-700 disabled:opacity-40";
+  "inline-flex items-center gap-1 rounded px-2 py-1 text-xs text-linen-600 transition-colors hover:bg-linen-100 hover:text-champagne-700 disabled:opacity-40";
 
 function NomeCategoria({
   cat,
@@ -76,7 +76,7 @@ function NomeCategoria({
             if (e.key === "Enter") onSalvar();
             if (e.key === "Escape") onCancelar();
           }}
-          className="rounded-lg border border-champagne-600 px-2 py-1 text-sm outline-none"
+          className="rounded border border-champagne-600 bg-linen-50 px-2 py-1 text-sm outline-none"
         />
         <button
           type="button"
@@ -101,10 +101,10 @@ function NomeCategoria({
 
   return (
     <span className="flex min-w-0 items-center gap-2">
-      <span className={raiz ? "font-semibold text-ink" : "text-linen-800"}>{cat.name}</span>
+      <span className={raiz ? "text-ink" : "text-linen-700"}>{cat.name}</span>
       <span className="truncate font-mono text-xs text-linen-500">/{cat.slug}</span>
       {!cat.is_active && (
-        <span className="rounded-full bg-linen-200 px-2 py-0.5 text-xs text-linen-600">
+        <span className="rounded bg-linen-200 px-2 py-0.5 text-[0.625rem] uppercase tracking-[0.1em] text-linen-600">
           oculta na loja
         </span>
       )}
@@ -137,16 +137,16 @@ function AcoesCategoria({
           type="button"
           disabled={pending}
           onClick={onExcluir}
-          className="rounded-lg bg-red-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-red-700"
+          className="rounded bg-danger text-linen-50 text-xs uppercase tracking-[0.12em] transition-opacity hover:opacity-90 px-3 py-1.5"
         >
           Sim, excluir
         </button>
         <button
           type="button"
           onClick={() => onConfirmar(null)}
-          className="text-xs text-linen-500 hover:text-linen-600"
+          className="text-xs text-linen-600 hover:text-ink"
         >
-          cancelar
+          Cancelar
         </button>
       </span>
     );
@@ -270,7 +270,7 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
         <button
           type="button"
           onClick={() => setCriando({ modo: "principal", pai: null })}
-          className="inline-flex items-center gap-2 rounded-lg bg-champagne-600 px-5 py-2.5 font-semibold text-white hover:bg-champagne-700"
+          className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors inline-flex items-center gap-2 px-4 py-2 hover:bg-champagne-700"
         >
           <Plus className="h-4 w-4" /> Criar categoria principal
         </button>
@@ -279,7 +279,7 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
           disabled={raizes.length === 0}
           onClick={() => setCriando({ modo: "subcategoria", pai: null })}
           title={raizes.length === 0 ? "Crie uma categoria principal primeiro" : undefined}
-          className="inline-flex items-center gap-2 rounded-lg border-2 border-champagne-600 px-5 py-2.5 font-semibold text-champagne-700 hover:bg-champagne-600 hover:text-white disabled:cursor-not-allowed disabled:border-linen-300 disabled:text-linen-500 disabled:hover:bg-transparent"
+          className="inline-flex items-center gap-2 rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-linen-300 disabled:hover:text-linen-700"
         >
           <CornerDownRight className="h-4 w-4" /> Criar subcategoria
         </button>
@@ -288,7 +288,7 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
         </p>
       </div>
 
-      {erro && <p className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger">{erro}</p>}
+      {erro && <p className="rounded bg-danger/10 px-4 py-3 text-sm text-danger">{erro}</p>}
 
       {raizes.map((raiz) => {
         const filhas = filhasDe(raiz.id);
@@ -297,14 +297,14 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
             <header className="flex flex-wrap items-center justify-between gap-2 border-b border-linen-200 bg-linen-100 p-4">
               <NomeCategoria {...nomeDe(raiz, true)} />
               <div className="flex items-center gap-2">
-                <span className="text-xs text-linen-500">
+                <span className="numeral text-xs text-linen-500">
                   {filhas.length} subcategoria{filhas.length === 1 ? "" : "s"}
                 </span>
                 <AcoesCategoria {...acoesDe(raiz)} />
               </div>
             </header>
 
-            <div className="divide-y divide-linen-100">
+            <div className="divide-y divide-linen-200">
               {filhas.map((filha) => (
                 <div
                   key={filha.id}
@@ -325,7 +325,7 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
                         rodar(() => setCategoryParent(filha.id, e.target.value || null))
                       }
                       aria-label={`Mover ${filha.name}`}
-                      className="rounded-lg border border-linen-300 bg-linen-50 px-2 py-1 text-xs outline-none focus:border-champagne-600 disabled:opacity-50"
+                      className="rounded border border-linen-300 bg-linen-50 px-2 py-1 text-xs outline-none focus:border-champagne-600 disabled:opacity-50"
                     >
                       <option value="">↑ virar principal</option>
                       {raizes.map((r) => (
@@ -340,14 +340,14 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
               ))}
 
               {filhas.length === 0 && (
-                <p className="px-4 py-3 text-sm text-linen-500">Nenhuma subcategoria ainda.</p>
+                <p className="px-4 py-3 text-sm text-linen-600">Nenhuma subcategoria ainda. Use o botão abaixo para criar a primeira (por exemplo, Refis).</p>
               )}
 
               <div className="px-4 py-3">
                 <button
                   type="button"
                   onClick={() => setCriando({ modo: "subcategoria", pai: raiz.id })}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-champagne-700 hover:underline"
+                  className="inline-flex items-center gap-1.5 text-sm text-champagne-700 hover:underline"
                 >
                   <Plus className="h-3.5 w-3.5" /> Subcategoria em {raiz.name}
                 </button>
@@ -358,9 +358,9 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
       })}
 
       {orfas.length > 0 && (
-        <section className="rounded border border-amber-300 bg-warning/10 p-4">
-          <h2 className="mb-1 font-semibold text-amber-900">Sem categoria principal</h2>
-          <p className="mb-3 text-sm text-amber-800">
+        <section className="rounded border border-warning/40 bg-warning/10 p-4">
+          <h2 className="mb-1 font-display text-lg text-warning">Sem categoria principal</h2>
+          <p className="mb-3 text-sm text-warning">
             A categoria principal destas foi excluída. Escolha uma nova para
             elas voltarem a aparecer organizadas.
           </p>
@@ -368,7 +368,7 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
             {orfas.map((o) => (
               <div
                 key={o.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-linen-50 p-2"
+                className="flex flex-wrap items-center justify-between gap-2 rounded bg-linen-50 p-2"
               >
                 <NomeCategoria {...nomeDe(o)} />
                 <select
@@ -376,7 +376,7 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
                   disabled={pending}
                   onChange={(e) => rodar(() => setCategoryParent(o.id, e.target.value || null))}
                   aria-label={`Escolher principal de ${o.name}`}
-                  className="rounded-lg border border-linen-300 px-2 py-1 text-xs"
+                  className="rounded border border-linen-300 bg-linen-50 px-2 py-1 text-xs outline-none focus:border-champagne-600"
                 >
                   <option value="">escolher principal…</option>
                   {raizes.map((r) => (
@@ -395,8 +395,8 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
         <div className="rounded border border-dashed border-linen-300 p-10 text-center">
           <FolderTree className="mx-auto mb-3 h-8 w-8 text-linen-300" />
           <p className="text-sm text-linen-600">
-            Nenhuma categoria ainda. Comece criando uma principal — ela é a
-            seção que aparece no menu da loja.
+            Nenhuma categoria ainda. Comece criando uma principal, como
+            Difusores ou Home sprays — ela é a seção que aparece no menu da loja.
           </p>
         </div>
       )}

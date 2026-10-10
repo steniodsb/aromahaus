@@ -57,17 +57,23 @@ function CustomerSignupForm() {
     }
   }
 
-  const input = "w-full border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600";
+  const input =
+    "w-full border border-line bg-transparent px-3 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-linen-500 focus:border-champagne-600";
+  const label =
+    "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
+  const button =
+    "w-full border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink disabled:opacity-60";
 
   if (done === "confirm") {
     return (
-      <div className="mx-auto max-w-sm px-4 py-16 text-center">
-        <h1 className="mb-2 text-2xl font-bold text-ink">Confirme seu e-mail</h1>
-        <p className="text-linen-600">
-          Enviamos um link de confirmação para <strong>{form.email}</strong>.
+      <div className="mx-auto max-w-sm px-6 py-12 text-center">
+        <p className="eyebrow">Quase lá</p>
+        <h1 className="font-display-xl mt-3 text-[clamp(1.75rem,4vw,2.25rem)] text-ink">Confirme seu e-mail</h1>
+        <p className="mt-6 text-sm leading-relaxed text-linen-700">
+          Enviamos um link de confirmação para <span className="text-ink">{form.email}</span>.
           Abra o e-mail para ativar sua conta e depois faça login.
         </p>
-        <Link href={`/conta/login?redirect=${encodeURIComponent(redirect)}`} className="mt-6 inline-block font-medium text-champagne-700 hover:underline">
+        <Link href={`/conta/login?redirect=${encodeURIComponent(redirect)}`} className="mt-8 inline-block text-sm text-champagne-700 hover:underline">
           Ir para o login
         </Link>
       </div>
@@ -75,32 +81,35 @@ function CustomerSignupForm() {
   }
 
   return (
-    <div className="mx-auto max-w-sm px-4 py-12">
-      <h1 className="mb-1 text-2xl font-bold text-ink">Criar conta</h1>
-      <p className="mb-6 text-sm text-linen-600">Acompanhe seus pedidos na Aroma Haus.</p>
+    <div className="mx-auto max-w-sm px-6 py-12">
+      <p className="eyebrow">Minha conta</p>
+      <h1 className="font-display-xl rule mt-3 text-[clamp(1.75rem,4vw,2.25rem)] text-ink">Criar conta</h1>
+      <p className="mb-8 mt-6 text-sm leading-relaxed text-linen-700">
+        Acompanhe seus pedidos e guarde seus aromas favoritos.
+      </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-medium text-linen-700">Nome completo</label>
-          <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={input} />
+          <label htmlFor="name" className={label}>Nome completo</label>
+          <input id="name" autoComplete="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={input} />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-linen-700">E-mail</label>
-          <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={input} />
+          <label htmlFor="email" className={label}>E-mail</label>
+          <input id="email" type="email" autoComplete="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={input} />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-linen-700">Senha</label>
-          <input type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={input} />
+          <label htmlFor="password" className={label}>Senha</label>
+          <input id="password" type="password" autoComplete="new-password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={input} />
         </div>
-        {error && <p className="text-sm text-champagne-700">{error}</p>}
-        <button type="submit" disabled={loading} className="w-full bg-champagne-600 py-2.5 font-semibold text-white hover:bg-champagne-700 disabled:opacity-60">
+        {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+        <button type="submit" disabled={loading} className={button}>
           {loading ? "Criando…" : "Criar conta"}
         </button>
       </form>
 
-      <p className="mt-4 text-center text-sm text-linen-600">
+      <p className="mt-6 text-center text-sm text-linen-700">
         Já tem conta?{" "}
-        <Link href={`/conta/login?redirect=${encodeURIComponent(redirect)}`} className="font-medium text-champagne-700 hover:underline">Entrar</Link>
+        <Link href={`/conta/login?redirect=${encodeURIComponent(redirect)}`} className="text-champagne-700 hover:underline">Entrar</Link>
       </p>
     </div>
   );

@@ -39,7 +39,7 @@ export function RefundButton({
       <button
         type="button"
         onClick={() => setAberto(true)}
-        className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-linen-300 py-2 text-sm font-semibold text-linen-700 hover:border-champagne-500 hover:text-champagne-700"
+        className="mt-3 flex w-full items-center justify-center gap-2 rounded border border-linen-300 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink"
       >
         <Undo2 className="h-4 w-4" /> Estornar pagamento
       </button>
@@ -47,21 +47,21 @@ export function RefundButton({
   }
 
   return (
-    <div className="mt-3 rounded-lg border border-amber-300 bg-warning/10 p-3">
-      <p className="mb-2 flex items-start gap-1.5 text-xs text-amber-900">
+    <div className="mt-3 rounded border border-warning/40 bg-warning/10 p-3">
+      <p className="mb-2 flex items-start gap-1.5 text-xs text-warning">
         <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         Devolve o dinheiro pelo Mercado Pago, no mesmo meio que o cliente pagou.
         Não tem como desfazer.
       </p>
 
-      <label className="mb-1 block text-xs font-medium text-linen-700">
-        Valor (vazio = total de {formatBRL(total)})
+      <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">
+        Valor <span className="normal-case tracking-normal text-linen-500">(vazio = total de <span className="numeral">{formatBRL(total)}</span>)</span>
       </label>
       <input
         value={valor}
         onChange={(e) => setValor(e.target.value)}
         placeholder={total.toFixed(2)}
-        className="mb-2 w-full rounded-lg border border-linen-300 px-2 py-1 text-sm outline-none focus:border-champagne-600"
+        className="numeral mb-2 w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600"
       />
 
       {ehParcial && (
@@ -71,7 +71,7 @@ export function RefundButton({
         </p>
       )}
 
-      {error && <p className="mb-2 text-xs text-champagne-700">{error}</p>}
+      {error && <p className="mb-2 text-xs text-danger">{error}</p>}
 
       <div className="flex gap-2">
         <button
@@ -91,7 +91,7 @@ export function RefundButton({
             }
             setBusy(false);
           }}
-          className="flex-1 rounded-lg bg-champagne-600 py-2 text-sm font-semibold text-white hover:bg-champagne-700 disabled:opacity-60"
+          className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors flex-1 py-2 hover:bg-champagne-700 disabled:opacity-60"
         >
           {busy ? "Estornando…" : ehParcial ? `Estornar ${formatBRL(parcial)}` : "Estornar tudo"}
         </button>
@@ -101,7 +101,7 @@ export function RefundButton({
             setAberto(false);
             setError(null);
           }}
-          className="rounded-lg border border-linen-300 px-3 py-2 text-sm text-linen-600"
+          className="rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink"
         >
           Cancelar
         </button>

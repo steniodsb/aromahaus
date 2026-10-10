@@ -35,7 +35,7 @@ function inline(text: string, keyPrefix: string): ReactNode[] {
       out.push(<strong key={key}>{token.slice(2, -2)}</strong>);
     } else if (token.startsWith("`")) {
       out.push(
-        <code key={key} className="rounded bg-zinc-100 px-1 py-0.5 text-[0.9em]">
+        <code key={key} className="bg-linen-100 px-1.5 py-0.5 font-mono text-[0.85em] text-linen-800">
           {token.slice(1, -1)}
         </code>,
       );
@@ -48,7 +48,7 @@ function inline(text: string, keyPrefix: string): ReactNode[] {
         <a
           key={key}
           href={href}
-          className="text-brand underline underline-offset-2 hover:no-underline"
+          className="text-champagne-700 underline underline-offset-2 transition-colors hover:text-champagne-600 hover:no-underline"
           {...(externo ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         >
           {rotulo}
@@ -71,35 +71,35 @@ export function Markdown({ content }: { content: string }) {
   const blocos = content.replace(/\r\n/g, "\n").split(/\n{2,}/).filter((b) => b.trim());
 
   return (
-    <div className="space-y-4 leading-relaxed text-zinc-700">
+    <div className="space-y-4 leading-relaxed text-linen-700">
       {blocos.map((bloco, i) => {
         const linhas = bloco.split("\n");
         const primeira = linhas[0];
 
         if (primeira.startsWith("### ")) {
           return (
-            <h3 key={i} className="pt-2 text-lg font-semibold text-ink">
+            <h3 key={i} className="font-display pt-3 text-lg text-ink">
               {inline(primeira.slice(4), `h3-${i}`)}
             </h3>
           );
         }
         if (primeira.startsWith("## ")) {
           return (
-            <h2 key={i} className="pt-2 text-xl font-semibold text-ink">
+            <h2 key={i} className="font-display pt-4 text-xl text-ink">
               {inline(primeira.slice(3), `h2-${i}`)}
             </h2>
           );
         }
         if (primeira.startsWith("# ")) {
           return (
-            <h2 key={i} className="pt-2 text-2xl font-bold text-ink">
+            <h2 key={i} className="font-display pt-5 text-2xl text-ink">
               {inline(primeira.slice(2), `h1-${i}`)}
             </h2>
           );
         }
         if (primeira.startsWith("> ")) {
           return (
-            <blockquote key={i} className="border-l-2 border-brand pl-4 italic">
+            <blockquote key={i} className="border-l-2 border-champagne-500 bg-linen-100 py-3 pl-4 pr-3 text-linen-700">
               {inline(linhas.map((l) => l.replace(/^>\s?/, "")).join(" "), `bq-${i}`)}
             </blockquote>
           );

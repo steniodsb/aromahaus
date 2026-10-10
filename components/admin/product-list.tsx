@@ -13,7 +13,7 @@ import { ProductBulk } from "@/components/admin/product-bulk";
  *
  * É client component só porque a seleção precisa de estado. A busca e a
  * paginação continuam no servidor, na URL — assim um link para "página 3 de
- * 'led'" continua funcionando.
+ * 'vela'" continua funcionando.
  */
 export function ProductList({ products, busca }: { products: Product[]; busca: string }) {
   const [selecionados, setSelecionados] = useState<string[]>([]);
@@ -31,7 +31,7 @@ export function ProductList({ products, busca }: { products: Product[]; busca: s
 
       <div className="overflow-x-auto rounded border border-linen-200 bg-linen-50">
         <table className="w-full min-w-[720px] text-sm">
-          <thead className="border-b border-linen-200 bg-linen-100 text-left text-xs uppercase text-linen-600">
+          <thead className="border-b border-linen-200 bg-linen-100 text-left text-[0.6875rem] uppercase tracking-[0.12em] text-linen-600">
             <tr>
               <th className="w-10 p-3">
                 <span className="sr-only">Selecionar</span>
@@ -43,13 +43,13 @@ export function ProductList({ products, busca }: { products: Product[]; busca: s
               <th className="p-3 text-right">Ações</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-linen-200">
             {products.map((p) => {
               const marcado = selecionados.includes(p.id);
               return (
                 <tr
                   key={p.id}
-                  className={`border-b border-linen-100 last:border-0 ${marcado ? "bg-linen-100" : "hover:bg-linen-100"}`}
+                  className={`${marcado ? "bg-linen-100" : "hover:bg-linen-100"}`}
                 >
                   <td className="p-3">
                     <input
@@ -71,15 +71,15 @@ export function ProductList({ products, busca }: { products: Product[]; busca: s
                       <div className="min-w-0">
                         <Link
                           href={`/admin/produtos/${p.id}`}
-                          className="font-medium text-ink hover:text-champagne-700"
+                          className="text-ink hover:text-champagne-700"
                         >
                           {p.name}
                         </Link>
-                        {p.sku && <p className="font-mono text-xs text-linen-500">{p.sku}</p>}
+                        {p.sku && <p className="numeral font-mono text-xs text-linen-500">{p.sku}</p>}
                       </div>
                     </div>
                   </td>
-                  <td className="p-3 text-linen-600">
+                  <td className="numeral p-3 text-linen-600">
                     {!p.price || p.price <= 0 ? (
                       <span className="text-warning">Sob consulta</span>
                     ) : (
@@ -89,11 +89,12 @@ export function ProductList({ products, busca }: { products: Product[]; busca: s
                   <td className="p-3">
                     <span
                       className={
-                        p.stock <= 0
-                          ? "font-semibold text-champagne-700"
+                        "numeral " +
+                        (p.stock <= 0
+                          ? "text-danger"
                           : p.low_stock_threshold > 0 && p.stock <= p.low_stock_threshold
-                            ? "font-semibold text-warning"
-                            : "text-linen-600"
+                            ? "text-warning"
+                            : "text-linen-600")
                       }
                     >
                       {p.stock}
@@ -103,8 +104,8 @@ export function ProductList({ products, busca }: { products: Product[]; busca: s
                     <span
                       className={
                         p.is_active
-                          ? "rounded-full bg-success/15 px-2 py-0.5 text-xs font-medium text-success"
-                          : "rounded-full bg-linen-200 px-2 py-0.5 text-xs font-medium text-linen-600"
+                          ? "rounded bg-success/15 px-2 py-0.5 text-[0.625rem] uppercase tracking-[0.1em] text-success"
+                          : "rounded bg-linen-200 px-2 py-0.5 text-[0.625rem] uppercase tracking-[0.1em] text-linen-600"
                       }
                     >
                       {p.is_active ? "Ativo" : "Inativo"}
@@ -118,9 +119,11 @@ export function ProductList({ products, busca }: { products: Product[]; busca: s
             })}
             {products.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-10 text-center text-linen-600">
+                <td colSpan={6} className="p-10 text-center text-sm text-linen-600">
                   <Package className="mx-auto mb-3 h-8 w-8 text-linen-300" />
-                  {busca ? "Nenhum produto com esse termo." : "Nenhum produto cadastrado."}
+                  {busca
+                    ? "Nenhum produto com esse termo. Tente o nome, o SKU ou parte do slug."
+                    : "Nenhum produto cadastrado. Use Novo produto para começar pela primeira fragrância, ou Importar para subir uma planilha."}
                 </td>
               </tr>
             )}

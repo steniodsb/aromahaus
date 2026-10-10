@@ -235,14 +235,14 @@ export async function renomearCategoria(id: string, nome: string): Promise<FormR
 /**
  * Acha um endereço livre para a categoria nova.
  *
- * O nome sozinho não serve como endereço: esta loja tem "Volkswagen" em três
- * principais (Retrofit, Coding e Chicotes) e "Audi"/"BMW" em duas. Como o slug
+ * O nome sozinho não serve como endereço: a loja pode ter "Refis" em várias
+ * principais (Difusores, Home sprays e Velas). Como o slug
  * é unique, a segunda criação com o mesmo nome batia em `duplicate key` — e o
  * diálogo de criação só pede o NOME, então o admin via o erro sem ter como
  * resolver.
  *
  * A ordem tenta manter a convenção que já existe no banco
- * (`retrofit-volkswagen`): nome puro primeiro, depois prefixado pela principal,
+ * (`difusores-refis`): nome puro primeiro, depois prefixado pela principal,
  * e só então numerado.
  */
 async function slugLivre(base: string, parentId: string | null): Promise<string> {

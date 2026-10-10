@@ -50,7 +50,7 @@ export default async function ContaPage() {
       <div className="mb-10 flex items-start justify-between gap-6">
         <div>
           <p className="eyebrow">Minha conta</p>
-          <h1 className="font-display mt-3 text-3xl text-ink">
+          <h1 className="font-display-xl rule mt-3 text-[clamp(1.75rem,4vw,2.5rem)] text-ink">
             Olá, {profile?.full_name || user.email}
           </h1>
         </div>
@@ -80,7 +80,7 @@ export default async function ContaPage() {
             <Link
               key={o.id}
               href={`/pedido/${o.id}`}
-              className="flex items-center justify-between border border-linen-200 bg-linen-50 p-4 transition-shadow hover:shadow-md"
+              className="flex items-center justify-between border border-linen-200 bg-linen-50 p-4 transition-colors hover:border-linen-900"
             >
               <div>
                 <span className="font-mono text-sm text-champagne-700">#{o.id.slice(0, 8)}</span>
@@ -90,21 +90,23 @@ export default async function ContaPage() {
                 </p>
               </div>
               <div className="text-right">
-                <span className="block font-bold text-ink">{formatBRL(Number(o.total))}</span>
+                <span className="numeral block text-ink">{formatBRL(Number(o.total))}</span>
                 <span className="text-xs text-linen-600">{STATUS_LABEL[o.status] ?? o.status}</span>
               </div>
             </Link>
           ))}
         </div>
       ) : ordersErr ? (
-        <div className="rounded-none border border-dashed border-linen-300 p-8 text-center text-linen-600">
+        <div className="border border-dashed border-linen-300 p-8 text-center text-sm text-linen-700">
           Não foi possível carregar seus pedidos agora. Recarregue a página em
           instantes.
         </div>
       ) : (
-        <div className="rounded-none border border-dashed border-linen-300 p-8 text-center text-linen-600">
-          <p>
-            Você ainda não fez pedidos.{" "}
+        <div className="border border-dashed border-linen-300 px-6 py-12 text-center text-linen-700">
+          <p className="font-display text-xl text-ink">Nenhum pedido por aqui ainda</p>
+          <p className="mt-2 text-sm">
+            Quando você escolher seus difusores, home sprays e sabonetes, o
+            acompanhamento aparece aqui.{" "}
             <Link href="/produtos" className="text-champagne-700 hover:underline">
               Ver produtos
             </Link>

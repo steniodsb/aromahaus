@@ -26,12 +26,12 @@ const STATUS_LABEL: Record<string, string> = {
   delivered: "Entregue", canceled: "Cancelado", refunded: "Reembolsado",
 };
 const STATUS_COR: Record<string, string> = {
-  pending: "bg-warning/15 text-amber-800",
+  pending: "bg-warning/15 text-warning",
   paid: "bg-success/15 text-success",
-  shipped: "bg-blue-100 text-lilac-600",
-  delivered: "bg-emerald-100 text-emerald-700",
+  shipped: "bg-champagne-200 text-champagne-700",
+  delivered: "bg-success/15 text-success",
   canceled: "bg-linen-200 text-linen-600",
-  refunded: "bg-purple-100 text-purple-700",
+  refunded: "bg-lilac-100 text-lilac-600",
 };
 
 const MEIO_LABEL: Record<string, string> = {
@@ -83,7 +83,9 @@ export default async function AdminOrderDetail(
 
   const card = "rounded border border-linen-200 bg-linen-50 p-5";
   const linha = "flex justify-between gap-4 py-1 text-sm";
-  const rotulo = "mb-1 text-xs font-medium uppercase tracking-wide text-linen-500";
+  const rotulo = "mb-1.5 text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
+  const campo = "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const h2 = "font-display text-lg text-ink";
 
   const comEtiqueta = !!order.melhorenvio_order_id;
 
@@ -94,11 +96,11 @@ export default async function AdminOrderDetail(
       </Link>
 
       <div className="mb-6 flex flex-wrap items-center gap-3">
-        <h1 className="font-display text-3xl text-ink">Pedido #{order.id.slice(0, 8)}</h1>
-        <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COR[order.status] ?? "bg-linen-200 text-linen-600"}`}>
+        <h1 className="font-display text-3xl text-ink">Pedido <span className="numeral">#{order.id.slice(0, 8)}</span></h1>
+        <span className={`rounded px-2 py-0.5 text-[0.625rem] uppercase tracking-[0.1em] ${STATUS_COR[order.status] ?? "bg-linen-200 text-linen-600"}`}>
           {STATUS_LABEL[order.status] ?? order.status}
         </span>
-        <span className="text-sm text-linen-600">feito em {dataHoraBR(order.created_at)}</span>
+        <span className="text-sm text-linen-600">feito em <span className="numeral">{dataHoraBR(order.created_at)}</span></span>
         <Link
           href={`/pedido/${order.id}`}
           target="_blank"
@@ -114,13 +116,13 @@ export default async function AdminOrderDetail(
             fica logo abaixo do CEP que gerou a consulta. */}
         <div className="space-y-4 lg:col-span-2">
           <div className={card}>
-            <h2 className="mb-3 font-semibold text-ink">Itens</h2>
-            <div className="divide-y divide-linen-100">
+            <h2 className={`mb-3 ${h2}`}>Itens</h2>
+            <div className="divide-y divide-linen-200">
               {(items ?? []).map((it) => {
                 const p = produtos?.find((x) => x.id === it.product_id);
                 return (
                   <div key={it.id} className="flex items-center gap-3 py-3">
-                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-linen-200 bg-linen-100">
+                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded border border-linen-200 bg-linen-100">
                       {p?.images?.[0] && (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={p.images[0]} alt="" className="h-full w-full object-cover" />
@@ -128,31 +130,31 @@ export default async function AdminOrderDetail(
                     </div>
                     <div className="min-w-0 flex-1">
                       {p?.slug ? (
-                        <Link href={`/produto/${p.slug}`} target="_blank" className="text-sm font-medium text-ink hover:text-champagne-700">
+                        <Link href={`/produto/${p.slug}`} target="_blank" className="text-sm text-ink hover:text-champagne-700">
                           {it.name_snapshot}
                         </Link>
                       ) : (
-                        <span className="text-sm font-medium text-ink">{it.name_snapshot}</span>
+                        <span className="text-sm text-ink">{it.name_snapshot}</span>
                       )}
-                      <p className="text-xs text-linen-600">
+                      <p className="numeral text-xs text-linen-600">
                         {formatBRL(Number(it.unit_price))} × {it.qty}
                         {!p && " · produto removido do catálogo"}
                       </p>
                     </div>
-                    <span className="text-sm font-semibold text-ink">
+                    <span className="numeral text-sm text-ink">
                       {formatBRL(Number(it.unit_price) * it.qty)}
                     </span>
                   </div>
                 );
               })}
               {(items ?? []).length === 0 && (
-                <p className="py-3 text-sm text-linen-600">Sem itens.</p>
+                <p className="py-3 text-sm text-linen-600">Este pedido não tem itens registrados. Se o pagamento foi aprovado, confira no Mercado Pago antes de despachar.</p>
               )}
             </div>
 
             <div className="mt-4 space-y-1 border-t border-linen-200 pt-4">
               <div className={`${linha} text-linen-600`}>
-                <span>Subtotal</span><span>{formatBRL(Number(order.subtotal))}</span>
+                <span>Subtotal</span><span className="numeral">{formatBRL(Number(order.subtotal))}</span>
               </div>
               {/* Sem esta linha, um total abaixo do esperado vira mistério na
                   hora de conferir o pedido. */}
@@ -163,7 +165,7 @@ export default async function AdminOrderDetail(
                     Desconto
                     {order.coupon_code && <span className="font-mono text-xs">({order.coupon_code})</span>}
                   </span>
-                  <span>−{formatBRL(Number(order.discount))}</span>
+                  <span className="numeral">−{formatBRL(Number(order.discount))}</span>
                 </div>
               )}
               <div className={`${linha} text-linen-600`}>
@@ -176,10 +178,10 @@ export default async function AdminOrderDetail(
                     <span className="ml-1 text-xs text-success">· regra promocional</span>
                   )}
                 </span>
-                <span>{formatBRL(Number(order.shipping_cost))}</span>
+                <span className="numeral">{formatBRL(Number(order.shipping_cost))}</span>
               </div>
-              <div className={`${linha} border-t border-linen-200 pt-2 text-base font-bold text-ink`}>
-                <span>Total</span><span>{formatBRL(Number(order.total))}</span>
+              <div className={`${linha} border-t border-linen-200 pt-2 text-base text-ink`}>
+                <span>Total</span><span className="numeral">{formatBRL(Number(order.total))}</span>
               </div>
             </div>
           </div>
@@ -190,7 +192,7 @@ export default async function AdminOrderDetail(
               tela. */}
           <div className={card}>
             <div className="mb-4 flex flex-wrap items-center gap-2">
-              <h2 className="flex items-center gap-2 font-semibold text-ink">
+              <h2 className={`flex items-center gap-2 ${h2}`}>
                 <User className="h-4 w-4" /> Cliente e entrega
               </h2>
               <span className="ml-auto">
@@ -209,7 +211,7 @@ export default async function AdminOrderDetail(
             <div className="grid gap-5 sm:grid-cols-2">
               <div>
                 <p className={rotulo}>Contato</p>
-                <p className="text-sm font-medium text-linen-800">{order.customer_name ?? "—"}</p>
+                <p className="text-sm text-ink">{order.customer_name ?? "—"}</p>
                 <p className="mt-0.5 flex items-center gap-1 text-sm text-linen-600">
                   <a href={`mailto:${order.customer_email}`} className="truncate hover:text-champagne-700">
                     {order.customer_email}
@@ -217,7 +219,7 @@ export default async function AdminOrderDetail(
                   <CopyButton value={order.customer_email ?? ""} label="Copiar e-mail" />
                 </p>
                 {order.customer_phone && (
-                  <p className="text-sm text-linen-600">
+                  <p className="numeral text-sm text-linen-600">
                     <a
                       href={`https://wa.me/55${String(order.customer_phone).replace(/\D/g, "")}`}
                       target="_blank"
@@ -233,7 +235,7 @@ export default async function AdminOrderDetail(
                     apenas omitida. */}
                 <p className="mt-0.5 text-sm">
                   {order.customer_document ? (
-                    <span className="text-linen-600">CPF {formatCPF(order.customer_document)}</span>
+                    <span className="numeral text-linen-600">CPF {formatCPF(order.customer_document)}</span>
                   ) : (
                     <span className="text-warning">
                       Sem CPF — a etiqueta do Melhor Envio exige
@@ -251,7 +253,7 @@ export default async function AdminOrderDetail(
                    Descobrir depois significa reabrir — ou mandar com a nota
                    fiscal e o preço à vista para quem recebe. */
                 <div className="border-l-2 border-champagne-500 bg-champagne-200/35 px-4 py-3">
-                  <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.12em] text-champagne-700">
+                  <p className="flex items-center gap-1.5 text-[0.6875rem] uppercase tracking-[0.14em] text-champagne-700">
                     <Gift className="h-3.5 w-3.5" /> Embrulhar para presente
                   </p>
                   <p className="mt-1.5 text-xs text-linen-600">
@@ -262,7 +264,7 @@ export default async function AdminOrderDetail(
                       <p className="mt-3 text-[0.625rem] uppercase tracking-[0.12em] text-linen-600">
                         Mensagem do cartão
                       </p>
-                      <p className="mt-1 whitespace-pre-line text-sm italic text-linen-800">
+                      <p className="mt-1 whitespace-pre-line text-sm text-linen-800">
                         “{order.gift_message}”
                       </p>
                     </>
@@ -281,7 +283,7 @@ export default async function AdminOrderDetail(
                   <div className="text-sm text-linen-700">
                     <p>{addr.street}, {addr.number}{addr.complement ? ` — ${addr.complement}` : ""}</p>
                     <p>{addr.district} — {addr.city}/{addr.state}</p>
-                    <p className="text-linen-600">CEP {addr.cep}</p>
+                    <p className="numeral text-linen-600">CEP {addr.cep}</p>
                   </div>
                 ) : (
                   <p className="text-sm text-warning">
@@ -293,7 +295,7 @@ export default async function AdminOrderDetail(
           </div>
 
           <div className={card}>
-            <h2 className="mb-3 flex items-center gap-2 font-semibold text-ink">
+            <h2 className={`mb-3 flex items-center gap-2 ${h2}`}>
               <Truck className="h-4 w-4" /> Envio
             </h2>
             <p className="text-sm text-linen-600">
@@ -305,7 +307,7 @@ export default async function AdminOrderDetail(
                 valor não deve ter dois lugares para editar. */}
             {comEtiqueta && order.tracking_code && (
               <p className="flex items-center gap-1 text-sm text-linen-600">
-                Rastreio: <span className="font-mono text-xs text-ink">{order.tracking_code}</span>
+                Rastreio: <span className="numeral font-mono text-xs text-ink">{order.tracking_code}</span>
                 <CopyButton value={order.tracking_code} label="Copiar rastreio" />
               </p>
             )}
@@ -329,7 +331,7 @@ export default async function AdminOrderDetail(
                 <p className="text-sm text-success">Etiqueta gerada ✓</p>
                 {order.melhorenvio_label_url && (
                   <a href={order.melhorenvio_label_url} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 rounded-lg border border-champagne-600 px-3 py-2 text-sm font-semibold text-champagne-700 hover:bg-champagne-600 hover:text-white">
+                    className="inline-flex items-center gap-1 rounded border border-champagne-600 px-4 py-2 text-xs text-champagne-700 transition-colors hover:bg-champagne-600 hover:text-linen-50">
                     <FileText className="h-4 w-4" /> Abrir etiqueta (PDF)
                   </a>
                 )}
@@ -341,7 +343,7 @@ export default async function AdminOrderDetail(
               // o botão de etiqueta não aparece. Dizer por quê evita a busca
               // pelo botão que sumiu.
               order.shipping_service && (
-                <p className="mt-3 rounded-lg bg-linen-100 px-3 py-2 text-xs text-linen-600">
+                <p className="mt-3 rounded bg-linen-100 px-3 py-2 text-xs text-linen-600">
                   Transportadora informada manualmente — sem etiqueta do Melhor
                   Envio. Despache por fora e cole o rastreio em Situação.
                 </p>
@@ -355,18 +357,18 @@ export default async function AdminOrderDetail(
         <div className="space-y-4">
           <form action={updateOrder} className={card}>
             <input type="hidden" name="id" value={order.id} />
-            <h2 className="mb-3 font-semibold text-ink">Situação</h2>
-            <label className="mb-1 block text-sm font-medium text-linen-700">Status</label>
-            <select name="status" defaultValue={order.status} className="mb-4 w-full rounded-lg border border-linen-300 px-3 py-2">
+            <h2 className={`mb-3 ${h2}`}>Situação</h2>
+            <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">Status</label>
+            <select name="status" defaultValue={order.status} className={`mb-4 ${campo}`}>
               {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
             </select>
 
-            <label className="mb-1 block text-sm font-medium text-linen-700">Código de rastreio</label>
+            <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">Código de rastreio</label>
             <input
               name="tracking_code"
               defaultValue={order.tracking_code ?? ""}
               readOnly={comEtiqueta}
-              className="mb-1 w-full rounded-lg border border-linen-300 px-3 py-2 read-only:bg-linen-100 read-only:text-linen-600"
+              className={`mb-1 ${campo} read-only:bg-linen-100 read-only:text-linen-600`}
             />
             <p className="mb-4 text-xs text-linen-500">
               {comEtiqueta
@@ -376,7 +378,7 @@ export default async function AdminOrderDetail(
 
             {/* Nota interna: some da vista do cliente. É onde o combinado por
                 WhatsApp para de viver só no WhatsApp. */}
-            <label className="mb-1 block text-sm font-medium text-linen-700">
+            <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">
               Nota interna
             </label>
             <textarea
@@ -384,18 +386,18 @@ export default async function AdminOrderDetail(
               rows={3}
               defaultValue={order.notes ?? ""}
               placeholder="Cliente pediu para trocar o endereço…"
-              className="mb-1 w-full rounded-lg border border-linen-300 px-3 py-2 text-sm"
+              className={`mb-1 ${campo}`}
             />
             <p className="mb-4 text-xs text-linen-500">Só você vê. Não vai em e-mail nenhum.</p>
 
-            <button className="w-full rounded-lg bg-champagne-600 py-2 font-semibold text-white hover:bg-champagne-700">
+            <button className="w-full rounded bg-linen-900 px-4 py-2 text-xs uppercase tracking-[0.12em] text-linen-50 transition-colors hover:bg-champagne-700">
               Salvar
             </button>
             <p className="mt-2 text-xs text-linen-500">Salvar dispara o e-mail de atualização para o cliente.</p>
           </form>
 
           <div className={card}>
-            <h2 className="mb-3 flex items-center gap-2 font-semibold text-ink">
+            <h2 className={`mb-3 flex items-center gap-2 ${h2}`}>
               <CreditCard className="h-4 w-4" /> Pagamento
             </h2>
             <div className="space-y-1 text-sm">
@@ -413,7 +415,7 @@ export default async function AdminOrderDetail(
               </p>
               {order.payment_id && (
                 <p className="flex items-center gap-1 text-linen-600">
-                  ID: <span className="font-mono text-xs text-ink">{order.payment_id}</span>
+                  ID: <span className="numeral font-mono text-xs text-ink">{order.payment_id}</span>
                   <CopyButton value={String(order.payment_id)} label="Copiar ID do pagamento" />
                 </p>
               )}

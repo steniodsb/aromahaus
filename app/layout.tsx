@@ -58,7 +58,13 @@ export const metadata: Metadata = {
     siteName: "Aroma Haus",
     url: siteUrl,
   },
-  // O ícone é o app/icon.svg; o Next monta o <link> sozinho.
+  twitter: {
+    card: "summary_large_image",
+  },
+  // Ícone e imagem de compartilhamento são convenções de arquivo: o Next lê
+  // `app/icon.svg`, `app/opengraph-image.png` e `app/twitter-image.png` e
+  // monta as tags sozinho. Sem a imagem, link colado no WhatsApp, Instagram
+  // ou Facebook aparecia como um retângulo vazio.
 };
 
 export default function RootLayout({

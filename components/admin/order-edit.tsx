@@ -51,8 +51,8 @@ export function OrderEdit({
   const [cpf, setCpf] = useState(formatCPF(documento ?? ""));
 
   const input =
-    "w-full rounded-lg border border-linen-300 px-3 py-2 text-sm outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-xs font-medium text-linen-600";
+    "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
 
   async function buscarCep(valor: string) {
     const limpo = valor.replace(/\D/g, "");
@@ -102,12 +102,12 @@ export function OrderEdit({
         }
         setSaving(false);
       }}
-      className="mt-3 rounded-lg border border-linen-200 bg-linen-100 p-3"
+      className="mt-3 rounded border border-linen-200 bg-linen-100 p-3"
     >
       <input type="hidden" name="id" value={orderId} />
 
       {temEtiqueta && (
-        <p className="mb-3 flex items-start gap-1.5 rounded-lg bg-warning/10 px-2 py-1.5 text-xs text-amber-900">
+        <p className="mb-3 flex items-start gap-1.5 rounded bg-warning/10 px-2 py-1.5 text-xs text-warning">
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           A etiqueta já foi comprada com o endereço antigo. Corrigir aqui não
           reemite a etiqueta.
@@ -145,7 +145,7 @@ export function OrderEdit({
 
       <div className="grid gap-2 sm:grid-cols-6">
         <div className="sm:col-span-2">
-          <label className={label}>CEP {buscandoCep && <span className="text-linen-500">buscando…</span>}</label>
+          <label className={label}>CEP {buscandoCep && <span className="normal-case tracking-normal text-linen-500">buscando…</span>}</label>
           <input
             name="cep"
             value={addr.cep ?? ""}
@@ -211,13 +211,13 @@ export function OrderEdit({
         </div>
       </div>
 
-      {error && <p className="mt-2 text-xs text-champagne-700">{error}</p>}
+      {error && <p className="mt-2 text-xs text-danger">{error}</p>}
 
       <div className="mt-3 flex items-center gap-2">
         <button
           type="submit"
           disabled={saving}
-          className="rounded-lg bg-champagne-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-champagne-700 disabled:opacity-60"
+          className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-4 py-2 hover:bg-champagne-700 disabled:opacity-60"
         >
           {saving ? "Salvando…" : "Salvar correção"}
         </button>
@@ -228,9 +228,9 @@ export function OrderEdit({
             setError(null);
             setAddr(endereco ?? {});
           }}
-          className="text-sm text-linen-600 hover:text-champagne-700"
+          className="rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink"
         >
-          cancelar
+          Cancelar
         </button>
       </div>
     </form>

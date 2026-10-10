@@ -186,7 +186,7 @@ export default async function Home() {
   };
   const config = new Map(mergeHomeSections(savedSections).map((s) => [s.key, s]));
 
-  function Vitrine({ chave }: { chave: HomeSectionKey }) {
+  const vitrine = (chave: HomeSectionKey) => {
     const cfg = config.get(chave);
     const lista = produtos[chave];
     if (!cfg?.enabled || lista.length === 0) return null;
@@ -195,7 +195,7 @@ export default async function Home() {
         <ProductCarousel products={lista} title={cfg.title} savedIds={savedIds} />
       </div>
     );
-  }
+  };
 
   return (
     <>
@@ -212,15 +212,15 @@ export default async function Home() {
       {mini?.length ? <TypeBanners banners={mini} /> : null}
 
       {/* 4. Catálogo: mais vendidos e promoções */}
-      <Vitrine chave="bestsellers" />
-      <Vitrine chave="promotions" />
+      {vitrine("bestsellers")}
+      {vitrine("promotions")}
 
       {/* 5. Banners de promoção */}
       <PromoMosaic tiles={PROMO_TILES} />
 
       {/* 6. Lançamentos */}
-      <Vitrine chave="newarrivals" />
-      <Vitrine chave="featured" />
+      {vitrine("newarrivals")}
+      {vitrine("featured")}
 
       {/* 7. Banner de kits */}
       <PromoBanner promo={promo} />

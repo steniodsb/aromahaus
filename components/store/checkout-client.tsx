@@ -377,7 +377,7 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
                           <span className="text-xs text-linen-500 line-through">
                             {formatBRL(q.price)}
                           </span>
-                          <span className="font-semibold text-success">Grátis</span>
+                          <span className="text-success">Grátis</span>
                         </span>
                       ) : (
                         <span className="font-semibold text-ink">{formatBRL(q.price)}</span>
@@ -496,7 +496,7 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
             {items.map((i) => (
               <div key={i.id} className="flex justify-between text-linen-700">
                 <span className="line-clamp-1">{i.qty}× {i.name}</span>
-                <span>{formatBRL(i.price * i.qty)}</span>
+                <span className="numeral">{formatBRL(i.price * i.qty)}</span>
               </div>
             ))}
           </div>
@@ -560,7 +560,7 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
           </div>
 
           <div className="mt-4 space-y-1 border-t border-line pt-4 text-sm">
-            <div className="flex justify-between text-linen-700"><span>Subtotal</span><span>{formatBRL(subtotal)}</span></div>
+            <div className="flex justify-between text-linen-700"><span>Subtotal</span><span className="numeral">{formatBRL(subtotal)}</span></div>
             {discount > 0 && (
               <div className="flex justify-between text-success">
                 <span>Desconto</span>
@@ -575,12 +575,15 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
               {!shipping ? (
                 <span>—</span>
               ) : shippingCost === 0 ? (
-                <span className="font-semibold text-success">Grátis</span>
+                <span className="text-success">Grátis</span>
               ) : (
-                <span>{formatBRL(shippingCost)}</span>
+                <span className="numeral">{formatBRL(shippingCost)}</span>
               )}
             </div>
-            <div className="flex justify-between border-t border-line pt-2 text-lg font-bold text-ink"><span>Total</span><span>{formatBRL(total)}</span></div>
+            <div className="mt-1 flex items-baseline justify-between border-t border-line pt-3 text-ink">
+              <span className="text-sm text-linen-700">Total</span>
+              <span className="numeral text-xl">{formatBRL(total)}</span>
+            </div>
           </div>
 
           {error && <p className="mt-4 text-sm text-danger">{error}</p>}

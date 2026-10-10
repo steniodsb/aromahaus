@@ -6,7 +6,7 @@ import { setCategoryParent } from "@/app/admin/(panel)/categorias/actions";
 
 export interface OpcaoPai {
   id: string;
-  /** "Pai › Filho" — sem o caminho, dois "Volkswagen" na lista são iguais. */
+  /** "Pai › Filho" — sem o caminho, duas categorias com o mesmo nome na lista são iguais. */
   caminho: string;
   /** 0 = topo, 1 = já é filha de alguém. Só controla a indentação. */
   nivel: number;
@@ -54,7 +54,7 @@ export function CategoryParentSelect({
           }
           setBusy(false);
         }}
-        className="w-full max-w-[15rem] rounded-lg border border-linen-300 bg-linen-50 px-2 py-1 text-sm outline-none focus:border-champagne-600 disabled:opacity-50"
+        className="w-full max-w-[15rem] rounded border border-linen-300 bg-linen-50 px-2 py-1 text-sm outline-none focus:border-champagne-600 disabled:opacity-50"
       >
         <option value="">— nenhuma (topo) —</option>
         {opcoes.map((o) => (
@@ -63,7 +63,7 @@ export function CategoryParentSelect({
           </option>
         ))}
       </select>
-      {error && <p className="mt-1 text-xs text-champagne-700">{error}</p>}
+      {error && <p className="mt-1 text-xs text-danger">{error}</p>}
     </div>
   );
 }

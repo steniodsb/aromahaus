@@ -50,8 +50,8 @@ export function CategoryCreateDialog({
   const slug = slugify(nome);
 
   const input =
-    "w-full rounded-lg border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-sm font-medium text-linen-700";
+    "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
 
   return (
     <div
@@ -63,7 +63,7 @@ export function CategoryCreateDialog({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-1 flex items-start justify-between gap-3">
-          <h2 className="flex items-center gap-2 text-lg font-bold text-ink">
+          <h2 className="flex items-center gap-2 font-display text-xl text-ink">
             {ehSub ? (
               <CornerDownRight className="h-5 w-5 text-champagne-700" />
             ) : (
@@ -75,7 +75,7 @@ export function CategoryCreateDialog({
             type="button"
             onClick={onFechar}
             aria-label="Fechar"
-            className="rounded-lg p-1 text-linen-500 hover:bg-linen-100"
+            className="rounded p-1 text-linen-500 hover:bg-linen-100"
           >
             <X className="h-5 w-5" />
           </button>
@@ -84,7 +84,7 @@ export function CategoryCreateDialog({
         <p className="mb-5 text-sm text-linen-600">
           {ehSub
             ? "Fica dentro de uma categoria principal e aparece no submenu da loja."
-            : "Aparece direto no menu da loja. É o que antes se chamava “tipo”."}
+            : "Aparece direto no menu da loja, como Difusores ou Home sprays."}
         </p>
 
         {ehSub && (
@@ -98,7 +98,7 @@ export function CategoryCreateDialog({
                 setTocouPai(true);
               }}
               onBlur={() => setTocouPai(true)}
-              className={`${input} ${faltaPai && tocouPai ? "border-champagne-600" : ""}`}
+              className={`${input} ${faltaPai && tocouPai ? "border-danger" : ""}`}
             >
               <option value="">— escolha a principal —</option>
               {principais.map((p) => (
@@ -108,7 +108,7 @@ export function CategoryCreateDialog({
               ))}
             </select>
             {faltaPai && tocouPai && (
-              <p className="mt-1 text-xs text-champagne-700">
+              <p className="mt-1 text-xs text-danger">
                 Escolha onde ela vai ficar.
               </p>
             )}
@@ -130,7 +130,7 @@ export function CategoryCreateDialog({
               if (e.key === "Enter" && podeCriar) onCriar(nome, ehSub ? pai : null);
               if (e.key === "Escape") onFechar();
             }}
-            placeholder={ehSub ? "Ex.: Faróis de LED" : "Ex.: Acessórios Internos"}
+            placeholder={ehSub ? "Ex.: Refis" : "Ex.: Difusores de varetas"}
             className={input}
           />
           {slug && (
@@ -138,7 +138,7 @@ export function CategoryCreateDialog({
               Endereço na loja:{" "}
               <span className="font-mono text-linen-700">/categoria/{slug}</span>
               {/* O servidor prefixa com a principal se este endereço já existir —
-                  é o caso de "Volkswagen", que se repete em três principais. */}
+                  acontece quando o mesmo nome (ex.: "Refis") existe em mais de uma principal. */}
               <span className="block text-linen-500">
                 Se já existir uma categoria com esse endereço, ele ganha o nome
                 da principal na frente.
@@ -152,14 +152,14 @@ export function CategoryCreateDialog({
             type="button"
             disabled={pending || !podeCriar}
             onClick={() => onCriar(nome, ehSub ? pai : null)}
-            className="rounded-lg bg-champagne-600 px-6 py-2.5 font-semibold text-white hover:bg-champagne-700 disabled:opacity-50"
+            className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-4 py-2 hover:bg-champagne-700 disabled:opacity-50"
           >
             {pending ? "Criando…" : ehSub ? "Criar subcategoria" : "Criar categoria principal"}
           </button>
           <button
             type="button"
             onClick={onFechar}
-            className="text-sm text-linen-600 hover:text-champagne-700"
+            className="rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink"
           >
             Cancelar
           </button>

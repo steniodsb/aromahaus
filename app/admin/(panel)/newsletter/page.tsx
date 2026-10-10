@@ -17,19 +17,24 @@ export default async function AdminNewsletterPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
         <h1 className="font-display text-3xl text-ink">
           Newsletter{" "}
-          <span className="text-base font-normal text-linen-500">
+          <span className="numeral text-base text-linen-500">
             ({ativos} {ativos === 1 ? "ativo" : "ativos"}
             {inscritos.length !== ativos && ` · ${inscritos.length - ativos} saíram`})
           </span>
         </h1>
+        <p className="mt-1 text-sm text-linen-600">
+          Quem aceitou receber novidades e lançamentos. Baixe o CSV para enviar campanhas na sua ferramenta de e-mail.
+        </p>
+        </div>
         {inscritos.length > 0 && (
           <Link
             href="/admin/newsletter/export"
             prefetch={false}
-            className="inline-flex items-center gap-2 rounded-lg bg-linen-900 px-4 py-2 text-xs uppercase tracking-[0.12em] text-linen-50 transition-colors hover:bg-champagne-700"
+            className="inline-flex items-center gap-2 rounded bg-linen-900 px-4 py-2 text-xs uppercase tracking-[0.12em] text-linen-50 transition-colors hover:bg-champagne-700"
           >
             <Download className="h-4 w-4" /> Baixar CSV
           </Link>
@@ -38,7 +43,7 @@ export default async function AdminNewsletterPage() {
 
       <div className="overflow-x-auto rounded border border-linen-200 bg-linen-50">
         <table className="w-full min-w-[640px] text-sm">
-          <thead className="border-b border-linen-200 bg-linen-100 text-left text-xs uppercase text-linen-600">
+          <thead className="border-b border-linen-200 bg-linen-100 text-left text-[0.6875rem] uppercase tracking-[0.12em] text-linen-600">
             <tr>
               <th className="p-3">E-mail</th>
               <th className="p-3">Origem</th>
@@ -47,20 +52,20 @@ export default async function AdminNewsletterPage() {
               <th className="p-3 text-right">Ações</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-linen-200">
             {inscritos.map((s) => (
-              <tr key={s.id} className="border-b border-linen-100 last:border-0 hover:bg-linen-100">
-                <td className="p-3 font-medium text-ink">{s.email}</td>
+              <tr key={s.id} className="hover:bg-linen-100">
+                <td className="p-3 text-ink">{s.email}</td>
                 <td className="p-3 text-xs text-linen-600">{s.source ?? "—"}</td>
-                <td className="p-3 text-linen-600">{dataBR(s.created_at)}</td>
+                <td className="numeral p-3 text-linen-600">{dataBR(s.created_at)}</td>
                 <td className="p-3">
                   {s.status === "subscribed" ? (
-                    <span className="rounded-full bg-success/15 px-2 py-0.5 text-xs font-medium text-success">
+                    <span className="rounded bg-success/15 px-2 py-0.5 text-[0.625rem] uppercase tracking-[0.1em] text-success">
                       Inscrito
                     </span>
                   ) : (
-                    <span className="rounded-full bg-linen-200 px-2 py-0.5 text-xs font-medium text-linen-600">
-                      Saiu em {dataBR(s.unsubscribed_at)}
+                    <span className="rounded bg-linen-200 px-2 py-0.5 text-[0.625rem] uppercase tracking-[0.1em] text-linen-600">
+                      Saiu em <span className="numeral">{dataBR(s.unsubscribed_at)}</span>
                     </span>
                   )}
                 </td>
@@ -71,9 +76,9 @@ export default async function AdminNewsletterPage() {
             ))}
             {inscritos.length === 0 && (
               <tr>
-                <td colSpan={5} className="p-10 text-center text-linen-600">
+                <td colSpan={5} className="p-10 text-center text-sm text-linen-600">
                   <Mail className="mx-auto mb-3 h-8 w-8 text-linen-300" />
-                  Ninguém inscrito ainda. O formulário fica no rodapé da loja.
+                  Ninguém inscrito ainda. O formulário fica no rodapé da loja — divulgue um cupom de boas-vindas para atrair os primeiros e-mails.
                 </td>
               </tr>
             )}

@@ -52,7 +52,7 @@ export function Reviews({
         <button
           onClick={() => {
             if (!isLoggedIn) {
-              router.push(`/conta/login?next=${encodeURIComponent(pathname)}`);
+              router.push(`/conta/login?redirect=${encodeURIComponent(pathname)}`);
               return;
             }
             setOpen((v) => !v);
@@ -147,7 +147,7 @@ export function Reviews({
               const res = await submitReview(fd);
               setResult(res);
               if (res.needsAuth) {
-                router.push(`/conta/login?next=${encodeURIComponent(pathname)}`);
+                router.push(`/conta/login?redirect=${encodeURIComponent(pathname)}`);
                 return;
               }
               if (res.ok) {

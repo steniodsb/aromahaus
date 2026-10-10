@@ -42,7 +42,7 @@ export function StockAdjust({ productId, stock }: { productId: string; stock: nu
       <button
         type="button"
         onClick={() => setAberto(true)}
-        className="rounded-lg border border-linen-300 px-2.5 py-1 text-xs font-medium text-linen-600 hover:border-champagne-500 hover:text-champagne-700"
+        className="rounded border border-linen-300 px-3 py-1.5 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink"
       >
         Ajustar
       </button>
@@ -57,7 +57,7 @@ export function StockAdjust({ productId, stock }: { productId: string; stock: nu
           onChange={(e) => setQtd(e.target.value.replace(/\D/g, ""))}
           placeholder="Qtd"
           aria-label="Quantidade"
-          className="w-16 rounded-lg border border-linen-300 px-2 py-1 text-sm outline-none focus:border-champagne-600"
+          className="numeral w-16 rounded border border-linen-300 bg-linen-50 px-2 py-1.5 text-sm outline-none focus:border-champagne-600"
         />
         <button
           type="button"
@@ -65,7 +65,7 @@ export function StockAdjust({ productId, stock }: { productId: string; stock: nu
           onClick={() => enviar(1)}
           aria-label="Entrada"
           title="Entrada"
-          className="rounded-lg border border-green-300 p-1.5 text-success hover:bg-success/10 disabled:opacity-50"
+          className="rounded border border-success/40 p-1.5 text-success hover:bg-success/10 disabled:opacity-50"
         >
           <Plus className="h-3.5 w-3.5" />
         </button>
@@ -75,7 +75,7 @@ export function StockAdjust({ productId, stock }: { productId: string; stock: nu
           onClick={() => enviar(-1)}
           aria-label="Saída"
           title="Saída"
-          className="rounded-lg border border-linen-300 p-1.5 text-linen-600 hover:bg-linen-100 disabled:opacity-50"
+          className="rounded border border-linen-300 p-1.5 text-linen-600 hover:bg-linen-100 disabled:opacity-50"
         >
           <Minus className="h-3.5 w-3.5" />
         </button>
@@ -85,18 +85,18 @@ export function StockAdjust({ productId, stock }: { productId: string; stock: nu
             setAberto(false);
             setError(null);
           }}
-          className="px-1 text-xs text-linen-500 hover:text-linen-600"
+          className="px-1 text-xs text-linen-600 hover:text-ink"
         >
-          cancelar
+          Cancelar
         </button>
       </div>
       <input
         value={nota}
         onChange={(e) => setNota(e.target.value)}
         placeholder="Motivo (opcional)"
-        className="w-52 rounded-lg border border-linen-300 px-2 py-1 text-xs outline-none focus:border-champagne-600"
+        className="w-52 rounded border border-linen-300 bg-linen-50 px-2 py-1.5 text-xs outline-none focus:border-champagne-600"
       />
-      {error && <p className="text-xs text-champagne-700">{error}</p>}
+      {error && <p className="text-xs text-danger">{error}</p>}
     </div>
   );
 }

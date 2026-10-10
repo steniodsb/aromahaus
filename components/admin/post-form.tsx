@@ -9,8 +9,8 @@ export function PostForm({ post }: { post?: BlogPost | null }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cover, setCover] = useState(post?.cover_url ?? "");
-  const input = "w-full rounded-lg border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-sm font-medium text-linen-700";
+  const input = "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
 
   return (
     <form
@@ -48,7 +48,7 @@ export function PostForm({ post }: { post?: BlogPost | null }) {
         </div>
 
         <div className="rounded border border-linen-200 bg-linen-50 p-5">
-          <h3 className="mb-4 font-semibold text-ink">SEO</h3>
+          <h3 className="mb-4 font-display text-lg text-ink">SEO</h3>
           <div className="mb-4">
             <label className={label}>Título SEO</label>
             <input name="seo_title" defaultValue={post?.seo_title ?? ""} className={input} />
@@ -93,10 +93,10 @@ export function PostForm({ post }: { post?: BlogPost | null }) {
         </div>
 
         {error && (
-          <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
+          <p className="rounded bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
         )}
 
-        <button type="submit" disabled={saving} className="w-full rounded bg-linen-900 py-2.5 text-[0.6875rem] uppercase tracking-[0.16em] text-linen-50 transition-colors hover:bg-champagne-700 disabled:opacity-60">
+        <button type="submit" disabled={saving} className="w-full rounded bg-linen-900 py-2 text-xs uppercase tracking-[0.12em] text-linen-50 transition-colors hover:bg-champagne-700 disabled:opacity-60">
           {saving ? "Salvando…" : "Salvar artigo"}
         </button>
       </div>

@@ -33,8 +33,8 @@ export function AdminPasswordForm() {
     setMsg({ type: "ok", text: "Senha alterada com sucesso." });
   }
 
-  const input = "w-full rounded-lg border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600";
-  const label = "mb-1 block text-sm font-medium text-linen-700";
+  const input = "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
+  const label = "mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md space-y-4">
@@ -47,9 +47,9 @@ export function AdminPasswordForm() {
         <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className={input} />
       </div>
       {msg && (
-        <p className={msg.type === "ok" ? "text-sm text-success" : "text-sm text-champagne-700"}>{msg.text}</p>
+        <p className={msg.type === "ok" ? "text-sm text-success" : "text-sm text-danger"}>{msg.text}</p>
       )}
-      <button type="submit" disabled={loading} className="rounded-lg bg-champagne-600 px-6 py-2.5 font-semibold text-white hover:bg-champagne-700 disabled:opacity-60">
+      <button type="submit" disabled={loading} className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-4 py-2 hover:bg-champagne-700 disabled:opacity-60">
         {loading ? "Salvando…" : "Alterar senha"}
       </button>
     </form>

@@ -146,6 +146,31 @@ body {
   line-height: 1.1;
 }
 
+/* Olho-de-texto: a linha curta em caixa alta acima de um título. Fica no
+   sans, não na serifada — é rótulo, não título. */
+.eyebrow {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--linen-600);
+}
+
+/* Filete dourado sob um título de seção. */
+.rule::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  margin-top: 1rem;
+  background: var(--champagne-500);
+}
+.rule-center::after {
+  margin-inline: auto;
+}
+
 /* Números — preço, total, nota, contador. Ficam no sans: a serifada tem
    algarismos estreitos demais para alinhar coluna de preço. */
 .numeral {

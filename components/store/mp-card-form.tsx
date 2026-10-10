@@ -105,8 +105,10 @@ function loadSdk(): Promise<void> {
 }
 
 const FIELD_BOX =
-  "h-[42px] w-full border border-linen-300 px-3 focus-within:border-champagne-600";
-const LABEL = "mb-1 block text-sm font-medium text-linen-700";
+  "h-[42px] w-full border border-line px-3 transition-colors focus-within:border-champagne-600";
+const LABEL = "eyebrow mb-1.5 block";
+const INPUT =
+  "w-full border border-line bg-transparent px-3 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-linen-500 focus:border-champagne-600";
 
 interface Props {
   /** Valor total — define as opções de parcelamento. */
@@ -276,7 +278,7 @@ export const MPCardForm = forwardRef<CardFormHandle, Props>(function MPCardForm(
       <div>
         <label className={LABEL}>Nome impresso no cartão</label>
         <input
-          className="w-full border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600"
+          className={INPUT}
           value={holder}
           onChange={(e) => setHolder(e.target.value)}
           placeholder="como está no cartão"
@@ -288,7 +290,7 @@ export const MPCardForm = forwardRef<CardFormHandle, Props>(function MPCardForm(
         <div>
           <label className={LABEL}>Parcelas</label>
           <select
-            className="w-full border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600"
+            className={INPUT}
             value={installments}
             onChange={(e) => setInstallments(Number(e.target.value))}
           >
@@ -302,7 +304,7 @@ export const MPCardForm = forwardRef<CardFormHandle, Props>(function MPCardForm(
       )}
 
       {!ready && (
-        <p className="text-sm text-linen-500">Carregando formulário seguro…</p>
+        <p className="text-sm text-linen-600">Carregando formulário seguro…</p>
       )}
     </div>
   );

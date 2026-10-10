@@ -106,14 +106,14 @@ export function ImageField({
   }
 
   const btn =
-    "inline-flex items-center gap-1.5 rounded-lg border border-linen-300 px-2.5 py-1.5 text-xs font-medium text-linen-700 hover:border-champagne-500 hover:text-champagne-700 disabled:opacity-50";
+    "inline-flex items-center gap-1.5 rounded border border-linen-300 px-3 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink disabled:opacity-50";
 
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium text-linen-600">{label}</label>
+      <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">{label}</label>
 
       <div className="flex items-start gap-3">
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-linen-200 bg-linen-100">
+        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded border border-linen-200 bg-linen-100">
           {value ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -173,15 +173,15 @@ export function ImageField({
               value={value}
               onChange={(e) => onChange(e.target.value)}
               placeholder="https://…/imagem.jpg"
-              className="w-full rounded-lg border border-linen-300 px-3 py-2 text-sm outline-none focus:border-champagne-600"
+              className="w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600"
             />
           )}
 
           {error && (
-            <p className="rounded-lg bg-danger/10 px-2 py-1.5 text-xs text-danger">{error}</p>
+            <p className="rounded bg-danger/10 px-2 py-1.5 text-xs text-danger">{error}</p>
           )}
           {aviso && (
-            <p className="rounded-lg bg-warning/10 px-2 py-1.5 text-xs text-amber-800">{aviso}</p>
+            <p className="rounded bg-warning/10 px-2 py-1.5 text-xs text-warning">{aviso}</p>
           )}
           <UploadHint spec={spec} />
         </div>
@@ -197,11 +197,11 @@ export function ImageField({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-semibold text-ink">Imagens dos produtos</h3>
+              <h3 className="font-display text-lg text-ink">Imagens dos produtos</h3>
               <button
                 type="button"
                 onClick={() => setPicker(false)}
-                className="rounded-lg p-1 text-linen-500 hover:bg-linen-100"
+                className="rounded p-1 text-linen-500 hover:bg-linen-100"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -211,14 +211,14 @@ export function ImageField({
 
             {!busy && produtos?.length === 0 && (
               <p className="text-sm text-linen-600">
-                Nenhum produto tem imagem cadastrada ainda.
+                Nenhum produto tem imagem cadastrada ainda. Envie as fotos em Produtos e volte aqui para reaproveitá-las.
               </p>
             )}
 
             <div className="space-y-5">
               {produtos?.map((p) => (
                 <div key={p.name}>
-                  <p className="mb-2 text-xs font-medium text-linen-600">{p.name}</p>
+                  <p className="mb-2 text-xs text-linen-700">{p.name}</p>
                   <div className="flex flex-wrap gap-2">
                     {p.images.map((img) => (
                       <button
@@ -228,7 +228,7 @@ export function ImageField({
                           onChange(img);
                           setPicker(false);
                         }}
-                        className="h-20 w-20 overflow-hidden rounded-lg border-2 border-transparent hover:border-champagne-500"
+                        className="h-20 w-20 overflow-hidden rounded border-2 border-transparent hover:border-champagne-500"
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={img} alt="" className="h-full w-full object-cover" />

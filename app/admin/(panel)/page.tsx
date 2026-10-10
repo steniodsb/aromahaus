@@ -35,16 +35,19 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="mb-6 font-display text-3xl text-ink">Dashboard</h1>
+      <h1 className="font-display text-3xl text-ink">Dashboard</h1>
+      <p className="mb-6 mt-1 text-sm text-linen-600">
+        Panorama rápido da loja: o que está à venda, quantos pedidos entraram e quanto já foi pago. Use os atalhos para seguir direto ao trabalho.
+      </p>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map(({ label, value, icon: Icon, href }) => (
           <Link
             key={label}
             href={href}
-            className="rounded border border-linen-200 bg-linen-50 p-5 transition-shadow hover:shadow-md"
+            className="rounded border border-linen-200 bg-linen-50 p-5 transition-colors hover:border-champagne-500"
           >
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-champagne-200/45 text-champagne-700">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded bg-champagne-200/45 text-champagne-700">
               <Icon className="h-5 w-5" />
             </div>
             <div className="numeral text-3xl text-ink">{value}</div>
@@ -54,15 +57,15 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="mt-8 rounded border border-linen-200 bg-linen-50 p-6">
-        <h2 className="mb-2 font-semibold text-ink">Atalhos rápidos</h2>
+        <h2 className="mb-3 font-display text-lg text-ink">Atalhos rápidos</h2>
         <div className="flex flex-wrap gap-3">
-          <Link href="/admin/produtos/novo" className="rounded-lg bg-linen-900 px-4 py-2 text-xs uppercase tracking-[0.12em] text-linen-50 transition-colors hover:bg-champagne-700">
+          <Link href="/admin/produtos/novo" className="rounded bg-linen-900 px-4 py-2 text-xs uppercase tracking-[0.12em] text-linen-50 transition-colors hover:bg-champagne-700">
             + Novo produto
           </Link>
-          <Link href="/admin/blog/novo" className="rounded-lg border border-linen-300 px-4 py-2 text-sm font-semibold text-ink hover:border-champagne-500">
+          <Link href="/admin/blog/novo" className="rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink">
             + Novo artigo
           </Link>
-          <Link href="/admin/config" className="rounded-lg border border-linen-300 px-4 py-2 text-sm font-semibold text-ink hover:border-champagne-500">
+          <Link href="/admin/config" className="rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink">
             Configurações da loja
           </Link>
         </div>

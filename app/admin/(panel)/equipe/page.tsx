@@ -38,24 +38,24 @@ export default async function AdminEquipePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="mb-2 font-display text-3xl text-ink">Equipe e atividade</h1>
+        <h1 className="mb-1 font-display text-3xl text-ink">Equipe e atividade</h1>
         <p className="max-w-2xl text-sm text-linen-600">
-          Quem tem acesso ao painel e o que foi feito nele. Promover alguém
-          exigia rodar SQL no banco até agora.
+          Quem tem acesso ao painel e o que foi feito nele. Promova ou remova
+          administradores aqui e acompanhe as mudanças mais recentes.
         </p>
       </div>
 
       <div className={card}>
         <div className="border-b border-linen-200 p-4">
-          <h2 className="flex items-center gap-2 font-semibold text-ink">
-            <ShieldCheck className="h-4 w-4" /> Administradores ({admins.length})
+          <h2 className="flex items-center gap-2 font-display text-lg text-ink">
+            <ShieldCheck className="h-4 w-4" /> Administradores (<span className="numeral">{admins.length}</span>)
           </h2>
         </div>
-        <div className="divide-y divide-linen-100">
+        <div className="divide-y divide-linen-200">
           {admins.map((p) => (
             <div key={p.id} className="flex items-center justify-between gap-3 p-4">
               <div className="min-w-0">
-                <p className="font-medium text-ink">{p.full_name ?? "sem nome"}</p>
+                <p className="text-ink">{p.full_name ?? "sem nome"}</p>
                 <p className="text-sm text-linen-600">{p.email}</p>
               </div>
               <AdminToggle userId={p.id} isAdmin ehVoce={p.id === user.id} />
@@ -67,18 +67,18 @@ export default async function AdminEquipePage() {
       {clientes.length > 0 && (
         <div className={card}>
           <div className="border-b border-linen-200 p-4">
-            <h2 className="font-semibold text-ink">
-              Contas de cliente ({clientes.length})
+            <h2 className="font-display text-lg text-ink">
+              Contas de cliente (<span className="numeral">{clientes.length}</span>)
             </h2>
             <p className="mt-1 text-xs text-linen-600">
               Quem criou conta na loja. Promova só quem precisa mexer no painel.
             </p>
           </div>
-          <div className="divide-y divide-linen-100">
+          <div className="divide-y divide-linen-200">
             {clientes.slice(0, 50).map((p) => (
               <div key={p.id} className="flex items-center justify-between gap-3 p-4">
                 <div className="min-w-0">
-                  <p className="font-medium text-ink">{p.full_name ?? "sem nome"}</p>
+                  <p className="text-ink">{p.full_name ?? "sem nome"}</p>
                   <p className="text-sm text-linen-600">{p.email}</p>
                 </div>
                 <AdminToggle userId={p.id} isAdmin={false} ehVoce={p.id === user.id} />
@@ -90,34 +90,34 @@ export default async function AdminEquipePage() {
 
       <div className={card}>
         <div className="border-b border-linen-200 p-4">
-          <h2 className="flex items-center gap-2 font-semibold text-ink">
+          <h2 className="flex items-center gap-2 font-display text-lg text-ink">
             <History className="h-4 w-4" /> Atividade recente
           </h2>
         </div>
         {(atividade ?? []).length === 0 ? (
           <p className="p-6 text-sm text-linen-600">
-            Nada registrado ainda. A partir de agora, mudança de status de
-            pedido, estorno e ajuste de estoque aparecem aqui com autor e hora.
+            Nada registrado ainda. Mudanças de status de pedido, estornos e ajustes
+            de estoque aparecem aqui com autor e hora.
           </p>
         ) : (
-          <div className="divide-y divide-linen-100">
+          <div className="divide-y divide-linen-200">
             {(atividade ?? []).map((a) => (
               <div key={a.id} className="flex flex-wrap items-baseline gap-x-2 gap-y-1 p-3 text-sm">
-                <span className="font-medium text-ink">{a.actor_email ?? "sistema"}</span>
+                <span className="text-ink">{a.actor_email ?? "sistema"}</span>
                 <span className="text-linen-600">{a.action}</span>
                 <span className="text-linen-600">
                   {a.entity}
                   {a.entity_label && ` ${a.entity_label}`}
                 </span>
                 {a.meta != null && (
-                  <span className="font-mono text-xs text-linen-500">
+                  <span className="numeral font-mono text-xs text-linen-500">
                     {Object.entries(a.meta as Record<string, unknown>)
                       .filter(([, v]) => v != null && v !== "")
                       .map(([k, v]) => `${k}: ${v}`)
                       .join(" · ")}
                   </span>
                 )}
-                <span className="ml-auto shrink-0 text-xs text-linen-500">
+                <span className="numeral ml-auto shrink-0 text-xs text-linen-500">
                   {dataHoraBR(a.created_at)}
                 </span>
               </div>

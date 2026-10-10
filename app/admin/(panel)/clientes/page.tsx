@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Users, Search } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/auth";
-import { formatBRL, dataBR } from "@/lib/utils";
+import { formatBRL, formatCPF, dataBR } from "@/lib/utils";
 
 /**
  * Clientes, montados a partir dos PEDIDOS — não da tabela `profiles`.
@@ -86,14 +86,19 @@ export default async function AdminClientesPage(
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-3xl text-ink">
-          Clientes{" "}
-          <span className="text-base font-normal text-linen-500">
-            ({clientes.length}
-            {recorrentes > 0 && ` · ${recorrentes} recorrente${recorrentes > 1 ? "s" : ""}`})
-          </span>
-        </h1>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl text-ink">
+            Clientes{" "}
+            <span className="numeral text-base text-linen-500">
+              ({clientes.length}
+              {recorrentes > 0 && ` · ${recorrentes} recorrente${recorrentes > 1 ? "s" : ""}`})
+            </span>
+          </h1>
+          <p className="mt-1 text-sm text-linen-600">
+            Quem já comprou, quanto gastou e quando voltou. Use para identificar clientes recorrentes e quem merece um mimo ou um cupom.
+          </p>
+        </div>
 
         <form className="flex items-center gap-2">
           <div className="relative">
@@ -102,10 +107,10 @@ export default async function AdminClientesPage(
               name="q"
               defaultValue={busca}
               placeholder="Nome, e-mail ou CPF"
-              className="w-60 rounded-lg border border-linen-300 py-2 pl-8 pr-3 text-sm outline-none focus:border-champagne-600"
+              className="w-60 rounded border border-linen-300 bg-linen-50 py-2 pl-8 pr-3 text-sm outline-none focus:border-champagne-600"
             />
           </div>
-          <button className="rounded-lg border border-linen-300 px-3 py-2 text-sm font-medium text-linen-700 hover:border-champagne-500 hover:text-champagne-700">
+          <button className="rounded border border-linen-300 px-4 py-2 text-xs text-linen-700 transition-colors hover:border-linen-900 hover:text-ink">
             Buscar
           </button>
           {busca && (
@@ -118,7 +123,7 @@ export default async function AdminClientesPage(
 
       <div className="overflow-x-auto rounded border border-linen-200 bg-linen-50">
         <table className="w-full min-w-[760px] text-sm">
-          <thead className="border-b border-linen-200 bg-linen-100 text-left text-xs uppercase text-linen-600">
+          <thead className="border-b border-linen-200 bg-linen-100 text-left text-[0.6875rem] uppercase tracking-[0.12em] text-linen-600">
             <tr>
               <th className="p-3">Cliente</th>
               <th className="p-3">Contato</th>
@@ -127,19 +132,19 @@ export default async function AdminClientesPage(
               <th className="p-3">Última compra</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-linen-200">
             {clientes.map((c) => (
-              <tr key={c.email} className="border-b border-linen-100 last:border-0 hover:bg-linen-100">
+              <tr key={c.email} className="hover:bg-linen-100">
                 <td className="p-3">
                   <Link
                     href={`/admin/pedidos?q=${encodeURIComponent(c.email)}`}
-                    className="font-medium text-ink hover:text-champagne-700"
+                    className="text-ink hover:text-champagne-700"
                   >
                     {c.nome}
                   </Link>
-                  <p className="text-xs text-linen-500">
+                  <p className="numeral text-xs text-linen-500">
                     {c.temConta ? "Tem conta na loja" : "Compra como convidado"}
-                    {c.documento && ` · CPF ${c.documento}`}
+                    {c.documento && ` · CPF ${formatCPF(c.documento)}`}
                   </p>
                 </td>
                 <td className="p-3">
@@ -147,7 +152,7 @@ export default async function AdminClientesPage(
                     {c.email}
                   </a>
                   {c.telefone && (
-                    <p className="text-xs text-linen-500">
+                    <p className="numeral text-xs text-linen-500">
                       <a
                         href={`https://wa.me/55${c.telefone.replace(/\D/g, "")}`}
                         target="_blank"
@@ -160,19 +165,19 @@ export default async function AdminClientesPage(
                   )}
                 </td>
                 <td className="p-3 text-center">
-                  <span className={c.pedidos > 1 ? "font-semibold text-ink" : "text-linen-600"}>
+                  <span className={`numeral ${c.pedidos > 1 ? "text-ink" : "text-linen-600"}`}>
                     {c.pedidos}
                   </span>
                 </td>
-                <td className="p-3 text-right font-medium text-ink">{formatBRL(c.gasto)}</td>
-                <td className="p-3 text-linen-600">{dataBR(c.ultimo)}</td>
+                <td className="numeral p-3 text-right text-ink">{formatBRL(c.gasto)}</td>
+                <td className="numeral p-3 text-linen-600">{dataBR(c.ultimo)}</td>
               </tr>
             ))}
             {clientes.length === 0 && (
               <tr>
-                <td colSpan={5} className="p-10 text-center text-linen-600">
+                <td colSpan={5} className="p-10 text-center text-sm text-linen-600">
                   <Users className="mx-auto mb-3 h-8 w-8 text-linen-300" />
-                  {busca ? "Nenhum cliente com esse termo." : "Ninguém comprou ainda."}
+                  {busca ? "Nenhum cliente com esse termo. Tente o e-mail completo ou só o primeiro nome." : "Ninguém comprou ainda. Os clientes aparecem aqui a partir do primeiro pedido, com ou sem conta na loja."}
                 </td>
               </tr>
             )}

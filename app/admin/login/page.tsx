@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-linen-700">
+            <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">
               E-mail
             </label>
             <input
@@ -50,11 +50,11 @@ export default function AdminLoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600"
+              className="w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600"
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-linen-700">
+            <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">
               Senha
             </label>
             <input
@@ -62,16 +62,16 @@ export default function AdminLoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-linen-300 px-3 py-2 outline-none focus:border-champagne-600"
+              className="w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600"
             />
           </div>
 
-          {error && <p className="text-sm text-champagne-700">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-champagne-600 py-2.5 font-semibold text-white transition-colors hover:bg-champagne-700 disabled:opacity-60"
+            className="w-full rounded bg-linen-900 px-4 py-2 text-xs uppercase tracking-[0.12em] text-linen-50 transition-colors hover:bg-champagne-700 disabled:opacity-60"
           >
             {loading ? "Entrando…" : "Entrar"}
           </button>
