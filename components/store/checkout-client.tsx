@@ -9,6 +9,7 @@ import { opcaoGratuita, precoCobrado } from "@/lib/shipping-options";
 import { useStoreConfig } from "@/lib/store-config-context";
 import { createCheckout, previewCoupon } from "@/app/(store)/checkout/actions";
 import { MPCardForm, type CardFormHandle } from "@/components/store/mp-card-form";
+import { CartChanges } from "@/components/store/cart-changes";
 
 type PaymentKind = "pix" | "card" | "boleto";
 
@@ -33,7 +34,7 @@ export type CheckoutAccount = { name: string; email: string; phone: string };
 
 export function CheckoutClient({ account }: { account: CheckoutAccount }) {
   const { maxInstallments, freeShippingThreshold } = useStoreConfig();
-  const { items, subtotal, isReady, clear } = useCart();
+  const { items, subtotal, isReady, clear, removeItem } = useCart();
   const router = useRouter();
 
   const [customer, setCustomer] = useState({
@@ -53,6 +54,9 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
   const [loadingFrete, setLoadingFrete] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Chaves de carrinho que o servidor recusou (esgotado ou fora do ar). O
+  // browser conhece os nomes; o servidor, não.
+  const [indisponiveis, setIndisponiveis] = useState<string[]>([]);
 
   // Cupom. `applied` só existe depois que o SERVIDOR confirmou — o valor aqui é
   // exibição; o desconto que vale é o que `createCheckout` recalcular.
@@ -194,6 +198,7 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
     });
     if (!res.ok) {
       setError(res.error ?? "Erro ao finalizar.");
+      setIndisponiveis(res.unavailable ?? []);
       setSubmitting(false);
       return;
     }
@@ -266,6 +271,10 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
     <div className="mx-auto max-w-5xl px-6 py-12">
       <h1 className="font-display-xl rule mb-10 text-[clamp(2rem,4.5vw,3rem)] text-ink">Finalizar compra</h1>
 
+      {/* O preço aqui é o do banco. Se o do carrinho estava velho, o cliente
+          precisa ler a diferença ANTES de digitar o cartão, não depois. */}
+      <CartChanges />
+
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           {/* Identificação */}
@@ -279,27 +288,32 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
             <h2 className="eyebrow mb-5">Seus dados</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <label className={label}>Nome completo</label>
-                <input className={input} value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })} />
+                <label htmlFor="ck-nome" className={label}>Nome completo</label>
+                <input id="ck-nome" name="name" autoComplete="name" required className={input} value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })} />
               </div>
               <div>
-                <label className={label}>E-mail</label>
-                <input type="email" className={input} value={customer.email} onChange={(e) => setCustomer({ ...customer, email: e.target.value })} />
+                <label htmlFor="ck-email" className={label}>E-mail</label>
+                <input id="ck-email" name="email" type="email" autoComplete="email" required className={input} value={customer.email} onChange={(e) => setCustomer({ ...customer, email: e.target.value })} />
               </div>
               <div>
-                <label className={label}>Telefone / WhatsApp</label>
-                <input className={input} value={customer.phone} onChange={(e) => setCustomer({ ...customer, phone: e.target.value })} />
+                <label htmlFor="ck-telefone" className={label}>Telefone / WhatsApp</label>
+                <input id="ck-telefone" name="tel" type="tel" autoComplete="tel" inputMode="tel" required className={input} value={customer.phone} onChange={(e) => setCustomer({ ...customer, phone: e.target.value })} />
               </div>
               <div>
-                <label className={label}>CPF</label>
+                <label htmlFor="ck-cpf" className={label}>CPF</label>
                 <input
+                  id="ck-cpf"
+                  name="document"
+                  autoComplete="off"
+                  required
+                  aria-describedby="ck-cpf-ajuda"
                   className={input}
                   value={customer.document}
                   inputMode="numeric"
                   placeholder="000.000.000-00"
                   onChange={(e) => setCustomer({ ...customer, document: formatCPF(e.target.value) })}
                 />
-                <p className="mt-1 text-xs text-linen-500">
+                <p id="ck-cpf-ajuda" className="mt-1 text-xs text-linen-600">
                   Exigido para emitir o pagamento e a etiqueta de envio.
                 </p>
               </div>
@@ -311,34 +325,34 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
             <h2 className="eyebrow mb-5">Endereço de entrega</h2>
             <div className="grid gap-4 sm:grid-cols-6">
               <div className="sm:col-span-2">
-                <label className={label}>CEP {loadingCep && <span className="text-xs text-linen-500">buscando…</span>}</label>
-                <input className={input} value={addr.cep}
+                <label htmlFor="ck-cep" className={label}>CEP {loadingCep && <span className="text-xs text-linen-600">buscando…</span>}</label>
+                <input id="ck-cep" name="postal-code" autoComplete="postal-code" inputMode="numeric" required className={input} value={addr.cep}
                   onChange={(e) => setAddr({ ...addr, cep: e.target.value })}
                   onBlur={(e) => lookupCep(e.target.value)} />
               </div>
               <div className="sm:col-span-4">
-                <label className={label}>Rua</label>
-                <input className={input} value={addr.street} onChange={(e) => setAddr({ ...addr, street: e.target.value })} />
+                <label htmlFor="ck-rua" className={label}>Rua</label>
+                <input id="ck-rua" name="address-line1" autoComplete="address-line1" required className={input} value={addr.street} onChange={(e) => setAddr({ ...addr, street: e.target.value })} />
               </div>
               <div className="sm:col-span-2">
-                <label className={label}>Número</label>
-                <input className={input} value={addr.number} onChange={(e) => setAddr({ ...addr, number: e.target.value })} />
+                <label htmlFor="ck-numero" className={label}>Número</label>
+                <input id="ck-numero" name="address-line2" autoComplete="address-line2" required className={input} value={addr.number} onChange={(e) => setAddr({ ...addr, number: e.target.value })} />
               </div>
               <div className="sm:col-span-4">
-                <label className={label}>Complemento</label>
-                <input className={input} value={addr.complement} onChange={(e) => setAddr({ ...addr, complement: e.target.value })} />
+                <label htmlFor="ck-complemento" className={label}>Complemento</label>
+                <input id="ck-complemento" name="address-line3" autoComplete="address-line3" className={input} value={addr.complement} onChange={(e) => setAddr({ ...addr, complement: e.target.value })} />
               </div>
               <div className="sm:col-span-3">
-                <label className={label}>Bairro</label>
-                <input className={input} value={addr.district} onChange={(e) => setAddr({ ...addr, district: e.target.value })} />
+                <label htmlFor="ck-bairro" className={label}>Bairro</label>
+                <input id="ck-bairro" name="address-level3" autoComplete="address-level3" required className={input} value={addr.district} onChange={(e) => setAddr({ ...addr, district: e.target.value })} />
               </div>
               <div className="sm:col-span-2">
-                <label className={label}>Cidade</label>
-                <input className={input} value={addr.city} onChange={(e) => setAddr({ ...addr, city: e.target.value })} />
+                <label htmlFor="ck-cidade" className={label}>Cidade</label>
+                <input id="ck-cidade" name="address-level2" autoComplete="address-level2" required className={input} value={addr.city} onChange={(e) => setAddr({ ...addr, city: e.target.value })} />
               </div>
               <div className="sm:col-span-1">
-                <label className={label}>UF</label>
-                <input className={input} maxLength={2} value={addr.state} onChange={(e) => setAddr({ ...addr, state: e.target.value })} />
+                <label htmlFor="ck-uf" className={label}>UF</label>
+                <input id="ck-uf" name="address-level1" autoComplete="address-level1" required className={input} maxLength={2} value={addr.state} onChange={(e) => setAddr({ ...addr, state: e.target.value })} />
               </div>
             </div>
 
@@ -481,7 +495,7 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
                   placeholder="Escrevemos à mão no cartão que vai junto."
                   className="mt-2 w-full border border-line bg-transparent p-3 text-sm outline-none transition-colors placeholder:text-linen-500 focus:border-champagne-600"
                 />
-                <span className="mt-1 block text-right text-xs text-linen-500">
+                <span className="mt-1 block text-right text-xs text-linen-600">
                   {giftMessage.length}/240
                 </span>
               </label>
@@ -529,11 +543,14 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
               </div>
             ) : (
               <div>
-                <label className="mb-1 block text-xs font-medium text-linen-700">
+                <label htmlFor="ck-cupom" className="mb-1 block text-xs font-medium text-linen-700">
                   Cupom de desconto
                 </label>
                 <div className="flex gap-2">
                   <input
+                    id="ck-cupom"
+                    name="coupon"
+                    autoComplete="off"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                     onKeyDown={(e) => {
@@ -586,7 +603,42 @@ export function CheckoutClient({ account }: { account: CheckoutAccount }) {
             </div>
           </div>
 
-          {error && <p className="mt-4 text-sm text-danger">{error}</p>}
+          {error && (
+            <div className="mt-4 border border-danger/30 bg-danger/10 p-4">
+              <p className="text-sm text-danger">{error}</p>
+
+              {/* Sem isto o cliente fica preso: o servidor recusa o pedido e
+                  ele não sabe QUAL item tirar do carrinho. */}
+              {indisponiveis.length > 0 && (
+                <ul className="mt-3 space-y-2">
+                  {items
+                    .filter((i) => indisponiveis.includes(i.id))
+                    .map((i) => (
+                      <li
+                        key={i.id}
+                        className="flex items-center justify-between gap-3 text-sm text-linen-700"
+                      >
+                        <span>
+                          {i.name}
+                          {i.variantLabel ? ` (${i.variantLabel})` : ""}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            removeItem(i.id);
+                            setIndisponiveis((a) => a.filter((x) => x !== i.id));
+                            setError(null);
+                          }}
+                          className="shrink-0 border border-linen-300 px-3 py-1 text-[0.625rem] uppercase tracking-[0.14em] text-linen-700 transition-colors hover:border-danger hover:text-danger"
+                        >
+                          Remover
+                        </button>
+                      </li>
+                    ))}
+                </ul>
+              )}
+            </div>
+          )}
 
           <button onClick={finalizar} disabled={submitting}
             className="mt-7 w-full border border-linen-900 bg-linen-900 px-6 py-4 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink disabled:opacity-60">

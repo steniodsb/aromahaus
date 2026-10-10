@@ -6,6 +6,7 @@ import { Minus, Plus, X, ShoppingBag, Truck, Lock, Gift } from "lucide-react";
 import { useCart } from "@/lib/cart/cart-context";
 import { formatBRL, qualifiesForFreeShipping } from "@/lib/utils";
 import { useStoreConfig } from "@/lib/store-config-context";
+import { CartChanges } from "@/components/store/cart-changes";
 
 export default function CarrinhoPage() {
   const { items, subtotal, updateQty, removeItem, isReady } = useCart();
@@ -22,6 +23,11 @@ export default function CarrinhoPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-xl px-6 py-24 text-center">
+        {/* Se a reconferência tirou o último item, o cliente tem que ler o
+            motivo aqui — senão a sacola simplesmente "esvaziou sozinha". */}
+        <div className="text-left">
+          <CartChanges />
+        </div>
         <ShoppingBag
           className="mx-auto mb-6 h-10 w-10 text-linen-300"
           strokeWidth={1}
@@ -52,6 +58,8 @@ export default function CarrinhoPage() {
       <h1 className="font-display-xl rule mb-10 text-[clamp(2rem,4.5vw,3rem)] text-ink">
         Sua sacola
       </h1>
+
+      <CartChanges />
 
       {freeShippingThreshold > 0 && (
         <div className="mb-10 border border-line p-5">

@@ -139,22 +139,47 @@ export async function validateCoupon(
     if (!email) return { ok: false, error: "Informe seu e-mail para usar este cupom." };
 
     if (coupon.first_order_only) {
-      const { count } = await admin
+      // O enum é `canceled`, com um L. Estava escrito `cancelled`: o Postgres
+      // devolvia "invalid input value for enum", o erro não era lido, `count`
+      // vinha `undefined` e a comparação dava falso — ou seja, o cupom de
+      // primeira compra passava SEMPRE, para qualquer pessoa, quantas vezes
+      // quisesse.
+      //
+      // A consulta também passou a considerar o `user_id` quando existe: o
+      // e-mail vinha de um campo editável do formulário, então bastava
+      // digitar outro endereço para ganhar "primeira compra" de novo.
+      let q = admin
         .from("orders")
         .select("id", { count: "exact", head: true })
-        .ilike("customer_email", likeEscape(email))
-        .neq("status", "cancelled");
+        .neq("status", "canceled");
+      q = ctx.userId
+        ? q.or(`user_id.eq.${ctx.userId},customer_email.ilike.${likeEscape(email)}`)
+        : q.ilike("customer_email", likeEscape(email));
+
+      const { count, error } = await q;
+      // Falha de consulta fecha o cupom em vez de liberar. Antes, qualquer
+      // erro aqui virava "pode usar".
+      if (error) {
+        return { ok: false, error: "Não foi possível validar o cupom agora." };
+      }
       if ((count ?? 0) > 0) {
         return { ok: false, error: "Este cupom é válido só na primeira compra." };
       }
     }
 
     if (coupon.max_uses_per_customer != null) {
-      const { count } = await admin
+      let q = admin
         .from("coupon_redemptions")
         .select("id", { count: "exact", head: true })
-        .eq("coupon_id", coupon.id)
-        .ilike("customer_email", likeEscape(email));
+        .eq("coupon_id", coupon.id);
+      q = ctx.userId
+        ? q.or(`user_id.eq.${ctx.userId},customer_email.ilike.${likeEscape(email)}`)
+        : q.ilike("customer_email", likeEscape(email));
+
+      const { count, error } = await q;
+      if (error) {
+        return { ok: false, error: "Não foi possível validar o cupom agora." };
+      }
       if ((count ?? 0) >= coupon.max_uses_per_customer) {
         return { ok: false, error: "Você já usou este cupom." };
       }

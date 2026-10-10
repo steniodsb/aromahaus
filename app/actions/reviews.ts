@@ -71,24 +71,42 @@ export async function submitReview(formData: FormData): Promise<ReviewResult> {
     user.email?.split("@")[0] ||
     "Cliente";
 
-  // `upsert` na chave (user_id, product_id): quem avalia de novo corrige o que
-  // escreveu, em vez de empilhar duas notas e distorcer a média do produto.
-  const { error } = await admin.from("reviews").upsert(
-    {
-      product_id: productId,
-      user_id: user.id,
-      order_id: orderId,
-      author_name: name.slice(0, 60),
-      rating,
-      title: title.slice(0, 120) || null,
-      body: body.slice(0, BODY_MAX),
-      verified_purchase: verified,
-      status: "pending",
-    },
-    { onConflict: "user_id,product_id" },
-  );
+  const registro = {
+    product_id: productId,
+    user_id: user.id,
+    order_id: orderId,
+    author_name: name.slice(0, 60),
+    rating,
+    title: title.slice(0, 120) || null,
+    body: body.slice(0, BODY_MAX),
+    verified_purchase: verified,
+    status: "pending" as const,
+  };
+
+  // Quem avalia de novo CORRIGE o que escreveu, em vez de empilhar duas notas
+  // e distorcer a média do produto.
+  //
+  // Isto era um `upsert` com `onConflict: "user_id,product_id"`, e nunca
+  // funcionou: o índice único da 0010 era parcial (`where user_id is not
+  // null`), e o Postgres só infere índice parcial se o ON CONFLICT repetir o
+  // predicado — coisa que o PostgREST não faz. Toda avaliação morria em
+  // `42P10` e o cliente lia "Não foi possível enviar agora".
+  //
+  // A 0013 troca o índice por um total, mas este caminho não depende disso:
+  // procura antes e decide. Funciona com a migração aplicada ou não.
+  const { data: existente } = await admin
+    .from("reviews")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("product_id", productId)
+    .maybeSingle();
+
+  const { error } = existente
+    ? await admin.from("reviews").update(registro).eq("id", existente.id)
+    : await admin.from("reviews").insert(registro);
 
   if (error) {
+    console.error("[avaliação] não consegui gravar:", error.message);
     return { ok: false, message: "Não foi possível enviar agora. Tente de novo." };
   }
 
@@ -96,7 +114,8 @@ export async function submitReview(formData: FormData): Promise<ReviewResult> {
 
   return {
     ok: true,
-    message:
-      "Obrigado! Sua avaliação foi enviada e aparece assim que passar pela moderação.",
+    message: existente
+      ? "Sua avaliação foi atualizada e volta para a moderação."
+      : "Obrigado! Sua avaliação foi enviada e aparece assim que passar pela moderação.",
   };
 }

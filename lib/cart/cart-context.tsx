@@ -2,12 +2,15 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { revalidarCarrinho } from "@/app/actions/cart";
 
 export interface CartItem {
   /**
@@ -30,6 +33,18 @@ export interface CartItem {
   stock: number;
 }
 
+/** O que mudou numa linha do carrinho desde que o cliente a guardou. */
+export interface CartChange {
+  id: string;
+  name: string;
+  tipo: "preco" | "indisponivel" | "estoque";
+  /** Preenchidos em "preco": valores antigo e novo. */
+  de?: number;
+  para?: number;
+  /** Preenchido em "estoque": quantidade a que a linha foi reduzida. */
+  qty?: number;
+}
+
 interface CartContextValue {
   items: CartItem[];
   count: number;
@@ -39,6 +54,14 @@ interface CartContextValue {
   updateQty: (id: string, qty: number) => void;
   clear: () => void;
   isReady: boolean;
+  /**
+   * Diferenças encontradas na última reconferência com o banco. A página do
+   * carrinho e o checkout mostram isto ao cliente ANTES de ele pagar.
+   */
+  changes: CartChange[];
+  dismissChanges: () => void;
+  /** Reconfere agora. Já roda sozinha uma vez, depois da hidratação. */
+  revalidate: () => Promise<void>;
 }
 
 const STORAGE_KEY = "aroma-haus-cart";
@@ -48,6 +71,12 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isReady, setIsReady] = useState(false);
+  const [changes, setChanges] = useState<CartChange[]>([]);
+
+  // A reconferência roda UMA vez por carregamento. Sem esta trava ela se
+  // chamaria de novo a cada correção que ela mesma aplica, porque corrigir
+  // muda `items`, que muda a própria função.
+  const jaConferiu = useRef(false);
 
   // Hydrate from localStorage on mount.
   //
@@ -122,7 +151,98 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function clear() {
     setItems([]);
+    setChanges([]);
   }
+
+  /**
+   * Reconfere cada linha contra o banco e corrige o que mudou.
+   *
+   * Corrige em silêncio o que é só desatualização (nome, imagem, rótulo da
+   * variante) e ANUNCIA o que muda a conta do cliente: preço diferente,
+   * item que saiu do ar e quantidade que não cabe mais no estoque.
+   */
+  const revalidate = useCallback(async () => {
+    const atuais = items;
+    if (!atuais.length) {
+      setChanges([]);
+      return;
+    }
+    let linhas;
+    try {
+      linhas = await revalidarCarrinho(
+        atuais.map((i) => ({ id: i.id, productId: i.productId, variantId: i.variantId })),
+      );
+    } catch {
+      // Sem rede, o carrinho continua valendo como estava: o checkout
+      // reconfere de novo, no servidor, antes de cobrar.
+      return;
+    }
+
+    const porId = new Map(linhas.map((l) => [l.id, l.atual]));
+    const novasMudancas: CartChange[] = [];
+
+    // A lista nova é montada AQUI, fora do `setItems`.
+    //
+    // Antes isto morava dentro do updater, que empurrava em `novasMudancas`
+    // enquanto mapeava. Updater de estado tem que ser puro: o React chama a
+    // função mais de uma vez (em desenvolvimento, sempre), e cada chamada
+    // repetia os avisos — o cliente lia "subiu de R$ 279,90 para R$ 299,90"
+    // duas vezes, como se fossem dois produtos.
+    const novaLista = atuais.flatMap((item) => {
+      // Linha que o servidor não conhece (carrinho antigo, id estranho):
+      // deixa como está em vez de apagar a compra do cliente.
+      if (!porId.has(item.id)) return [item];
+
+      const atual = porId.get(item.id) ?? null;
+      if (!atual) {
+        novasMudancas.push({ id: item.id, name: item.name, tipo: "indisponivel" });
+        return [];
+      }
+
+      if (atual.price !== item.price) {
+        novasMudancas.push({
+          id: item.id,
+          name: item.name,
+          tipo: "preco",
+          de: item.price,
+          para: atual.price,
+        });
+      }
+
+      const qty = Math.max(1, Math.min(item.qty, atual.stock));
+      if (qty < item.qty) {
+        novasMudancas.push({ id: item.id, name: atual.name, tipo: "estoque", qty });
+      }
+
+      return [
+        {
+          ...item,
+          name: atual.name,
+          slug: atual.slug,
+          price: atual.price,
+          stock: atual.stock,
+          image: atual.image,
+          variantLabel: atual.variantLabel ?? item.variantLabel,
+          qty,
+        },
+      ];
+    });
+
+    // Grava sempre: além do preço, isto atualiza nome, foto e rótulo da
+    // variante de um carrinho antigo, sem avisar nada ao cliente — não é
+    // informação que mude a decisão dele.
+    setItems(novaLista);
+    setChanges(novasMudancas);
+  }, [items]);
+
+  // Uma reconferência assim que o carrinho sai do storage. É aqui que o
+  // preço de ontem vira o preço de hoje, antes de o cliente somar a conta de
+  // cabeça e achar que o checkout aumentou o valor na cara dele.
+  useEffect(() => {
+    if (!isReady || jaConferiu.current) return;
+    jaConferiu.current = true;
+    void revalidate();
+  }, [isReady, revalidate]);
 
   const value = useMemo<CartContextValue>(() => {
     const count = items.reduce((sum, i) => sum + i.qty, 0);
@@ -136,8 +256,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       updateQty,
       clear,
       isReady,
+      changes,
+      dismissChanges: () => setChanges([]),
+      revalidate,
     };
-  }, [items, isReady]);
+  }, [items, isReady, changes, revalidate]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

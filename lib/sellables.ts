@@ -39,10 +39,21 @@ export interface SellableLine {
 /** Medidas de caixa usadas quando o produto não tem dimensão cadastrada. */
 const FALLBACK_BOX = { width_cm: 11, height_cm: 22, length_cm: 11, weight_g: 600 };
 
-export async function resolveSellables(
+export interface SellableResolution {
+  lines: SellableLine[];
+  /**
+   * Chaves de carrinho que não resolveram — produto desativado, variante
+   * apagada ou estoque zerado. Quem chama usa isto para DIZER ao cliente o
+   * que saiu, em vez de seguir com um pedido menor do que ele confirmou.
+   */
+  indisponiveis: string[];
+}
+
+/** Versão que também conta o que ficou de fora. */
+export async function resolveSellablesDetailed(
   requested: SellableRequest[],
-): Promise<SellableLine[]> {
-  if (!requested.length) return [];
+): Promise<SellableResolution> {
+  if (!requested.length) return { lines: [], indisponiveis: [] };
 
   const admin = createAdminClient();
   const productIds = [...new Set(requested.map((i) => i.id))];
@@ -73,18 +84,36 @@ export async function resolveSellables(
   const byVariant = new Map((variants ?? []).map((v) => [v.id, v]));
 
   const lines: SellableLine[] = [];
+  const indisponiveis: string[] = [];
+  /** A chave que o carrinho usa: id da variante quando há, do produto quando não. */
+  const chave = (i: SellableRequest) => i.variantId ?? i.id;
 
   for (const item of requested) {
     const product = byProduct.get(item.id);
-    if (!product || product.item_type !== "product") continue;
+    if (!product || product.item_type !== "product") {
+      indisponiveis.push(chave(item));
+      continue;
+    }
 
     const variant = item.variantId ? byVariant.get(item.variantId) : null;
     // Variante que não pertence a este produto é lixo (ou adulteração): o item
     // é descartado em vez de cair no preço do produto, que seria o errado.
-    if (item.variantId && (!variant || variant.product_id !== product.id)) continue;
+    if (item.variantId && (!variant || variant.product_id !== product.id)) {
+      indisponiveis.push(chave(item));
+      continue;
+    }
 
+    // Esgotado não entra no pedido. Antes, `stock > 0 ? stock : item.qty`
+    // deixava a quantidade PASSAR INTEIRA quando o estoque era zero — não
+    // havia teto nenhum. Carrinho parado numa aba com um tamanho que
+    // esgotou fechava compra, era cobrado, e a baixa de estoque travava em
+    // `greatest(0, …)`: venda sem produto para despachar.
     const stock = Number(variant ? variant.stock : product.stock);
-    const qty = Math.max(1, Math.min(item.qty, stock > 0 ? stock : item.qty));
+    if (!Number.isFinite(stock) || stock <= 0) {
+      indisponiveis.push(chave(item));
+      continue;
+    }
+    const qty = Math.max(1, Math.min(item.qty, stock));
 
     const num = (v: unknown, fallback: number) => {
       const n = Number(v);
@@ -107,7 +136,14 @@ export async function resolveSellables(
     });
   }
 
-  return lines;
+  return { lines, indisponiveis };
+}
+
+/** Só as linhas vendáveis. Para quem não precisa saber o que caiu. */
+export async function resolveSellables(
+  requested: SellableRequest[],
+): Promise<SellableLine[]> {
+  return (await resolveSellablesDetailed(requested)).lines;
 }
 
 /** Nome completo para a nota e o e-mail: "Difusor — Âmbar Haus (500 ml)". */

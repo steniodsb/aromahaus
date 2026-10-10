@@ -21,7 +21,7 @@ import { isValidCPF, qualifiesForFreeShipping } from "@/lib/utils";
 import { precoCobrado } from "@/lib/shipping-options";
 import { validateCoupon, redeemCoupon } from "@/lib/coupons";
 import { applyShippingRules } from "@/lib/shipping-rules";
-import { resolveSellables, sellableLabel } from "@/lib/sellables";
+import { resolveSellablesDetailed, resolveSellables, sellableLabel } from "@/lib/sellables";
 
 /** Teto do embrulho de presente, para a mensagem não virar carta. */
 const GIFT_MESSAGE_MAX = 240;
@@ -66,6 +66,12 @@ export interface CheckoutResult {
   /** true quando o cartão já foi aprovado na hora. */
   paid?: boolean;
   error?: string;
+  /**
+   * Chaves de carrinho que saíram do ar. O browser conhece os nomes e
+   * consegue dizer ao cliente QUAL item remover — o servidor só tem o id de
+   * um produto que não existe mais.
+   */
+  unavailable?: string[];
 }
 
 export async function createCheckout(
@@ -100,9 +106,25 @@ export async function createCheckout(
   // Recalcula preços no servidor (segurança — nunca confiar no cliente).
   // Com variantes de tamanho, preço e peso podem vir do produto OU da
   // variante; `resolveSellables` é quem sabe de onde.
-  const lineItems = await resolveSellables(input.items);
+  // Item inativo, variante apagada e produto esgotado são descartados aqui.
+  // Antes o pedido seguia com o que sobrou: o cliente via "3 itens, R$ 500"
+  // no resumo, confirmava, e o pedido nascia com 2 — descobria na caixa.
+  const { lines: lineItems, indisponiveis } = await resolveSellablesDetailed(
+    input.items,
+  );
 
-  if (!lineItems.length) return { ok: false, error: "Nenhum item válido" };
+  if (indisponiveis.length) {
+    return {
+      ok: false,
+      unavailable: indisponiveis,
+      error:
+        indisponiveis.length === input.items.length
+          ? "Nenhum item do seu carrinho está disponível agora."
+          : "Um item do seu carrinho esgotou ou saiu do ar.",
+    };
+  }
+
+  if (!lineItems.length) return { ok: false, error: "Carrinho vazio" };
 
   const subtotal = lineItems.reduce((s, it) => s + it.unit_price * it.qty, 0);
 
@@ -209,8 +231,14 @@ export async function createCheckout(
     // Cupom de frete grátis segue a mesma regra do limite por valor: cobre a
     // opção padrão, não o upgrade. É a mesma promessa — entregar sem custo, não
     // entregar no modo mais caro sem custo.
+    //
+    // O `Math.min` é o detalhe que faltava: quando uma regra promocional já
+    // tinha baixado o frete (R$ 20 → R$ 10), aplicar o cupom devolvia o preço
+    // CHEIO da cotação. O cliente usava um cupom chamado "frete grátis", a
+    // tela dizia "frete grátis aplicado" e ele pagava MAIS do que pagaria sem
+    // o cupom. Cupom nunca pode encarecer.
     if (res.applied.freeShipping) {
-      shippingCost = precoCobrado(escolhida, cotacoes, true);
+      shippingCost = Math.min(shippingCost, precoCobrado(escolhida, cotacoes, true));
     }
   }
 
