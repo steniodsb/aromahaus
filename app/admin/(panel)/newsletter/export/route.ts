@@ -54,7 +54,7 @@ export async function GET() {
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="newsletter-wtn-${hoje}.csv"`,
+      "Content-Disposition": `attachment; filename="newsletter-aromahaus-${hoje}.csv"`,
       "Cache-Control": "no-store",
     },
   });

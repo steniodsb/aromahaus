@@ -1,11 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { whatsappLink } from "@/lib/utils";
 
 export default function RastreioPage() {
   const [code, setCode] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const rastrearWhats = whatsappLink(
+    `Olá! Quero rastrear meu pedido. Código: ${code || "(informar)"}`,
+  );
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-14">
@@ -63,22 +67,25 @@ export default function RastreioPage() {
 
       {submitted && (
         <div className="mt-10 border border-line bg-linen-100 p-6">
-          <p className="font-display text-xl text-ink">Consulta pelo WhatsApp</p>
+          <p className="font-display text-xl text-ink">Consulta com a gente</p>
           <p className="mt-3 text-sm leading-relaxed text-linen-700">
-            O rastreamento automático está sendo integrado. Por enquanto, envie
-            seu código pelo WhatsApp que retornamos o status do seu pedido
-            rapidamente.
+            O rastreamento automático está sendo integrado. Por enquanto, mande
+            o seu código que retornamos o status do pedido rapidamente.
           </p>
-          <a
-            href={whatsappLink(
-              `Olá! Quero rastrear meu pedido. Código: ${code || "(informar)"}`,
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
-          >
-            Consultar pelo WhatsApp
-          </a>
+          {rastrearWhats ? (
+            <a
+              href={rastrearWhats}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
+            >
+              Consultar pelo WhatsApp
+            </a>
+          ) : (
+            <Link href="/contato" className="mt-6 inline-flex border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink">
+              Falar com a gente
+            </Link>
+          )}
         </div>
       )}
     </div>

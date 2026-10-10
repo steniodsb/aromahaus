@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getNewArrivals, getAllCategories, withProductDetails } from "@/lib/queries";
+import { getNewArrivals, getAllCategories, withProductDetails, getWishlistIds } from "@/lib/queries";
 import { ProductFilters } from "@/components/store/product-filters";
 import {
   CollectionHeader,
@@ -18,6 +18,7 @@ export default async function NovidadesPage() {
     getAllCategories(),
   ]);
   const products = await withProductDetails(found);
+  const savedIds = await getWishlistIds();
 
   return (
     <>
@@ -29,7 +30,11 @@ export default async function NovidadesPage() {
       />
       <div className="mx-auto max-w-7xl px-6 py-12">
         {products.length > 0 ? (
-          <ProductFilters products={products} categories={categories} />
+          <ProductFilters
+            products={products}
+            categories={categories}
+            savedIds={savedIds}
+          />
         ) : (
           <CollectionEmpty>
             Nada novo por enquanto. Volte em algumas semanas.

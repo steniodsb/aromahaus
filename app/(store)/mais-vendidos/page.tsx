@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getBestSellers, getAllCategories, withProductDetails } from "@/lib/queries";
+import { getBestSellers, getAllCategories, withProductDetails, getWishlistIds } from "@/lib/queries";
 import { ProductFilters } from "@/components/store/product-filters";
 import {
   CollectionHeader,
@@ -18,6 +18,7 @@ export default async function MaisVendidosPage() {
     getAllCategories(),
   ]);
   const products = await withProductDetails(found);
+  const savedIds = await getWishlistIds();
 
   return (
     <>
@@ -28,7 +29,11 @@ export default async function MaisVendidosPage() {
       />
       <div className="mx-auto max-w-7xl px-6 py-12">
         {products.length > 0 ? (
-          <ProductFilters products={products} categories={categories} />
+          <ProductFilters
+            products={products}
+            categories={categories}
+            savedIds={savedIds}
+          />
         ) : (
           <CollectionEmpty>
             O ranking aparece assim que o catálogo estiver cadastrado.

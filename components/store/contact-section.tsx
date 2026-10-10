@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { MessageCircle, Mail } from "lucide-react";
 import { InstagramIcon } from "@/components/site/icons";
 import { whatsappLink } from "@/lib/utils";
@@ -8,6 +9,9 @@ export async function ContactSection() {
   // Sem e-mail configurado, o canal some em vez de virar um endereço
   // inventado que ninguém lê do outro lado.
   const email = store?.email?.trim() || null;
+  const whatsapp = whatsappLink(
+    "Olá! Vim pelo site da Aroma Haus e queria ajuda para escolher uma fragrância.",
+  );
 
   return (
     <section
@@ -28,14 +32,25 @@ export async function ContactSection() {
         </div>
 
         <div className="flex flex-col gap-4 sm:items-end">
-          <a
-            href={whatsappLink("Olá! Vim pelo site da Aroma Haus e queria ajuda para escolher uma fragrância.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2.5 border border-champagne-500 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-champagne-300 transition-colors hover:bg-champagne-500 hover:text-linen-900"
-          >
-            <MessageCircle className="h-4 w-4" strokeWidth={1.4} /> Falar no WhatsApp
-          </a>
+          {/* Sem WhatsApp cadastrado, a chamada não some: vira a página de
+              contato, que lista os canais que existem. */}
+          {whatsapp ? (
+            <a
+              href={whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2.5 border border-champagne-500 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-champagne-300 transition-colors hover:bg-champagne-500 hover:text-linen-900"
+            >
+              <MessageCircle className="h-4 w-4" strokeWidth={1.4} /> Falar no WhatsApp
+            </a>
+          ) : (
+            <Link
+              href="/contato"
+              className="inline-flex items-center justify-center gap-2.5 border border-champagne-500 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-champagne-300 transition-colors hover:bg-champagne-500 hover:text-linen-900"
+            >
+              Falar com a gente
+            </Link>
+          )}
           {email ? (
             <a
               href={`mailto:${email}`}

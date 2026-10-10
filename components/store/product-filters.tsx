@@ -130,9 +130,16 @@ export function ProductFilters({
   showFormat = true,
   initialFragrance,
   initialFamily,
+  savedIds,
 }: {
   products: ProductWithDetails[];
   categories?: Category[];
+  /**
+   * Ids já na lista de desejos. Sem isto o coração nascia apagado mesmo em
+   * produto favoritado, e o clique do cliente — que ele faz achando que está
+   * salvando — REMOVIA o item da lista dele.
+   */
+  savedIds?: Set<string>;
   /** Falso dentro de uma categoria — ali o formato já está decidido. */
   showFormat?: boolean;
   initialFragrance?: string;
@@ -405,7 +412,7 @@ export function ProductFilters({
         {filtered.length > 0 ? (
           <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-3">
             {filtered.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} saved={savedIds?.has(p.id) ?? false} />
             ))}
           </div>
         ) : (

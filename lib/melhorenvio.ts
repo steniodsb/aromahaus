@@ -275,7 +275,7 @@ export async function createShipmentForOrder(
     // menos um produto".
     products: input.products?.length
       ? input.products
-      : [{ name: "Peças e acessórios automotivos", quantity: 1, unitary_value: input.totalValue }],
+      : [{ name: "Perfumaria de ambiente", quantity: 1, unitary_value: input.totalValue }],
     options: {
       insurance_value: input.totalValue,
       receipt: false,

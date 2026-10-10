@@ -16,8 +16,17 @@
   --linen-200: #ebe5da;
   --linen-300: #dcd4c6;
   --linen-400: #c4baa9;
-  --linen-500: #a89d8b;
-  --linen-600: #857b6b;
+  /* Os três passos abaixo são os de TEXTO secundário, e por isso são
+     calibrados por contraste, não por estética: sobre o linho (#fbf9f6) dão
+     4.6:1, 5.6:1 e 6.4:1, os três acima do mínimo AA de 4.5:1 para texto
+     corrido. Antes eram #a89d8b (2.5:1) e #857b6b (4.0:1) — ou seja, a maior
+     parte do texto de apoio da loja, inclusive o aviso de CPF no checkout e
+     os prazos de entrega, estava abaixo do mínimo legível.
+     O preço: a escala fica mais comprimida no fim escuro. Vale a troca —
+     hierarquia aqui se faz com `text-ink`, tamanho e tracking, não com dois
+     tons de cinza que ninguém distingue. */
+  --linen-500: #797063;
+  --linen-600: #6c6357;
   --linen-700: #635b4f;
   --linen-800: #433e36;
   --linen-900: #2b2722;
@@ -202,6 +211,18 @@ body {
 
 /* Seção escura (rodapé, editoriais) com o mesmo tecido, em negativo. */
 .surface-ink {
+  /* Dentro de uma superfície escura o contraste inverte: o mesmo cinza que
+     precisa ser ESCURO sobre o linho precisa ser CLARO sobre a tinta. Em vez
+     de trocar a classe em cada lugar (rodapé, header, depoimentos, contato,
+     sidebar do painel), a superfície redefine os próprios tokens e as
+     utilidades `text-linen-500/600/700` seguem a cascata. Sobre #2b2722 isto
+     dá 7.7:1, 5.6:1 e 10.2:1. Os tons 500–700 não são usados em borda nem em
+     fundo em nenhum lugar do projeto, então remapeá-los aqui não tem efeito
+     colateral. */
+  --linen-500: #c4baa9;
+  --linen-600: #a89d8b;
+  --linen-700: #dcd4c6;
+
   background-color: var(--linen-900);
   background-image:
     repeating-linear-gradient(

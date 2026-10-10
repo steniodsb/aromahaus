@@ -9,9 +9,14 @@ import { whatsappLink } from "@/lib/utils";
  * ícone já diz qual é o canal.
  */
 export function WhatsAppFloat() {
+  const href = whatsappLink("Olá! Vim pela loja e tenho uma dúvida sobre um produto.");
+  // Sem número cadastrado o botão some. Um botão fixo na tela inteira que
+  // abre conversa com ninguém é pior do que não ter botão.
+  if (!href) return null;
+
   return (
     <a
-      href={whatsappLink("Olá! Vim pela loja e tenho uma dúvida sobre um produto.")}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Fale conosco no WhatsApp"

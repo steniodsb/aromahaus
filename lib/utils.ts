@@ -57,10 +57,28 @@ export function qualifiesForFreeShipping(subtotal: number, threshold: number) {
   return threshold > 0 && subtotal >= threshold;
 }
 
-/** Build a wa.me link with an optional pre-filled message. */
-export function whatsappLink(message?: string) {
-  const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5511948636615";
-  const base = `https://wa.me/${number}`;
+/**
+ * Número de WhatsApp da loja, só dígitos, ou `null` quando não há.
+ *
+ * O padrão anterior era um número CHUMBADO, herdado da loja que serviu de
+ * base. Com a variável ausente — exatamente o estado de um deploy novo —, os
+ * dez botões de WhatsApp do site mandavam o cliente para o telefone de um
+ * estranho. E com a variável vazia (`??` não pega string vazia) o link virava
+ * `wa.me/` sem destinatário.
+ *
+ * Agora é tudo ou nada: ou há número válido, ou o canal não aparece.
+ */
+export function whatsappNumber(): string | null {
+  const digitos = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").replace(/\D/g, "");
+  // DDI + DDD + 8 dígitos = 12. Abaixo disso é cadastro pela metade.
+  return digitos.length >= 12 ? digitos : null;
+}
+
+/** Link do wa.me com mensagem pronta, ou `null` se a loja não tem número. */
+export function whatsappLink(message?: string): string | null {
+  const numero = whatsappNumber();
+  if (!numero) return null;
+  const base = `https://wa.me/${numero}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 

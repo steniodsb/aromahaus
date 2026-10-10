@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { getPage } from "@/lib/pages";
 import { Markdown } from "@/components/markdown";
@@ -16,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function TrocasPage() {
   const page = await getPage(SLUG);
   if (!page) return null;
+  const trocaWhats = whatsappLink("Olá! Quero solicitar uma troca/devolução.");
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-14">
@@ -33,14 +35,20 @@ export default async function TrocasPage() {
 
       {/* Fora do markdown de propósito: é ação, não texto. O admin edita a
           política sem risco de quebrar o botão. */}
-      <a
-        href={whatsappLink("Olá! Quero solicitar uma troca/devolução.")}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-10 inline-flex border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
-      >
-        Solicitar pelo WhatsApp
-      </a>
+      {trocaWhats ? (
+        <a
+          href={trocaWhats}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-10 inline-flex border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
+        >
+          Solicitar pelo WhatsApp
+        </a>
+      ) : (
+        <Link href="/contato" className="mt-10 inline-flex border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink">
+          Solicitar troca ou devolução
+        </Link>
+      )}
     </div>
   );
 }

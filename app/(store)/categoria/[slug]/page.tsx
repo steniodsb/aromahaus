@@ -7,6 +7,7 @@ import {
   getProductsByCategory,
   getAllCategories,
   withProductDetails,
+  getWishlistIds,
 } from "@/lib/queries";
 import { ProductFilters } from "@/components/store/product-filters";
 
@@ -40,6 +41,7 @@ export default async function CategoryPage(
     children.map((c) => c.id),
   );
   const products = await withProductDetails(found);
+  const savedIds = await getWishlistIds();
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
@@ -70,6 +72,7 @@ export default async function CategoryPage(
         <ProductFilters
           products={products}
           categories={allCategories}
+          savedIds={savedIds}
           showFormat={children.length > 0}
         />
       ) : (

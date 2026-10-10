@@ -15,6 +15,7 @@ export async function Footer() {
   ]);
 
   const link = "text-sm text-linen-400 transition-colors hover:text-champagne-300";
+  const whatsapp = whatsappLink("Olá! Vim pelo site da Aroma Haus.");
   const heading = "mb-4 text-[0.625rem] uppercase tracking-[0.2em] text-champagne-400";
 
   return (
@@ -31,15 +32,17 @@ export async function Footer() {
           </p>
 
           <div className="flex gap-3 pt-1">
-            <a
-              href={whatsappLink("Olá! Vim pelo site da Aroma Haus.")}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp"
-              className="border border-white/15 p-2.5 text-linen-300 transition-colors hover:border-champagne-500 hover:text-champagne-300"
-            >
-              <MessageCircle className="h-4 w-4" strokeWidth={1.4} />
-            </a>
+            {whatsapp ? (
+              <a
+                href={whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="border border-white/15 p-2.5 text-linen-300 transition-colors hover:border-champagne-500 hover:text-champagne-300"
+              >
+                <MessageCircle className="h-4 w-4" strokeWidth={1.4} />
+              </a>
+            ) : null}
             <a
               href="https://instagram.com/aromahaus"
               target="_blank"

@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 export default async function ContatoPage() {
   const store = await getStoreInfo().catch(() => null);
   const email = store?.email?.trim() || null;
+  const whatsapp = whatsappLink("Olá! Vim pelo site da Aroma Haus.");
   const phone = store?.whatsapp
     ? store.whatsapp.replace(/^55/, "").replace(/(\d{2})(\d{4,5})(\d{4})/, "($1) $2-$3")
     : null;
@@ -34,8 +35,10 @@ export default async function ContatoPage() {
       </p>
 
       <div className="mt-10 space-y-4">
+        {/* Cada canal só aparece se existir de verdade. */}
+        {whatsapp ? (
         <a
-          href={whatsappLink("Olá! Vim pelo site da Aroma Haus.")}
+          href={whatsapp}
           target="_blank"
           rel="noopener noreferrer"
           className={card}
@@ -51,6 +54,7 @@ export default async function ContatoPage() {
             </span>
           </span>
         </a>
+        ) : null}
 
         {/* Sem e-mail configurado em Admin -> Configuracoes, o cartao nao
             aparece. Publicar um endereco que nao existe e pior do que nao

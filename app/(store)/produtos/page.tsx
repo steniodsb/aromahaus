@@ -5,6 +5,7 @@ import {
   getTopCategories,
   getAllCategories,
   withProductDetails,
+  getWishlistIds,
 } from "@/lib/queries";
 import { ProductFilters } from "@/components/store/product-filters";
 
@@ -26,6 +27,7 @@ export default async function ProdutosPage(props: PageProps<"/produtos">) {
     getAllCategories(),
   ]);
   const products = await withProductDetails(found);
+  const savedIds = await getWishlistIds();
 
   const title = q
     ? `Resultados para “${q}”`
@@ -70,6 +72,7 @@ export default async function ProdutosPage(props: PageProps<"/produtos">) {
         <ProductFilters
           products={products}
           categories={categories}
+          savedIds={savedIds}
           initialFragrance={fragrancia}
           initialFamily={familia}
         />

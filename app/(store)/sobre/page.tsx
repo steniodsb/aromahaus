@@ -27,6 +27,10 @@ const PILARES = [
 ];
 
 export default function SobrePage() {
+  const whatsapp = whatsappLink(
+    "Olá! Vim pelo site da Aroma Haus e queria uma indicação de fragrância.",
+  );
+
   return (
     <div>
       {/* ── Abertura ─────────────────────────────────────────────────────── */}
@@ -122,14 +126,23 @@ export default function SobrePage() {
           >
             Ver fragrâncias
           </Link>
-          <a
-            href={whatsappLink("Olá! Vim pelo site da Aroma Haus e queria uma indicação de fragrância.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border-b border-champagne-500 pb-1 text-[0.6875rem] uppercase tracking-[0.18em] text-linen-700 transition-colors hover:text-ink"
-          >
-            <MessageCircle className="h-4 w-4" strokeWidth={1.4} /> Falar no WhatsApp
-          </a>
+          {whatsapp ? (
+            <a
+              href={whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 border-b border-champagne-500 pb-1 text-[0.6875rem] uppercase tracking-[0.18em] text-linen-700 transition-colors hover:text-ink"
+            >
+              <MessageCircle className="h-4 w-4" strokeWidth={1.4} /> Falar no WhatsApp
+            </a>
+          ) : (
+            <Link
+              href="/contato"
+              className="inline-flex items-center gap-2 border-b border-champagne-500 pb-1 text-[0.6875rem] uppercase tracking-[0.18em] text-linen-700 transition-colors hover:text-ink"
+            >
+              <MessageCircle className="h-4 w-4" strokeWidth={1.4} /> Falar com a gente
+            </Link>
+          )}
         </div>
       </section>
     </div>
