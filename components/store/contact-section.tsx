@@ -5,7 +5,9 @@ import { getStoreInfo } from "@/lib/store";
 
 export async function ContactSection() {
   const store = await getStoreInfo().catch(() => null);
-  const email = store?.email || "contato@aromahaus.com.br";
+  // Sem e-mail configurado, o canal some em vez de virar um endereço
+  // inventado que ninguém lê do outro lado.
+  const email = store?.email?.trim() || null;
 
   return (
     <section
@@ -34,12 +36,14 @@ export async function ContactSection() {
           >
             <MessageCircle className="h-4 w-4" strokeWidth={1.4} /> Falar no WhatsApp
           </a>
-          <a
-            href={`mailto:${email}`}
-            className="inline-flex items-center gap-2 text-sm text-linen-400 transition-colors hover:text-champagne-300"
-          >
-            <Mail className="h-4 w-4" strokeWidth={1.4} /> {email}
-          </a>
+          {email ? (
+            <a
+              href={`mailto:${email}`}
+              className="inline-flex items-center gap-2 text-sm text-linen-400 transition-colors hover:text-champagne-300"
+            >
+              <Mail className="h-4 w-4" strokeWidth={1.4} /> {email}
+            </a>
+          ) : null}
           <a
             href="https://instagram.com/aromahaus"
             target="_blank"

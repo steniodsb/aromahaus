@@ -205,20 +205,26 @@ export async function saveProduct(formData: FormData): Promise<FormResult> {
   redirect("/admin/produtos");
 }
 
-export async function deleteProduct(id: string) {
+export async function deleteProduct(id: string): Promise<FormResult> {
   await requireAdmin();
   const supabase = await createClient();
   const { error } = await supabase.from("products").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) return { error: traduzErro(error.message) };
   revalidatePath("/admin/produtos");
+  return undefined;
 }
 
-export async function toggleProduct(id: string, field: "is_active" | "featured", value: boolean) {
+export async function toggleProduct(
+  id: string,
+  field: "is_active" | "featured",
+  value: boolean,
+): Promise<FormResult> {
   await requireAdmin();
   const supabase = await createClient();
   const { error } = await supabase.from("products").update({ [field]: value }).eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) return { error: traduzErro(error.message) };
   revalidatePath("/admin/produtos");
+  return undefined;
 }
 
 /**

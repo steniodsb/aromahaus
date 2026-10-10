@@ -367,9 +367,13 @@ on conflict (slug) do nothing;
 
 -- ---------- Configurações ----------
 insert into public.settings (key, value) values
+  -- E-mail e WhatsApp nascem VAZIOS de propósito. Um endereço inventado no
+  -- seed vira o endereço que o rodapé publica, e o cliente escreve para o
+  -- vazio. A loja esconde o canal enquanto não houver dado; preencha em
+  -- Admin → Configurações.
   ('store', jsonb_build_object(
      'name', 'Aroma Haus',
-     'email', 'contato@aromahaus.com.br',
+     'email', '',
      'whatsapp', '',
      'instagram', 'aromahaus'
    )),
@@ -441,7 +445,7 @@ end $$;
 insert into public.settings (key, value) values
   ('store', jsonb_build_object(
       'name',      'Aroma Haus',
-      'email',     'contato@aromahaus.com.br',
+      'email',     '',
       'phone',     '',
       'whatsapp',  '',
       'cnpj',      '',
@@ -451,7 +455,7 @@ insert into public.settings (key, value) values
       'from_cep',       '',
       'from_name',      'Aroma Haus',
       'from_phone',     '',
-      'from_email',     'contato@aromahaus.com.br',
+      'from_email',     '',
       'from_document',  '',
       'from_address',   '',
       'from_number',    '',
@@ -1452,6 +1456,27 @@ join public.categories c on c.slug = 'kits-presentes'
 on conflict (slug) do nothing;
 
 -- ----------------------------------------------------------------
+-- Cupom de primeira compra
+--
+-- A barra de vantagens da home anuncia PRIMEIRAHAUS em toda página. Sem o
+-- registro aqui, o cliente digitava o código no checkout e recebia "cupom
+-- inválido" — a loja prometendo na capa o que não entrega no caixa.
+--
+-- `first_order_only` é checado em `lib/coupons.ts` contra os pedidos pagos
+-- do e-mail, então ele não vira desconto permanente.
+-- ----------------------------------------------------------------
+insert into public.coupons (
+  code, description, type, value, max_discount,
+  min_subtotal, first_order_only, max_uses_per_customer, is_active
+) values (
+  'PRIMEIRAHAUS',
+  '5% de desconto na primeira compra',
+  'percent', 5, 60,
+  0, true, 1, true
+)
+on conflict do nothing;
+
+-- ----------------------------------------------------------------
 -- Avaliações de demonstração
 --
 -- Sem nota nenhuma a vitrine fica com o espaço das estrelas vazio e parece
@@ -1492,15 +1517,15 @@ where not exists (
 -- ----------------------------------------------------------------
 -- Blog — três pautas que respondem o que o cliente pergunta antes de comprar
 -- ----------------------------------------------------------------
-insert into public.blog_posts (title, slug, excerpt, content, author, tags, status, published_at, seo_title, seo_description)
-select b.titulo, b.slug, b.resumo, b.conteudo, 'Aroma Haus', b.tags, 'published',
+insert into public.blog_posts (title, slug, excerpt, content, cover_url, author, tags, status, published_at, seo_title, seo_description)
+select b.titulo, b.slug, b.resumo, b.conteudo, b.capa, 'Aroma Haus', b.tags, 'published',
        now() - (b.dias || ' days')::interval, b.seo_t, b.seo_d
 from (values
   ('Quantas varetas usar no difusor (e por que isso muda tudo)',
    'quantas-varetas-usar-no-difusor',
    'A mesma fragrância pode ser discreta ou invasiva dependendo de um detalhe que quase ninguém ajusta: o número de varetas.',
    E'# Quantas varetas usar no difusor\n\nO difusor não tem botão de volume — mas tem. Cada vareta é um canal: quanto mais varetas, mais essência sobe e mais rápido o frasco acaba.\n\n## A regra do ambiente\n\n- **Lavabo e banheiro (até 4 m²):** 3 a 4 varetas.\n- **Quarto (10 a 15 m²):** 5 a 6 varetas.\n- **Sala (20 m² ou mais):** 7 a 8 varetas.\n- **Pé-direito alto ou ambiente integrado:** 8 varetas e, se precisar, um segundo frasco em outro ponto.\n\n## Vire as varetas, mas não todo dia\n\nVirar reaviva o perfume porque traz para cima a parte já embebida. Uma vez por semana basta. Virar todo dia só faz o frasco acabar antes.\n\n## Onde colocar\n\nLonge de janela aberta, ventilador e ar-condicionado: a corrente de ar leva o perfume embora em vez de espalhar. Um aparador no meio da parede funciona melhor do que o peitoril.\n\n## Quanto tempo dura\n\nUm frasco de 250 ml com 5 varetas dura de 3 a 5 meses. Com 8 varetas, de 2 a 3. Quando acabar, use um refil: o frasco e as varetas novas fazem o resto.',
-   array['difusor','como usar','perfumaria de ambiente'], 4,
+   '/blog/quantas-varetas.webp', array['difusor','como usar','perfumaria de ambiente'], 4,
    'Quantas varetas usar no difusor de ambiente',
    'Guia rápido por metragem: quantas varetas usar no difusor em lavabo, quarto e sala, de quanto em quanto tempo virar e quanto tempo o frasco dura.'),
 
@@ -1508,7 +1533,7 @@ from (values
    'fragrancia-certa-para-cada-comodo',
    'Cozinha, quarto e lavabo pedem famílias olfativas diferentes. Um mapa curto para não errar a compra.',
    E'# Uma fragrância para cada cômodo\n\nPerfumar a casa inteira com o mesmo cheiro raramente funciona. Cada ambiente tem uma função, e o perfume precisa acompanhar.\n\n## Quarto: fresco ou herbal\n\nO quarto pede fragrância que não disputa atenção na hora de dormir. **Linho Branco** e **Lavanda de Provence** cumprem esse papel — almíscar branco e lavanda baixam o ritmo em vez de acelerar.\n\n## Sala: âmbar ou amadeirado\n\nÉ o ambiente onde se recebe, e onde a fragrância pode ser a primeira coisa que a visita percebe. **Âmbar Haus** e **Baunilha & Sândalo** preenchem o espaço sem ficar enjoativos.\n\n## Lavabo e banheiro: cítrico\n\nEspaço pequeno satura rápido. Fragrância leve e transparente, como **Chá Branco & Pera**, limpa o ar sem pesar. Aqui o home spray costuma render mais do que o difusor.\n\n## Cozinha: verde\n\nContra cheiro de comida, o que funciona é verde e cítrico, não doce. **Flor de Figo** é a escolha da casa.\n\n## Escritório: amadeirado seco\n\n**Couro & Vetiver** mantém o ambiente sóbrio. Evite gourmand em sala de trabalho: doce em excesso cansa em jornada longa.',
-   array['fragrâncias','guia de compra','decoração'], 12,
+   '/blog/cada-comodo.webp', array['fragrâncias','guia de compra','decoração'], 12,
    'Qual fragrância usar em cada cômodo da casa',
    'Qual família olfativa combina com quarto, sala, lavabo, cozinha e escritório — e por que a mesma fragrância não serve para a casa inteira.'),
 
@@ -1516,10 +1541,10 @@ from (values
    'difusor-home-spray-ou-vela',
    'Os três perfumam, mas resolvem problemas diferentes. A diferença está em quanto tempo o perfume precisa durar.',
    E'# Difusor, home spray ou vela\n\n## Difusor: o perfume de fundo\n\nTrabalha sozinho, 24 horas por dia, por meses. É o que faz a casa ter um cheiro próprio — aquele que a visita sente na porta e o morador já nem percebe. Não tem chama, não usa tomada e não pede nada depois de montado.\n\n**Escolha se:** você quer que a casa tenha uma assinatura olfativa constante.\n\n## Home spray: o perfume de ocasião\n\nAge em segundos e vai embora em horas. É a ferramenta do antes das visitas, do depois de cozinhar, do quarto de hóspedes que ficou fechado a semana toda.\n\n**Escolha se:** você precisa de controle imediato, no momento exato.\n\n**Dica:** borrife em tecido, não no ar. Cortina, almofada e roupa de cama seguram o perfume muito mais tempo.\n\n## Os dois juntos\n\nÉ o que a maioria dos nossos clientes acaba fazendo, e é por isso que os kits combinam difusor e spray da mesma fragrância: o difusor sustenta o fundo, o spray reforça quando precisa. Mesma família olfativa, sem briga entre os dois.\n\n## E a vela?\n\nVela perfuma e aquece a cena, mas exige presença: não dá para acender e sair. Em casa com criança ou animal, o difusor resolve o mesmo problema sem o risco.',
-   array['difusor','home spray','guia de compra'], 25,
+   '/blog/difusor-ou-spray.webp', array['difusor','home spray','guia de compra'], 25,
    'Difusor, home spray ou vela: qual escolher',
    'A diferença prática entre difusor de varetas, home spray e vela perfumada — e em que situação cada um resolve melhor.')
-) as b(titulo, slug, resumo, conteudo, tags, dias, seo_t, seo_d)
+) as b(titulo, slug, resumo, conteudo, capa, tags, dias, seo_t, seo_d)
 on conflict (slug) do nothing;
 
 

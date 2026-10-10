@@ -51,16 +51,26 @@ export async function updateOrder(formData: FormData) {
     }
   }
 
-  // E-mails de atualização (idempotentes por status)
+  // E-mails de atualização. O cliente só é avisado quando há novidade para ele:
+  //  - o status mudou (comparado com o valor que estava no banco ANTES do
+  //    update acima), ou
+  //  - o pedido está "enviado" e o código de rastreio mudou (inclusive quando
+  //    foi preenchido pela primeira vez ou corrigido).
+  // Salvar só a nota interna não cai em nenhum dos dois: antes, qualquer save
+  // disparava e-mail sempre que o de "pago"/"enviado" ainda não tinha saído.
+  const trackingChanged = (prev.tracking_code ?? null) !== tracking_code;
+  const avisarRastreio = status === "shipped" && trackingChanged && !!tracking_code;
   try {
-    if (status === "paid" && !prev.paid_email_sent) {
+    if (!statusChanged && !avisarRastreio) {
+      /* nada que o cliente precise saber */
+    } else if (status === "paid" && !prev.paid_email_sent) {
       const { data: items } = await admin
         .from("order_items")
         .select("name_snapshot, unit_price, qty")
         .eq("order_id", id);
       await sendOrderPaidEmail(order, items ?? []);
       await admin.from("orders").update({ paid_email_sent: true, last_status_emailed: "paid" }).eq("id", id);
-    } else if (status === "shipped" && (statusChanged || !prev.shipped_email_sent)) {
+    } else if (status === "shipped") {
       await sendOrderShippedEmail(order);
       await admin.from("orders").update({ shipped_email_sent: true, last_status_emailed: "shipped" }).eq("id", id);
     } else if (

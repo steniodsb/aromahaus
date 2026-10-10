@@ -23,9 +23,13 @@ on conflict (slug) do nothing;
 
 -- ---------- Configurações ----------
 insert into public.settings (key, value) values
+  -- E-mail e WhatsApp nascem VAZIOS de propósito. Um endereço inventado no
+  -- seed vira o endereço que o rodapé publica, e o cliente escreve para o
+  -- vazio. A loja esconde o canal enquanto não houver dado; preencha em
+  -- Admin → Configurações.
   ('store', jsonb_build_object(
      'name', 'Aroma Haus',
-     'email', 'contato@aromahaus.com.br',
+     'email', '',
      'whatsapp', '',
      'instagram', 'aromahaus'
    )),

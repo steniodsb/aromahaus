@@ -84,18 +84,20 @@ export async function saveCoupon(formData: FormData): Promise<FormResult> {
   redirect("/admin/cupons");
 }
 
-export async function deleteCoupon(id: string) {
+export async function deleteCoupon(id: string): Promise<FormResult> {
   await requireAdmin();
   const supabase = await createClient();
   const { error } = await supabase.from("coupons").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) return { error: traduzErro(error.message) };
   revalidatePath("/admin/cupons");
+  return undefined;
 }
 
-export async function toggleCoupon(id: string, value: boolean) {
+export async function toggleCoupon(id: string, value: boolean): Promise<FormResult> {
   await requireAdmin();
   const supabase = await createClient();
   const { error } = await supabase.from("coupons").update({ is_active: value }).eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) return { error: traduzErro(error.message) };
   revalidatePath("/admin/cupons");
+  return undefined;
 }

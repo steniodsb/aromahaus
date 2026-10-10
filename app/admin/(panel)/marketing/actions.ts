@@ -3,9 +3,21 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { traduzErro } from "@/lib/admin-form";
 import type { Pixels } from "@/lib/store-defaults";
 
-export async function saveMarketing(formData: FormData) {
+export interface MarketingState {
+  ok: boolean;
+  error?: string;
+  /** Muda a cada gravação — faz o "salvo" reaparecer em saves seguidos. */
+  at: number;
+}
+
+/** Assinatura de `useActionState`: recebe o estado anterior e devolve o novo. */
+export async function saveMarketing(
+  _anterior: MarketingState | null,
+  formData: FormData,
+): Promise<MarketingState> {
   await requireAdmin();
   const supabase = await createClient();
 
@@ -20,8 +32,9 @@ export async function saveMarketing(formData: FormData) {
   const { error } = await supabase
     .from("settings")
     .upsert({ key: "pixels", value: pixels });
-  if (error) throw new Error(error.message);
+  if (error) return { ok: false, error: traduzErro(error.message), at: Date.now() };
 
   revalidatePath("/admin/marketing");
   revalidatePath("/", "layout");
+  return { ok: true, at: Date.now() };
 }

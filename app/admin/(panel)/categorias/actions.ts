@@ -67,21 +67,24 @@ export async function saveCategory(formData: FormData): Promise<FormResult> {
   redirect("/admin/categorias");
 }
 
-export async function toggleCategory(id: string, value: boolean) {
+export async function toggleCategory(id: string, value: boolean): Promise<FormResult> {
   await requireAdmin();
   const supabase = await createClient();
-  await supabase.from("categories").update({ is_active: value }).eq("id", id);
+  const { error } = await supabase.from("categories").update({ is_active: value }).eq("id", id);
+  if (error) return { error: traduzErro(error.message) };
   revalidatePath("/admin/categorias");
   revalidatePath("/");
+  return undefined;
 }
 
-export async function deleteCategory(id: string) {
+export async function deleteCategory(id: string): Promise<FormResult> {
   await requireAdmin();
   const supabase = await createClient();
   const { error } = await supabase.from("categories").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) return { error: traduzErro(error.message) };
   revalidatePath("/admin/categorias");
   revalidatePath("/");
+  return undefined;
 }
 
 /**

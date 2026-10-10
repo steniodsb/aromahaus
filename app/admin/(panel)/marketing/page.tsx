@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { saveMarketing } from "@/app/admin/(panel)/marketing/actions";
+import { MarketingForm } from "@/components/admin/marketing-form";
 import { EMPTY_PIXELS, type Pixels } from "@/lib/store-defaults";
 
 export default async function AdminMarketingPage() {
@@ -25,7 +25,7 @@ export default async function AdminMarketingPage() {
         desativar uma integração.
       </p>
 
-      <form action={saveMarketing} className="max-w-2xl space-y-6">
+      <MarketingForm>
         <div className="rounded border border-linen-200 bg-linen-50 p-5">
           <h2 className="mb-4 font-display text-lg text-ink">Google</h2>
           <div className="space-y-4">
@@ -70,10 +70,7 @@ export default async function AdminMarketingPage() {
           />
         </div>
 
-        <button className="rounded bg-linen-900 text-linen-50 text-xs uppercase tracking-[0.12em] transition-colors px-4 py-2 hover:bg-champagne-700">
-          Salvar
-        </button>
-      </form>
+      </MarketingForm>
     </div>
   );
 }

@@ -3,21 +3,34 @@ import { Package, ShoppingBag, DollarSign, Newspaper } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { formatBRL } from "@/lib/utils";
 
+// Pedido que já foi pago e segue o fluxo continua sendo faturamento: "enviado" e
+// "entregue" são estágios DEPOIS de "pago". Contar só `paid` fazia o número
+// cair quanto mais rápido a loja despachava. Mesmo critério da tela de Clientes.
+const STATUS_FATURADOS = ["paid", "shipped", "delivered"];
+
 async function getStats() {
   const supabase = await createClient();
-  const [products, orders, paidOrders, posts] = await Promise.all([
+  // Card "Pedidos": exclui cancelados e reembolsados (não são venda), mas MANTÉM
+  // os pendentes, que aparecem separados na linha de baixo — assim o total não
+  // infla com carrinho abandonado e quem lê ainda vê quanto espera pagamento.
+  const [products, orders, pendingOrders, billedOrders, posts] = await Promise.all([
     supabase.from("products").select("id", { count: "exact", head: true }).eq("is_active", true),
-    supabase.from("orders").select("id", { count: "exact", head: true }),
-    supabase.from("orders").select("total").eq("status", "paid"),
+    supabase
+      .from("orders")
+      .select("id", { count: "exact", head: true })
+      .not("status", "in", "(canceled,refunded)"),
+    supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
+    supabase.from("orders").select("total").in("status", STATUS_FATURADOS),
     supabase.from("blog_posts").select("id", { count: "exact", head: true }),
   ]);
 
   const revenue =
-    (paidOrders.data ?? []).reduce((sum, o) => sum + Number(o.total || 0), 0) || 0;
+    (billedOrders.data ?? []).reduce((sum, o) => sum + Number(o.total || 0), 0) || 0;
 
   return {
     products: products.count ?? 0,
     orders: orders.count ?? 0,
+    pending: pendingOrders.count ?? 0,
     revenue,
     posts: posts.count ?? 0,
   };
@@ -28,8 +41,20 @@ export default async function AdminDashboard() {
 
   const cards = [
     { label: "Produtos ativos", value: stats.products, icon: Package, href: "/admin/produtos" },
-    { label: "Pedidos", value: stats.orders, icon: ShoppingBag, href: "/admin/pedidos" },
-    { label: "Faturamento (pago)", value: formatBRL(stats.revenue), icon: DollarSign, href: "/admin/pedidos" },
+    {
+      label: "Pedidos (sem cancelados)",
+      value: stats.orders,
+      hint: `${stats.pending} aguardando pagamento`,
+      icon: ShoppingBag,
+      href: "/admin/pedidos",
+    },
+    {
+      label: "Faturamento",
+      value: formatBRL(stats.revenue),
+      hint: "Pedidos pagos, enviados e entregues",
+      icon: DollarSign,
+      href: "/admin/pedidos",
+    },
     { label: "Artigos do blog", value: stats.posts, icon: Newspaper, href: "/admin/blog" },
   ];
 
@@ -37,11 +62,11 @@ export default async function AdminDashboard() {
     <div>
       <h1 className="font-display text-3xl text-ink">Dashboard</h1>
       <p className="mb-6 mt-1 text-sm text-linen-600">
-        Panorama rápido da loja: o que está à venda, quantos pedidos entraram e quanto já foi pago. Use os atalhos para seguir direto ao trabalho.
+        Panorama rápido da loja: o que está à venda, quantos pedidos entraram e quanto já foi faturado. Use os atalhos para seguir direto ao trabalho.
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map(({ label, value, icon: Icon, href }) => (
+        {cards.map(({ label, value, hint, icon: Icon, href }) => (
           <Link
             key={label}
             href={href}
@@ -52,6 +77,7 @@ export default async function AdminDashboard() {
             </div>
             <div className="numeral text-3xl text-ink">{value}</div>
             <div className="text-sm text-linen-600">{label}</div>
+            {hint && <div className="mt-0.5 text-xs text-linen-500">{hint}</div>}
           </Link>
         ))}
       </div>

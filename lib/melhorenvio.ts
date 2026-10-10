@@ -19,7 +19,16 @@ export interface ShippingQuote {
 }
 
 const BASE = process.env.MELHORENVIO_BASE_URL ?? "https://sandbox.melhorenvio.com.br";
-const UA = "Aroma Haus (contato@aromahaus.com.br)";
+/**
+ * User-Agent exigido pelo Melhor Envio: eles pedem um contato real para
+ * conseguirem falar com a loja sobre uso da API. Sai do `STORE_EMAIL`, e não
+ * de um endereço fixo no código — um e-mail inventado aqui é um canal que
+ * ninguém lê do outro lado.
+ */
+function userAgent() {
+  const contato = process.env.STORE_EMAIL?.trim();
+  return contato ? `Aroma Haus (${contato})` : "Aroma Haus";
+}
 
 export function isMelhorEnvioConfigured() {
   return Boolean(process.env.MELHORENVIO_TOKEN);
@@ -30,7 +39,7 @@ function meHeaders(token: string) {
     Accept: "application/json",
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
-    "User-Agent": UA,
+    "User-Agent": userAgent(),
   };
 }
 

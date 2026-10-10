@@ -82,21 +82,23 @@ export async function saveShippingRule(formData: FormData): Promise<FormResult> 
   redirect("/admin/frete");
 }
 
-export async function deleteShippingRule(id: string) {
+export async function deleteShippingRule(id: string): Promise<FormResult> {
   await requireAdmin();
   const supabase = await createClient();
   const { error } = await supabase.from("shipping_rules").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) return { error: traduzErro(error.message) };
   revalidatePath("/admin/frete");
+  return undefined;
 }
 
-export async function toggleShippingRule(id: string, value: boolean) {
+export async function toggleShippingRule(id: string, value: boolean): Promise<FormResult> {
   await requireAdmin();
   const supabase = await createClient();
   const { error } = await supabase
     .from("shipping_rules")
     .update({ is_active: value })
     .eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) return { error: traduzErro(error.message) };
   revalidatePath("/admin/frete");
+  return undefined;
 }

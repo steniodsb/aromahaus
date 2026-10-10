@@ -238,17 +238,9 @@ export function CategoryTree({ categories }: { categories: Category[] }) {
       setRenomeando(cat.id);
       setNomeEditado(cat.name);
     },
-    onAlternar: () =>
-      rodar(async () => {
-        await toggleCategory(cat.id, !cat.is_active);
-        return undefined;
-      }),
+    onAlternar: () => rodar(() => toggleCategory(cat.id, !cat.is_active)),
     onConfirmar: setConfirmando,
-    onExcluir: () =>
-      rodar(async () => {
-        await deleteCategory(cat.id);
-        return undefined;
-      }),
+    onExcluir: () => rodar(() => deleteCategory(cat.id)),
   });
 
   const nomeDe = (cat: Category, raiz?: boolean) => ({

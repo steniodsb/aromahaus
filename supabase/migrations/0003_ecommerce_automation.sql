@@ -60,7 +60,7 @@ end $$;
 insert into public.settings (key, value) values
   ('store', jsonb_build_object(
       'name',      'Aroma Haus',
-      'email',     'contato@aromahaus.com.br',
+      'email',     '',
       'phone',     '',
       'whatsapp',  '',
       'cnpj',      '',
@@ -70,7 +70,7 @@ insert into public.settings (key, value) values
       'from_cep',       '',
       'from_name',      'Aroma Haus',
       'from_phone',     '',
-      'from_email',     'contato@aromahaus.com.br',
+      'from_email',     '',
       'from_document',  '',
       'from_address',   '',
       'from_number',    '',

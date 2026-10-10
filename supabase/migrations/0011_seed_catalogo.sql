@@ -163,6 +163,27 @@ join public.categories c on c.slug = 'kits-presentes'
 on conflict (slug) do nothing;
 
 -- ----------------------------------------------------------------
+-- Cupom de primeira compra
+--
+-- A barra de vantagens da home anuncia PRIMEIRAHAUS em toda página. Sem o
+-- registro aqui, o cliente digitava o código no checkout e recebia "cupom
+-- inválido" — a loja prometendo na capa o que não entrega no caixa.
+--
+-- `first_order_only` é checado em `lib/coupons.ts` contra os pedidos pagos
+-- do e-mail, então ele não vira desconto permanente.
+-- ----------------------------------------------------------------
+insert into public.coupons (
+  code, description, type, value, max_discount,
+  min_subtotal, first_order_only, max_uses_per_customer, is_active
+) values (
+  'PRIMEIRAHAUS',
+  '5% de desconto na primeira compra',
+  'percent', 5, 60,
+  0, true, 1, true
+)
+on conflict do nothing;
+
+-- ----------------------------------------------------------------
 -- Avaliações de demonstração
 --
 -- Sem nota nenhuma a vitrine fica com o espaço das estrelas vazio e parece
