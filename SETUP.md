@@ -10,36 +10,43 @@ Tudo abaixo é "só colar chave / preencher campo". Nenhuma linha de código a m
 
 ## 1. Banco de dados (Supabase) — **obrigatório**
 
-Rodar as migrações no SQL Editor do Supabase (ou `supabase db push`), na ordem:
+Cole **`supabase/APLICAR.sql`** inteiro no SQL Editor do Supabase e rode. É a
+concatenação de todas as migrações, na ordem, e é idempotente: rodar de novo
+não duplica nada. (`npm run sql` regenera o arquivo depois de criar uma
+migração nova.)
 
-```
-supabase/migrations/0003_ecommerce_automation.sql
-supabase/migrations/0004_checkout_transparente.sql
-supabase/migrations/0005_cupons_regras_frete.sql
-supabase/migrations/0006_newsletter.sql
-supabase/migrations/0007_estoque_paginas_faq.sql
-supabase/migrations/0008_log_admins.sql
-supabase/migrations/0009_pedidos_arquivar.sql
-```
+> ### ⚠️ Se o banco já foi aplicado antes de 10/10/2026, rode a `0013`
+>
+> `supabase/migrations/0013_correcoes_seguranca.sql` entrou depois. **Ela é
+> obrigatória antes de a loja receber o primeiro cliente de verdade**, porque
+> conserta uma escalada de privilégio: com a policy antiga, qualquer pessoa
+> que se cadastrasse na loja virava administradora com uma requisição de uma
+> linha — e o painel dá acesso a CPF, telefone e endereço de todos os
+> clientes, a estorno de pagamento e ao campo que injeta JavaScript em todas
+> as páginas, inclusive no checkout.
+>
+> Ela também conserta três coisas que simplesmente não funcionavam:
+> nenhuma avaliação conseguia ser enviada (erro `42P10` em toda tentativa),
+> os dados do lojista em `settings` eram legíveis por qualquer visitante, e o
+> limite de uso de cupom podia ser furado por checkouts simultâneos.
+>
+> Pode ser colada sozinha, sem rodar o resto.
 
+O que cada migração faz, para referência:
+
+- `0001`/`0002` — schema inicial e primeiros dados.
 - `0003` — baixa de estoque automática, flags de e-mail e campos de etiqueta.
 - `0004` — checkout transparente (CPF, meio de pagamento, dados do Pix/boleto).
-- `0005` — **cupons de desconto e regras de frete**. Enquanto ela não rodar,
-  `/admin/cupons` e `/admin/frete` não abrem, e todo cupom digitado no checkout
-  responde "Cupom inválido" (a loja não quebra, só não tem cupom).
-- `0006` — **newsletter em tabela**. ⚠️ Rode ASSIM QUE fizer deploy: o código
-  novo grava em `newsletter_subscribers`, então enquanto a tabela não existir
-  o formulário do rodapé responde "Não foi possível inscrever agora" e o
-  inscrito se perde. A migração já traz quem estava no array antigo.
-- `0007` — histórico de estoque, páginas institucionais e FAQ editáveis. Sem
-  ela, `/admin/estoque` e `/admin/paginas` não salvam (a loja segue servindo o
-  texto embutido, sem quebrar).
-- `0008` — registro de atividade do painel. Sem ela, `/admin/equipe` abre mas
-  a lista de atividade fica vazia.
-- `0009` — arquivar pedidos. Sem ela a lista de pedidos continua funcionando
-  (a tela detecta e recua), só o botão Arquivar não aparece.
-
-As migrações `0001` e `0002` já devem ter sido aplicadas.
+- `0005` — cupons de desconto e regras de frete.
+- `0006` — newsletter em tabela.
+- `0007` — histórico de estoque, páginas institucionais e FAQ editáveis.
+- `0008` — registro de atividade do painel.
+- `0009` — arquivar pedidos.
+- `0010` — perfumaria: variantes de tamanho, avaliações, lista de desejos, kits.
+- `0011` — catálogo de demonstração (8 fragrâncias × 4 formatos, 3 kits, cupom
+  `PRIMEIRAHAUS`, avaliações e posts). Todo ele é editável pelo painel.
+- `0012` — textos institucionais e FAQ.
+- `0013` — **correções de segurança** (ver aviso acima).
 
 **Criar o admin:** só é preciso SQL para o PRIMEIRO admin. Depois disso, use
 **Admin → Equipe e atividade** para promover ou remover acesso pela tela.
