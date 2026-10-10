@@ -6,7 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getShippingOrigin } from "@/lib/store";
 import { createShipmentForOrder, calculateShipping } from "@/lib/melhorenvio";
 import { refundPayment } from "@/lib/payments/mercadopago-transparent";
-import type { FormResult } from "@/lib/admin-form";
+import { traduzErro, type FormResult } from "@/lib/admin-form";
 import { log } from "@/lib/activity";
 import { isValidCPF } from "@/lib/utils";
 import {
@@ -20,7 +20,7 @@ import {
  * atualização adequado (enviado / entregue / cancelado / reembolsado).
  * Também ajusta o estoque quando o status muda manualmente.
  */
-export async function updateOrder(formData: FormData) {
+export async function updateOrder(formData: FormData): Promise<FormResult> {
   const { user } = await requireAdmin();
   const admin = createAdminClient();
 
@@ -30,13 +30,15 @@ export async function updateOrder(formData: FormData) {
   const notes = (formData.get("notes") as string)?.trim() || null;
 
   const { data: prev } = await admin.from("orders").select("*").eq("id", id).single();
-  if (!prev) throw new Error("Pedido não encontrado");
+  // Devolve em vez de lançar: exceção em server action chega ao admin como
+  // "algo deu errado" genérico, e a tela recarrega como se tivesse salvado.
+  if (!prev) return { error: "Pedido não encontrado." };
 
   const { error } = await admin
     .from("orders")
     .update({ status, tracking_code, notes })
     .eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) return { error: traduzErro(error.message) };
 
   const order = { ...prev, status, tracking_code, notes };
   const statusChanged = prev.status !== status;
@@ -98,6 +100,7 @@ export async function updateOrder(formData: FormData) {
 
   revalidatePath(`/admin/pedidos/${id}`);
   revalidatePath("/admin/pedidos");
+  return undefined;
 }
 
 /**

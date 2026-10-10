@@ -13,14 +13,13 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { formatBRL, formatCPF, dataHoraBR } from "@/lib/utils";
-import { updateOrder } from "@/app/admin/(panel)/pedidos/actions";
+import { OrderStatusForm } from "@/components/admin/order-status-form";
 import { LabelButton } from "@/components/admin/label-button";
 import { CopyButton } from "@/components/admin/copy-button";
 import { RefundButton } from "@/components/admin/refund-button";
 import { OrderEdit } from "@/components/admin/order-edit";
 import { ShippingPicker } from "@/components/admin/shipping-picker";
 
-const STATUSES = ["pending", "paid", "shipped", "delivered", "canceled", "refunded"];
 const STATUS_LABEL: Record<string, string> = {
   pending: "Aguardando", paid: "Pago", shipped: "Enviado",
   delivered: "Entregue", canceled: "Cancelado", refunded: "Reembolsado",
@@ -84,7 +83,6 @@ export default async function AdminOrderDetail(
   const card = "rounded border border-linen-200 bg-linen-50 p-5";
   const linha = "flex justify-between gap-4 py-1 text-sm";
   const rotulo = "mb-1.5 text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700";
-  const campo = "w-full rounded border border-linen-300 bg-linen-50 px-3 py-2 text-sm outline-none focus:border-champagne-600";
   const h2 = "font-display text-lg text-ink";
 
   const comEtiqueta = !!order.melhorenvio_order_id;
@@ -355,46 +353,13 @@ export default async function AdminOrderDetail(
         {/* Coluna estreita: o que se FAZ com o pedido — mudar a situação e
             mexer no dinheiro. */}
         <div className="space-y-4">
-          <form action={updateOrder} className={card}>
-            <input type="hidden" name="id" value={order.id} />
-            <h2 className={`mb-3 ${h2}`}>Situação</h2>
-            <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">Status</label>
-            <select name="status" defaultValue={order.status} className={`mb-4 ${campo}`}>
-              {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
-            </select>
-
-            <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">Código de rastreio</label>
-            <input
-              name="tracking_code"
-              defaultValue={order.tracking_code ?? ""}
-              readOnly={comEtiqueta}
-              className={`mb-1 ${campo} read-only:bg-linen-100 read-only:text-linen-600`}
-            />
-            <p className="mb-4 text-xs text-linen-500">
-              {comEtiqueta
-                ? "Veio da etiqueta do Melhor Envio."
-                : "Preencha se despachou por fora do Melhor Envio."}
-            </p>
-
-            {/* Nota interna: some da vista do cliente. É onde o combinado por
-                WhatsApp para de viver só no WhatsApp. */}
-            <label className="mb-1.5 block text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700">
-              Nota interna
-            </label>
-            <textarea
-              name="notes"
-              rows={3}
-              defaultValue={order.notes ?? ""}
-              placeholder="Cliente pediu para trocar o endereço…"
-              className={`mb-1 ${campo}`}
-            />
-            <p className="mb-4 text-xs text-linen-500">Só você vê. Não vai em e-mail nenhum.</p>
-
-            <button className="w-full rounded bg-linen-900 px-4 py-2 text-xs uppercase tracking-[0.12em] text-linen-50 transition-colors hover:bg-champagne-700">
-              Salvar
-            </button>
-            <p className="mt-2 text-xs text-linen-500">Salvar dispara o e-mail de atualização para o cliente.</p>
-          </form>
+          <OrderStatusForm
+            orderId={order.id}
+            status={order.status}
+            trackingCode={order.tracking_code}
+            notes={order.notes}
+            comEtiqueta={comEtiqueta}
+          />
 
           <div className={card}>
             <h2 className={`mb-3 flex items-center gap-2 ${h2}`}>
