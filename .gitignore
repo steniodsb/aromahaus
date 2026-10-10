@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# O exemplo é o contrário: não tem segredo nenhum e é ele que documenta
+# quais variáveis existem. Sem esta exceção, quem clona o repositório não
+# descobre o que precisa configurar.
+!.env.example
 
 # secrets shared during setup (NEVER commit)
 credentials.env
