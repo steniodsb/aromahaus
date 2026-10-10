@@ -90,3 +90,29 @@ export const EMPTY_PIXELS: Pixels = {
   meta_pixel_id: "",
   head_html: "",
 };
+
+/**
+ * Formato de cada id de pixel.
+ *
+ * Mora aqui, e não no componente, porque dois lugares precisam da MESMA
+ * regra: o formulário do admin (para avisar o lojista que o id está errado)
+ * e o `SiteScripts` (que recusa o campo antes de interpolá-lo dentro de uma
+ * string JavaScript na página).
+ */
+export const PIXEL_FORMATOS: Record<
+  "ga4_id" | "gtm_id" | "google_ads_id" | "meta_pixel_id",
+  { regex: RegExp; exemplo: string }
+> = {
+  ga4_id: { regex: /^G-[A-Z0-9]{6,14}$/i, exemplo: "G-XXXXXXXXXX" },
+  gtm_id: { regex: /^GTM-[A-Z0-9]{4,12}$/i, exemplo: "GTM-XXXXXXX" },
+  google_ads_id: { regex: /^AW-\d{6,14}$/i, exemplo: "AW-123456789" },
+  meta_pixel_id: { regex: /^\d{8,20}$/, exemplo: "123456789012345" },
+};
+
+/** Nome amigável de cada campo, para a mensagem de erro do formulário. */
+export const PIXEL_ROTULOS: Record<keyof typeof PIXEL_FORMATOS, string> = {
+  ga4_id: "Google Analytics 4",
+  gtm_id: "Google Tag Manager",
+  google_ads_id: "Google Ads",
+  meta_pixel_id: "Meta Pixel",
+};

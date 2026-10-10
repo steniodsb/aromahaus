@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { traduzErro } from "@/lib/admin-form";
-import type { Pixels } from "@/lib/store-defaults";
+import { PIXEL_FORMATOS, PIXEL_ROTULOS, type Pixels } from "@/lib/store-defaults";
 
 export interface MarketingState {
   ok: boolean;
@@ -28,6 +28,19 @@ export async function saveMarketing(
     meta_pixel_id: ((formData.get("meta_pixel_id") as string) || "").trim(),
     head_html: ((formData.get("head_html") as string) || "").trim(),
   };
+
+  // Id fora de formato é recusado na gravação, não silenciosamente ignorado
+  // na loja: o lojista precisa saber que o pixel dele NÃO está medindo.
+  for (const campo of Object.keys(PIXEL_FORMATOS) as (keyof typeof PIXEL_FORMATOS)[]) {
+    const valor = pixels[campo];
+    if (valor && !PIXEL_FORMATOS[campo].regex.test(valor)) {
+      return {
+        ok: false,
+        error: `O ID do ${PIXEL_ROTULOS[campo]} não está no formato esperado (${PIXEL_FORMATOS[campo].exemplo}). Confira se não veio com espaço ou com o código inteiro em vez de só o ID.`,
+        at: Date.now(),
+      };
+    }
+  }
 
   const { error } = await supabase
     .from("settings")

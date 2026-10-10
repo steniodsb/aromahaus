@@ -48,7 +48,7 @@ function CustomerSignupForm() {
     }
     // Se a confirmação de e-mail estiver desativada, já vem sessão
     if (data.session) {
-      void notifyWelcome({ name: form.name, email: form.email });
+      void notifyWelcome();
       router.push(redirect);
       router.refresh();
     } else {

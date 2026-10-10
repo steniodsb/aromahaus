@@ -95,6 +95,40 @@ const BRAND = "#a5854a"; // champagne-600
 const INK = "#2b2722"; // linen-900
 
 /**
+ * Escapa texto para dentro do HTML do e-mail.
+ *
+ * Tudo que entra nestes templates é interpolado em template string, sem
+ * nenhuma camada de framework no caminho: um nome de cliente com
+ * `<img src=x onerror=...>` ia inteiro para a caixa de entrada — a dele e,
+ * nos avisos de pedido, a do lojista. Nome, endereço, motivo de recusa do
+ * gateway e nome de produto são todos texto de fora.
+ */
+function esc(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
+ * Só deixa passar http(s) num `href`.
+ *
+ * O link do boleto vem do gateway. `javascript:` num e-mail não executa na
+ * maioria dos clientes, mas executa no webmail de alguns e no navegador de
+ * quem abre o e-mail "no browser" — e não custa nada barrar aqui.
+ */
+function safeUrl(url: string | null | undefined, fallback = "#"): string {
+  try {
+    const u = new URL(String(url));
+    return u.protocol === "http:" || u.protocol === "https:" ? esc(u.toString()) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+/**
  * Base pública para as imagens do e-mail.
  *
  * Cliente de e-mail busca a imagem do servidor DELE, então `localhost` nunca
@@ -129,8 +163,8 @@ function assetsBase(siteUrl: string): string {
 function logoHeader(store: { name: string; siteUrl: string }) {
   const src = `${assetsBase(store.siteUrl)}/brand/aroma-haus-logo.png`;
   return `<div style="text-align:center;padding:8px 0 24px;">
-      <a href="${store.siteUrl}" style="text-decoration:none;">
-        <img src="${src}" alt="${store.name}" width="215" height="40"
+      <a href="${safeUrl(store.siteUrl)}" style="text-decoration:none;">
+        <img src="${safeUrl(src)}" alt="${esc(store.name)}" width="215" height="40"
              style="display:block;margin:0 auto;border:0;outline:none;text-decoration:none;width:215px;height:auto;max-width:215px;font-size:20px;letter-spacing:4px;color:${BRAND};" />
       </a>
     </div>`;
@@ -161,11 +195,11 @@ function shell(store: Awaited<ReturnType<typeof getStoreInfo>>, title: string, b
   <div style="max-width:600px;margin:0 auto;padding:24px;">
     ${logoHeader(store)}
     <div style="background:#fff;border-radius:14px;padding:32px;border:1px solid #e4e4e7;">
-      <h1 style="margin:0 0 16px;font-size:20px;color:#18181b;">${title}</h1>
+      <h1 style="margin:0 0 16px;font-size:20px;color:#18181b;">${esc(title)}</h1>
       ${body}
     </div>
     <p style="text-align:center;color:#a1a1aa;font-size:12px;margin:24px 0 4px;">
-      ${store.name} — pedido feito em <a href="${store.siteUrl}" style="color:${BRAND};text-decoration:none;">${store.siteUrl.replace(/^https?:\/\//, "")}</a>
+      ${esc(store.name)} — pedido feito em <a href="${safeUrl(store.siteUrl)}" style="color:${BRAND};text-decoration:none;">${esc(store.siteUrl.replace(/^https?:\/\//, ""))}</a>
     </p>
     <p style="text-align:center;color:#a1a1aa;font-size:12px;margin:0;">Dúvidas? Responda este e-mail ou fale no WhatsApp.</p>
   </div>
@@ -176,7 +210,7 @@ function itemsTable(items: EmailItem[]) {
   const rows = items
     .map(
       (it) => `<tr>
-        <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;">${it.name_snapshot}</td>
+        <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;">${esc(it.name_snapshot)}</td>
         <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;color:#71717a;text-align:center;">x${it.qty}</td>
         <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;text-align:right;">${formatBRL(Number(it.unit_price) * it.qty)}</td>
       </tr>`,
@@ -189,7 +223,7 @@ function totals(order: EmailOrder) {
   const disc = Number(order.discount ?? 0);
   return `<table style="width:100%;font-size:14px;margin-top:8px;">
     <tr><td style="color:#71717a;padding:2px 0;">Subtotal</td><td style="text-align:right;">${formatBRL(Number(order.subtotal))}</td></tr>
-    <tr><td style="color:#71717a;padding:2px 0;">Frete${order.shipping_service ? ` (${order.shipping_service})` : ""}</td><td style="text-align:right;">${formatBRL(Number(order.shipping_cost))}</td></tr>
+    <tr><td style="color:#71717a;padding:2px 0;">Frete${order.shipping_service ? ` (${esc(order.shipping_service)})` : ""}</td><td style="text-align:right;">${formatBRL(Number(order.shipping_cost))}</td></tr>
     ${disc > 0 ? `<tr><td style="color:#71717a;padding:2px 0;">Desconto</td><td style="text-align:right;">- ${formatBRL(disc)}</td></tr>` : ""}
     <tr><td style="font-weight:700;padding-top:8px;border-top:1px solid #e4e4e7;">Total</td><td style="text-align:right;font-weight:700;padding-top:8px;border-top:1px solid #e4e4e7;">${formatBRL(Number(order.total))}</td></tr>
   </table>`;
@@ -197,7 +231,7 @@ function totals(order: EmailOrder) {
 
 function button(href: string, text: string) {
   return `<div style="text-align:center;margin:24px 0 8px;">
-    <a href="${href}" style="display:inline-block;background:${INK};color:#fbf9f6;text-decoration:none;font-weight:500;padding:14px 32px;border-radius:999px;font-size:12px;letter-spacing:2px;text-transform:uppercase;">${text}</a>
+    <a href="${safeUrl(href)}" style="display:inline-block;background:${INK};color:#fbf9f6;text-decoration:none;font-weight:500;padding:14px 32px;border-radius:999px;font-size:12px;letter-spacing:2px;text-transform:uppercase;">${esc(text)}</a>
   </div>`;
 }
 
@@ -208,8 +242,8 @@ function button(href: string, text: string) {
  */
 function codeBlock(label: string, code: string) {
   return `<div style="background:#f4f4f5;border:1px solid #e4e4e7;border-radius:10px;padding:16px;margin:16px 0;">
-    <p style="margin:0 0 8px;color:#71717a;font-size:13px;">${label}</p>
-    <p style="margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.5;word-break:break-all;color:#18181b;">${code}</p>
+    <p style="margin:0 0 8px;color:#71717a;font-size:13px;">${esc(label)}</p>
+    <p style="margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.5;word-break:break-all;color:#18181b;">${esc(code)}</p>
   </div>`;
 }
 
@@ -217,7 +251,9 @@ async function baseCtx(order: EmailOrder) {
   const store = await getStoreInfo();
   const orderUrl = `${store.siteUrl}/pedido/${order.id}`;
   const shortId = order.id.slice(0, 8).toUpperCase();
-  const hi = order.customer_name ? `Olá, ${order.customer_name.split(" ")[0]}!` : "Olá!";
+  const hi = order.customer_name
+    ? `Olá, ${esc(order.customer_name.split(" ")[0])}!`
+    : "Olá!";
   return { store, orderUrl, shortId, hi };
 }
 
@@ -263,12 +299,12 @@ export async function sendOrderShippedEmail(order: EmailOrder) {
   const trackBlock = track
     ? `<div style="background:#f4f4f5;border-radius:10px;padding:16px;margin:16px 0;text-align:center;">
         <p style="margin:0 0 4px;color:#71717a;font-size:13px;">Código de rastreio</p>
-        <p style="margin:0;font-size:18px;font-weight:700;letter-spacing:1px;">${track}</p>
+        <p style="margin:0;font-size:18px;font-weight:700;letter-spacing:1px;">${esc(track)}</p>
       </div>`
     : "";
   const body = `
     <p style="margin:0 0 8px;">${hi}</p>
-    <p style="margin:0 0 8px;color:#3f3f46;">O seu pedido <strong>#${shortId}</strong> foi <strong>enviado</strong>${order.shipping_service ? ` via ${order.shipping_service}` : ""}! 🚚</p>
+    <p style="margin:0 0 8px;color:#3f3f46;">O seu pedido <strong>#${shortId}</strong> foi <strong>enviado</strong>${order.shipping_service ? ` via ${esc(order.shipping_service)}` : ""}! 🚚</p>
     ${trackBlock}
     ${button(orderUrl, "Acompanhar entrega")}`;
   return sendEmail({
@@ -321,8 +357,8 @@ export async function sendAdminNewOrderEmail(order: EmailOrder) {
   const addr = order.shipping_address;
   const body = `
     <p style="margin:0 0 8px;color:#3f3f46;">Novo pedido <strong>pago</strong>: <strong>#${shortId}</strong> — ${formatBRL(Number(order.total))}.</p>
-    <p style="margin:0 0 4px;font-size:14px;">Cliente: ${order.customer_name ?? "—"} (${order.customer_email ?? "—"})</p>
-    ${addr ? `<p style="margin:0 0 8px;font-size:14px;color:#71717a;">${addr.street}, ${addr.number} ${addr.complement ?? ""} — ${addr.district ?? ""}, ${addr.city ?? ""}/${addr.state ?? ""} — CEP ${addr.cep ?? ""}</p>` : ""}
+    <p style="margin:0 0 4px;font-size:14px;">Cliente: ${esc(order.customer_name ?? "—")} (${esc(order.customer_email ?? "—")})</p>
+    ${addr ? `<p style="margin:0 0 8px;font-size:14px;color:#71717a;">${esc(addr.street)}, ${esc(addr.number)} ${esc(addr.complement ?? "")} — ${esc(addr.district ?? "")}, ${esc(addr.city ?? "")}/${esc(addr.state ?? "")} — CEP ${esc(addr.cep ?? "")}</p>` : ""}
     ${button(`${store.siteUrl}/admin/pedidos/${order.id}`, "Abrir no painel")}`;
   return sendEmail({
     to,
@@ -399,7 +435,7 @@ export async function sendPaymentFailedEmail(order: EmailOrder, reason?: string)
   const body = `
     <p style="margin:0 0 8px;">${hi}</p>
     <p style="margin:0 0 8px;color:#3f3f46;">Não conseguimos aprovar o pagamento do pedido <strong>#${shortId}</strong>.</p>
-    ${reason ? `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px;margin:16px 0;"><p style="margin:0;color:#b91c1c;font-size:14px;">${reason}</p></div>` : ""}
+    ${reason ? `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px;margin:16px 0;"><p style="margin:0;color:#b91c1c;font-size:14px;">${esc(reason)}</p></div>` : ""}
     <p style="margin:0 0 8px;color:#3f3f46;">Seus produtos continuam reservados. É só refazer o pedido escolhendo outro cartão ou pagando com Pix.</p>
     ${button(`${store.siteUrl}/carrinho`, "Tentar novamente")}
     <p style="margin:16px 0 0;color:#71717a;font-size:13px;text-align:center;">Nenhum valor foi cobrado. <a href="${orderUrl}" style="color:${BRAND};">Ver pedido</a></p>`;
@@ -416,13 +452,13 @@ export async function sendPaymentFailedEmail(order: EmailOrder, reason?: string)
 export async function sendWelcomeEmail(user: { name?: string | null; email: string }) {
   if (!user.email) return false;
   const store = await getStoreInfo();
-  const hi = user.name ? `Olá, ${user.name.split(" ")[0]}!` : "Olá!";
+  const hi = user.name ? `Olá, ${esc(user.name.split(" ")[0])}!` : "Olá!";
   const body = `
     <p style="margin:0 0 8px;">${hi}</p>
-    <p style="margin:0 0 8px;color:#3f3f46;">Sua conta na <strong>${store.name}</strong> está pronta. Agora você acompanha seus pedidos, salva endereços e finaliza a compra mais rápido.</p>
-    <p style="margin:0 0 8px;color:#3f3f46;">Somos especialistas em coding e retrofit automotivo — peças originais, sem cortes.</p>
-    ${button(`${store.siteUrl}/produtos`, "Ver produtos")}
-    <p style="margin:16px 0 0;color:#71717a;font-size:13px;text-align:center;">Precisa de ajuda pra escolher a peça certa? Responda este e-mail.</p>`;
+    <p style="margin:0 0 8px;color:#3f3f46;">Sua conta na <strong>${esc(store.name)}</strong> está pronta. Agora você acompanha seus pedidos, salva endereços e finaliza a compra mais rápido.</p>
+    <p style="margin:0 0 8px;color:#3f3f46;">Fazemos perfumaria de ambiente em pequenos lotes: difusores de varetas, home sprays, sabonetes líquidos e refis, em fragrâncias autorais.</p>
+    ${button(`${store.siteUrl}/produtos`, "Conhecer as fragrâncias")}
+    <p style="margin:16px 0 0;color:#71717a;font-size:13px;text-align:center;">Em dúvida sobre qual fragrância combina com o seu ambiente? Responda este e-mail — a gente ajuda a escolher.</p>`;
   return sendEmail({
     to: user.email,
     subject: `Bem-vindo à ${store.name}!`,
@@ -435,7 +471,7 @@ export async function sendNewsletterWelcomeEmail(email: string) {
   if (!email) return false;
   const store = await getStoreInfo();
   const body = `
-    <p style="margin:0 0 8px;color:#3f3f46;">Inscrição confirmada! Você vai receber lançamentos, promoções e novidades de peças originais em primeira mão.</p>
+    <p style="margin:0 0 8px;color:#3f3f46;">Inscrição confirmada! Você recebe os lançamentos de fragrância, as promoções e os kits de presente em primeira mão.</p>
     ${button(`${store.siteUrl}/produtos`, "Conhecer a loja")}
     <p style="margin:16px 0 0;color:#71717a;font-size:13px;text-align:center;">Não quer mais receber? Responda este e-mail pedindo pra sair da lista.</p>`;
   return sendEmail({
@@ -459,7 +495,7 @@ export async function sendAdminLowStockEmail(products: { name: string; stock: nu
   const rows = products
     .map(
       (p) => `<tr>
-        <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;">${p.name}</td>
+        <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;">${esc(p.name)}</td>
         <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;text-align:right;font-weight:700;color:${p.stock === 0 ? "#b91c1c" : "#b45309"};">${p.stock === 0 ? "esgotado" : `${p.stock} un.`}</td>
       </tr>`,
     )

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { getPostBySlug } from "@/lib/queries";
 import { Markdown } from "@/components/markdown";
 import { dataBR } from "@/lib/utils";
+import { JsonLd } from "@/components/site/json-ld";
 
 export async function generateMetadata(
   props: PageProps<"/blog/[slug]">,
@@ -41,10 +42,7 @@ export default async function BlogPostPage(props: PageProps<"/blog/[slug]">) {
 
   return (
     <article className="mx-auto max-w-2xl px-6 py-14">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       <nav className="mb-8 text-[0.6875rem] uppercase tracking-[0.14em] text-linen-500">
         <Link href="/blog" className="transition-colors hover:text-champagne-500">
           Diário

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Gift, MessageCircle } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { formatBRL, whatsappLink } from "@/lib/utils";
 import { PixPayment, BoletoPayment } from "@/components/store/payment-details";
 
@@ -96,6 +97,28 @@ export default async function OrderConfirmationPage(
     .single();
   if (!order) notFound();
 
+  // Quem pode ver este pedido.
+  //
+  // Compra sem cadastro não tem dono: o link com o id É a credencial, e é o
+  // único jeito de o cliente voltar ao Pix que acabou de gerar. Mas quando o
+  // pedido TEM dono, o link deixa de bastar — a página mostra os itens, o
+  // total e o código de pagamento, e antes qualquer pessoa com o id via
+  // tudo. Ids são UUID, difíceis de adivinhar, mas vazam: ficam no
+  // histórico do navegador, no print que o cliente manda no WhatsApp e no
+  // Referer de qualquer imagem de terceiro na página.
+  if (order.user_id) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user?.id !== order.user_id) {
+      const { data: perfil } = user
+        ? await admin.from("profiles").select("is_admin").eq("id", user.id).single()
+        : { data: null };
+      if (!perfil?.is_admin) notFound();
+    }
+  }
+
   const { data: items } = await admin
     .from("order_items")
     .select("*")
@@ -103,6 +126,9 @@ export default async function OrderConfirmationPage(
 
   const st = STATUS[order.status] ?? STATUS.pending;
   const steps = NEXT_STEPS[order.status];
+  const pagarWhats = whatsappLink(
+    `Olá! Quero finalizar o pagamento do pedido #${order.id.slice(0, 8)}.`,
+  );
   const awaitingPayment = !st.paid && order.status === "pending";
 
   return (
@@ -142,14 +168,23 @@ export default async function OrderConfirmationPage(
             Caso ainda não tenha concluído o pagamento, fale com a gente para
             finalizar.
           </p>
-          <a
-            href={whatsappLink(`Olá! Quero finalizar o pagamento do pedido #${order.id.slice(0, 8)}.`)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
-          >
-            <MessageCircle className="h-4 w-4" strokeWidth={1.4} /> Pagar pelo WhatsApp
-          </a>
+          {pagarWhats ? (
+            <a
+              href={pagarWhats}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
+            >
+              <MessageCircle className="h-4 w-4" strokeWidth={1.4} /> Pagar pelo WhatsApp
+            </a>
+          ) : (
+            // Este é o caminho de pagamento quando não há gateway. Sem
+            // WhatsApp cadastrado ele não pode sumir: vira a página de
+            // contato, senão o cliente fica com um pedido sem como pagar.
+            <Link href="/contato" className="inline-flex items-center gap-2 border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink">
+              Falar com a gente para pagar
+            </Link>
+          )}
         </div>
       )}
 

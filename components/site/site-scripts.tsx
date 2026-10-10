@@ -1,5 +1,20 @@
 import Script from "next/script";
-import type { Pixels } from "@/lib/store-defaults";
+import { PIXEL_FORMATOS, type Pixels } from "@/lib/store-defaults";
+
+/**
+ * Um id de pixel só pode conter letra, número, hífen e underscore.
+ *
+ * Os ids entram DENTRO de uma string JavaScript (`fbq('init','<id>')`), então
+ * um apóstrofo fecha a string e o resto do campo passa a ser código rodando
+ * em toda a loja, checkout incluído. Em vez de escapar, o que é frágil, o
+ * campo é recusado por inteiro quando não parece um id: um pixel que não
+ * mede é um problema de marketing, um pixel adulterado é um problema de
+ * cartão de crédito.
+ */
+function idPixel(valor: string | null | undefined, formato: RegExp): string {
+  const v = (valor ?? "").trim();
+  return formato.test(v) ? v : "";
+}
 
 /**
  * Injeta as tags de marketing cadastradas no admin (Configurações → Marketing).
@@ -8,7 +23,15 @@ import type { Pixels } from "@/lib/store-defaults";
  */
 export function SiteScripts({ pixels }: { pixels: Pixels | null }) {
   if (!pixels) return null;
-  const { ga4_id, gtm_id, google_ads_id, meta_pixel_id, head_html } = pixels;
+  const gtm_id = idPixel(pixels.gtm_id, PIXEL_FORMATOS.gtm_id.regex);
+  const ga4_id = idPixel(pixels.ga4_id, PIXEL_FORMATOS.ga4_id.regex);
+  const google_ads_id = idPixel(pixels.google_ads_id, PIXEL_FORMATOS.google_ads_id.regex);
+  const meta_pixel_id = idPixel(pixels.meta_pixel_id, PIXEL_FORMATOS.meta_pixel_id.regex);
+  // `head_html` é escape hatch declarado: código que o LOJISTA cola. Fica
+  // cru de propósito — é o ponto do campo. O que protege a loja aqui é a
+  // migração 0013: antes dela, qualquer cliente cadastrado conseguia virar
+  // admin com um PATCH e escrever neste campo.
+  const { head_html } = pixels;
 
   return (
     <>

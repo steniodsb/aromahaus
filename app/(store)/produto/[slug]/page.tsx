@@ -19,6 +19,7 @@ import { Reviews } from "@/components/store/reviews";
 import { Stars } from "@/components/store/stars";
 import { ShareButtons } from "@/components/store/share-buttons";
 import { Markdown } from "@/components/markdown";
+import { JsonLd } from "@/components/site/json-ld";
 
 export async function generateMetadata(
   props: PageProps<"/produto/[slug]">,
@@ -51,6 +52,9 @@ export default async function ProductPage(props: PageProps<"/produto/[slug]">) {
   ]);
   const related = await withProductDetails(relatedRaw);
 
+  const consultarWhats = whatsappLink(
+    `Olá! Quero saber o preço e a disponibilidade de: ${product.name}`,
+  );
   const cover = product.images?.[0] ?? "/brand/placeholder.svg";
   const variants = product.variants;
 
@@ -121,10 +125,7 @@ export default async function ProductPage(props: PageProps<"/produto/[slug]">) {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
 
       <nav className="mb-8 text-[0.6875rem] uppercase tracking-[0.14em] text-linen-500">
         <Link href="/" className="transition-colors hover:text-champagne-700">Início</Link>
@@ -167,17 +168,24 @@ export default async function ProductPage(props: PageProps<"/produto/[slug]">) {
             {onRequest ? (
               <div className="space-y-5">
                 <p className="font-display text-2xl text-ink">Sob consulta</p>
-                <a
-                  href={whatsappLink(
-                    `Olá! Quero saber o preço e a disponibilidade de: ${product.name}`,
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 border border-linen-900 bg-linen-900 px-8 py-4 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
-                >
-                  <MessageCircle className="h-4 w-4" strokeWidth={1.4} />
-                  Consultar no WhatsApp
-                </a>
+                {consultarWhats ? (
+                  <a
+                    href={consultarWhats}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 border border-linen-900 bg-linen-900 px-8 py-4 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
+                  >
+                    <MessageCircle className="h-4 w-4" strokeWidth={1.4} />
+                    Consultar no WhatsApp
+                  </a>
+                ) : (
+                  <Link
+                    href="/contato"
+                    className="inline-flex items-center gap-2 border border-linen-900 bg-linen-900 px-8 py-4 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
+                  >
+                    Consultar preço
+                  </Link>
+                )}
               </div>
             ) : (
               <ProductPurchase

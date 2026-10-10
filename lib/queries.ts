@@ -173,8 +173,16 @@ export async function searchProducts(query: string): Promise<Product[]> {
     const supabase = await createClient();
     const term = query.trim();
     let q = supabase.from("products").select("*").eq("is_active", true);
-    if (term) {
-      q = q.or(`name.ilike.%${term}%,description.ilike.%${term}%`);
+    // O termo é interpolado DENTRO da expressão do PostgREST, então vírgula,
+    // parêntese e ponto são sintaxe, não texto: "difusor, 250 ml" devolvia
+    // zero resultado e "a%" devolvia o catálogo inteiro. Pior, dava para
+    // pendurar filtro próprio em colunas de `products` (ex.: `cost_price`).
+    const safe = term
+      .replace(/[,().*%_"':\\]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (safe) {
+      q = q.or(`name.ilike.%${safe}%,description.ilike.%${safe}%`);
     }
     const { data, error } = await q
       .order("featured", { ascending: false })

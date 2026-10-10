@@ -3,6 +3,7 @@ import Link from "next/link";
 import { GuideSection } from "@/components/store/guide-section";
 import { whatsappLink } from "@/lib/utils";
 import { getFaq } from "@/lib/pages";
+import { JsonLd } from "@/components/site/json-ld";
 
 export const metadata: Metadata = {
   title: "Perguntas frequentes",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 
 export default async function FaqPage() {
   const faq = await getFaq();
+  const whatsapp = whatsappLink("Olá! Tenho uma dúvida sobre os produtos.");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -25,10 +27,7 @@ export default async function FaqPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
 
       <div className="mx-auto max-w-3xl px-6 py-14">
         <p className="eyebrow">Ajuda</p>
@@ -60,14 +59,23 @@ export default async function FaqPage() {
         </div>
 
         <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3">
-          <a
-            href={whatsappLink("Olá! Tenho uma dúvida sobre os produtos.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
-          >
-            Falar no WhatsApp
-          </a>
+          {whatsapp ? (
+            <a
+              href={whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
+            >
+              Falar no WhatsApp
+            </a>
+          ) : (
+            <Link
+              href="/contato"
+              className="border border-linen-900 bg-linen-900 px-8 py-3.5 text-[0.6875rem] uppercase tracking-[0.2em] text-linen-50 transition-colors hover:bg-transparent hover:text-ink"
+            >
+              Falar com a gente
+            </Link>
+          )}
           <Link
             href="/trocas-e-devolucoes"
             className="border-b border-champagne-500 pb-1 text-[0.6875rem] uppercase tracking-[0.18em] text-linen-700 transition-colors hover:text-ink"
