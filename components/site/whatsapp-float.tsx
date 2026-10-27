@@ -20,7 +20,7 @@ export function WhatsAppFloat() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Fale conosco no WhatsApp"
-      className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 rounded-full bg-linen-900 px-5 py-3.5 text-linen-50 shadow-[0_10px_30px_-10px_rgba(43,39,34,0.7)] transition-colors hover:bg-champagne-600 hover:text-linen-900"
+      className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 rounded-full bg-linen-900 px-5 py-3.5 text-linen-50 shadow-[0_10px_30px_-10px_rgba(43,39,34,0.7)] transition-colors hover:bg-champagne-600"
     >
       <MessageCircle className="h-5 w-5" strokeWidth={1.5} />
       <span className="hidden text-[0.6875rem] uppercase tracking-[0.16em] sm:inline">

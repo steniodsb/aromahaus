@@ -91,8 +91,8 @@ export async function sendEmail({ to, subject, html, replyTo }: SendArgs): Promi
 
 // Dourado champagne e tinta quente — os mesmos tokens do site. Cor de
 // e-mail é escrita à mão porque cliente de e-mail não lê variável CSS.
-const BRAND = "#a5854a"; // champagne-600
-const INK = "#2b2722"; // linen-900
+const BRAND = "#866051"; // champagne-600, o cacau do monograma
+const INK = "#33231d"; // linen-900
 
 /**
  * Escapa texto para dentro do HTML do e-mail.
@@ -164,7 +164,7 @@ function logoHeader(store: { name: string; siteUrl: string }) {
   const src = `${assetsBase(store.siteUrl)}/brand/aroma-haus-logo.png`;
   return `<div style="text-align:center;padding:8px 0 24px;">
       <a href="${safeUrl(store.siteUrl)}" style="text-decoration:none;">
-        <img src="${safeUrl(src)}" alt="${esc(store.name)}" width="215" height="40"
+        <img src="${safeUrl(src)}" alt="${esc(store.name)}" width="215" height="56"
              style="display:block;margin:0 auto;border:0;outline:none;text-decoration:none;width:215px;height:auto;max-width:215px;font-size:20px;letter-spacing:4px;color:${BRAND};" />
       </a>
     </div>`;
@@ -231,7 +231,7 @@ function totals(order: EmailOrder) {
 
 function button(href: string, text: string) {
   return `<div style="text-align:center;margin:24px 0 8px;">
-    <a href="${safeUrl(href)}" style="display:inline-block;background:${INK};color:#fbf9f6;text-decoration:none;font-weight:500;padding:14px 32px;border-radius:999px;font-size:12px;letter-spacing:2px;text-transform:uppercase;">${esc(text)}</a>
+    <a href="${safeUrl(href)}" style="display:inline-block;background:${INK};color:#f8f3ec;text-decoration:none;font-weight:500;padding:14px 32px;border-radius:999px;font-size:12px;letter-spacing:2px;text-transform:uppercase;">${esc(text)}</a>
   </div>`;
 }
 

@@ -47,10 +47,10 @@ export async function Header() {
   // nas pontas (que é o que acontecia), a barra aperta o espaçamento e, se
   // ainda assim não couber, quebra para uma segunda linha.
   const navLink =
-    "group/item flex items-center gap-1.5 whitespace-nowrap text-[0.6875rem] uppercase tracking-[0.08em] text-linen-200 transition-colors hover:text-champagne-300 xl:gap-2 xl:tracking-[0.1em]";
+    "group/item flex items-center gap-1.5 whitespace-nowrap text-[0.6875rem] uppercase tracking-[0.08em] text-linen-800 transition-colors hover:text-champagne-600 xl:gap-2 xl:tracking-[0.1em]";
 
   return (
-    <header className="surface-ink sticky top-0 z-50 text-linen-100 shadow-[0_8px_30px_-18px_rgba(43,39,34,0.9)]">
+    <header className="sticky top-0 z-50 border-b border-line bg-linen-100 text-ink shadow-[0_10px_30px_-24px_rgba(51,35,29,0.55)]">
       {/* ===================== DESKTOP (lg+) ===================== */}
       <div className="hidden lg:block">
         <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-10 px-6 py-5">
@@ -58,7 +58,7 @@ export async function Header() {
             {/* Atendimento: o institucional sai da barra de categorias para a
                 barra de categorias ficar só com o que vende. */}
             <div className="group relative">
-              <button className="flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.14em] text-linen-300 transition-colors hover:text-champagne-300">
+              <button className="flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.14em] text-linen-700 transition-colors hover:text-champagne-600">
                 <Headphones className="h-4 w-4" strokeWidth={1.4} />
                 Atendimento
                 <ChevronDown className="h-3 w-3" strokeWidth={1.6} />
@@ -86,38 +86,38 @@ export async function Header() {
             <SearchBox className="w-56" />
           </div>
 
-          <BrandLink tone="light" className="justify-self-center" />
+          <BrandLink className="justify-self-center" lockupClassName="h-12" />
 
           <div className="flex items-center justify-end gap-6">
             <Link
               href="/conta/favoritos"
               aria-label="Lista de desejos"
-              className="text-linen-200 transition-colors hover:text-champagne-300"
+              className="text-linen-800 transition-colors hover:text-champagne-600"
             >
               <Heart className="h-[1.2rem] w-[1.2rem]" strokeWidth={1.4} />
             </Link>
             <Link
               href="/conta"
-              className="flex items-center gap-2 text-linen-200 transition-colors hover:text-champagne-300"
+              className="flex items-center gap-2 text-linen-800 transition-colors hover:text-champagne-600"
             >
               <User className="h-[1.2rem] w-[1.2rem]" strokeWidth={1.4} />
               <span className="text-[0.6875rem] uppercase tracking-[0.14em]">
                 Minha conta
               </span>
             </Link>
-            <CartBadge tone="light" />
+            <CartBadge />
           </div>
         </div>
 
-        <nav className="border-t border-white/10">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-5 gap-y-2.5 px-6 py-3.5 xl:gap-x-7">
+        <nav className="border-t border-line">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-4 gap-y-2.5 px-6 py-3.5 xl:gap-x-[1.125rem]">
             {COLECOES.slice(0, 2).map((c) => (
               <Link
                 key={c.href}
                 href={c.href}
                 className={
                   c.accent
-                    ? "whitespace-nowrap text-[0.6875rem] uppercase tracking-[0.08em] text-champagne-400 transition-colors hover:text-champagne-300 xl:tracking-[0.1em]"
+                    ? "whitespace-nowrap text-[0.6875rem] uppercase tracking-[0.08em] text-champagne-700 transition-colors hover:text-champagne-600 xl:tracking-[0.1em]"
                     : navLink
                 }
               >
@@ -130,7 +130,7 @@ export async function Header() {
               return (
                 <Link key={cat.id} href={`/categoria/${cat.slug}`} className={navLink}>
                   <Icon
-                    className="hidden h-[1.05rem] w-[1.05rem] text-champagne-400 transition-colors group-hover/item:text-champagne-300 2xl:block"
+                    className="hidden h-[1.05rem] w-[1.05rem] text-champagne-600 transition-colors group-hover/item:text-champagne-700 2xl:block"
                     strokeWidth={1.3}
                   />
                   {cat.name}
@@ -149,7 +149,7 @@ export async function Header() {
                   <ChevronDown className="h-3 w-3" strokeWidth={1.6} />
                 </button>
                 <div className="invisible absolute left-0 right-0 top-full z-50 pt-0 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
-                  <div className="border-t border-white/10 bg-linen-50 shadow-[0_24px_50px_-20px_rgba(43,39,34,0.5)]">
+                  <div className="border-t border-line bg-linen-50 shadow-[0_24px_50px_-20px_rgba(43,39,34,0.5)]">
                     <div className="mx-auto grid max-w-7xl gap-10 px-6 py-9 lg:grid-cols-[1fr_17rem]">
                       <div className="grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
                         {familias.map((g) => (
@@ -231,8 +231,8 @@ export async function Header() {
       <div className="lg:hidden">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3">
           <MobileMenu categories={categories} fragrances={fragrances} />
-          <BrandLink tone="light" className="justify-self-center" showSignature={false} />
-          <CartBadge tone="light" />
+          <BrandLink className="justify-self-center" showSignature={false} lockupClassName="h-8" />
+          <CartBadge />
         </div>
         <div className="px-4 pb-3.5">
           <SearchBox className="w-full" />

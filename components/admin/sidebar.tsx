@@ -124,7 +124,7 @@ export function AdminSidebar({ adminName }: { adminName?: string | null }) {
     <>
       {/* Top bar mobile */}
       <div className="surface-ink sticky top-0 z-40 flex items-center justify-between border-b border-white/10 px-4 py-3 text-linen-50 lg:hidden">
-        <BrandLockup tone="light" showSignature={false} />
+        <BrandLockup tone="light" showSignature={false} className="h-8" />
         <button
           onClick={() => setOpen(true)}
           aria-label="Abrir menu"

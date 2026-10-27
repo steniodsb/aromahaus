@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Jost, Marcellus } from "next/font/google";
+import { Lexend, Marcellus } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart/cart-context";
 
 /**
- * Jost: interface, navegação, botões, preços e o logotipo.
+ * Lexend: interface, navegação, botões, preços e textos.
  *
- * Geométrica e discretamente Bauhaus — combina com o "Haus" e é o que está
- * escrito na assinatura da marca.
+ * É a tipografia de apoio do manual da marca — a mesma do descritivo
+ * "Perfumaria por Galvão Amorim" na assinatura e dos rótulos.
  */
-const jost = Jost({
+const lexend = Lexend({
   variable: "--font-sans",
   subsets: ["latin"],
   weight: ["200", "300", "400", "500"],
@@ -19,8 +19,10 @@ const jost = Jost({
 /**
  * Marcellus: títulos.
  *
- * Desenhada a partir das capitais romanas de inscrição — sóbria e firme, sem
- * o contraste dramático de uma didone. Tem um peso só e NÃO tem itálico: por
+ * O logotipo usa a Assassin's, que é comercial e não tem licença web; ele
+ * entra como vetor (public/brand) e os títulos usam a Marcellus, a serifada
+ * livre mais próxima dela — capitais de inscrição com o remate abrindo em
+ * leque. Tem um peso só e NÃO tem itálico: por
  * isso `font-synthesis: none` no CSS, senão o navegador inventa um negrito e
  * um oblíquo falsos, que é exatamente o que faz uma fonte bonita parecer
  * estranha na tela.
@@ -73,7 +75,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${jost.variable} ${marcellus.variable} h-full antialiased`}
+      className={`${lexend.variable} ${marcellus.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-ink">
         <CartProvider>{children}</CartProvider>

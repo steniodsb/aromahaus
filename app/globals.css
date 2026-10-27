@@ -1,43 +1,46 @@
 @import "tailwindcss";
 
 /* ============================================================================
-   AROMA HAUS — sistema visual "Linho & Champagne"
+   AROMA HAUS — identidade oficial "Elegância silenciosa"
    ----------------------------------------------------------------------------
-   A paleta vem das próprias embalagens: a cerâmica off-white com rosas em
-   relevo lilás, o vidro âmbar do difusor com tampa dourada e o cenário de
-   linho/greige das fotos. Neutros quentes dominam; o dourado é acento, nunca
-   preenchimento; o lilás aparece em doses pequenas (notas olfativas, selos).
+   As cores vêm do manual da marca: Marfim #F3ECE3 como base, Nude #C4A68B
+   como acento e o cacau #866051 do monograma "ah". Neutros quentes dominam;
+   o lilás das rosas em relevo da cerâmica aparece em doses pequenas.
+
+   Os nomes dos tokens (`linen`, `champagne`) são da primeira versão da loja e
+   ficaram para não reescrever centenas de classes. Leia assim:
+     linen      → a escala Marfim, do fundo (50) ao cacau escuro do texto (900)
+     champagne  → o acento: Nude oficial no 500, cacau oficial no 600
    ========================================================================== */
 
 :root {
-  /* ── Linho: neutro quente, a espinha dorsal da marca ──────────────────── */
-  --linen-50: #fbf9f6;
-  --linen-100: #f5f1ea;
-  --linen-200: #ebe5da;
-  --linen-300: #dcd4c6;
-  --linen-400: #c4baa9;
+  /* ── Marfim: neutro quente, a espinha dorsal da marca ─────────────────── */
+  --linen-50: #f8f3ec;
+  --linen-100: #f3ece3; /* Marfim oficial */
+  --linen-200: #e8dccd;
+  --linen-300: #d9c7b5;
+  --linen-400: #c4a68b; /* Nude oficial */
   /* Os três passos abaixo são os de TEXTO secundário, e por isso são
-     calibrados por contraste, não por estética: sobre o linho (#fbf9f6) dão
-     4.6:1, 5.6:1 e 6.4:1, os três acima do mínimo AA de 4.5:1 para texto
-     corrido. Antes eram #a89d8b (2.5:1) e #857b6b (4.0:1) — ou seja, a maior
-     parte do texto de apoio da loja, inclusive o aviso de CPF no checkout e
-     os prazos de entrega, estava abaixo do mínimo legível.
-     O preço: a escala fica mais comprimida no fim escuro. Vale a troca —
-     hierarquia aqui se faz com `text-ink`, tamanho e tracking, não com dois
-     tons de cinza que ninguém distingue. */
-  --linen-500: #797063;
-  --linen-600: #6c6357;
-  --linen-700: #635b4f;
-  --linen-800: #433e36;
-  --linen-900: #2b2722;
+     calibrados por contraste, não por estética: sobre o fundo (#f8f3ec) dão
+     5.1:1, 6.4:1 e 7.5:1 — e sobre o Marfim oficial (#f3ece3), 4.8:1, 6.0:1
+     e 7.1:1. Todos acima do mínimo AA de 4.5:1 para texto corrido.
+     Hierarquia aqui se faz com `text-ink`, tamanho e tracking, não com dois
+     tons de marrom que ninguém distingue. */
+  --linen-500: #7a6253;
+  --linen-600: #6b5446;
+  --linen-700: #5e4a3e;
+  --linen-800: #4a342b;
+  --linen-900: #33231d;
 
-  /* ── Champagne: o dourado da tampa do difusor (acento principal) ──────── */
-  --champagne-200: #f0e4ca;
-  --champagne-300: #e3cfa4;
-  --champagne-400: #d4b87f;
-  --champagne-500: #c2a05e;
-  --champagne-600: #a5854a;
-  --champagne-700: #826838;
+  /* ── Acento: Nude no preenchimento, cacau no texto ────────────────────── */
+  /* 500 é fundo de botão e faixa com texto `linen-900` por cima (6.6:1).
+     600 e 700 são os que podem virar texto sobre o marfim (5.0:1 e 6.9:1). */
+  --champagne-200: #f0e4d8;
+  --champagne-300: #e3cdb8;
+  --champagne-400: #d4b79d;
+  --champagne-500: #c4a68b; /* Nude oficial */
+  --champagne-600: #866051; /* cacau do monograma */
+  --champagne-700: #6e4c40;
 
   /* ── Lilás: as rosas em relevo da cerâmica (acento secundário) ────────── */
   --lilac-100: #efebf3;
@@ -131,7 +134,7 @@ body {
 /* ============================================================================
    Tipografia de marca
    ----------------------------------------------------------------------------
-   Marcellus nos títulos, Jost em todo o resto — interface, navegação, botões,
+   Marcellus nos títulos, Lexend em todo o resto — interface, navegação, botões,
    olhos-de-texto e o logotipo. Duas vozes com papéis claros: a serifada fala,
    a geométrica organiza.
 
@@ -215,13 +218,13 @@ body {
      precisa ser ESCURO sobre o linho precisa ser CLARO sobre a tinta. Em vez
      de trocar a classe em cada lugar (rodapé, header, depoimentos, contato,
      sidebar do painel), a superfície redefine os próprios tokens e as
-     utilidades `text-linen-500/600/700` seguem a cascata. Sobre #2b2722 isto
-     dá 7.7:1, 5.6:1 e 10.2:1. Os tons 500–700 não são usados em borda nem em
-     fundo em nenhum lugar do projeto, então remapeá-los aqui não tem efeito
-     colateral. */
-  --linen-500: #c4baa9;
-  --linen-600: #a89d8b;
-  --linen-700: #dcd4c6;
+     utilidades `text-linen-500/600/700` seguem a cascata. Sobre o cacau
+     escuro (#33231d) isto dá 9.1:1, 7.2:1 e 11.1:1. Os tons 500–700 não são
+     usados em borda nem em fundo em nenhum lugar do projeto, então
+     remapeá-los aqui não tem efeito colateral. */
+  --linen-500: #d9c7b5;
+  --linen-600: #c9b2a0;
+  --linen-700: #e8dccd;
 
   background-color: var(--linen-900);
   background-image:
@@ -237,7 +240,7 @@ body {
     );
 }
 
-/* Brilho quente para cabeçalhos de seção escura. */
+/* Brilho nude para cabeçalhos de seção escura. */
 .glow-champagne {
   position: relative;
   isolation: isolate;
@@ -248,13 +251,13 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(55% 55% at 12% 8%, rgba(194, 160, 94, 0.18), transparent 62%),
+    radial-gradient(55% 55% at 12% 8%, rgba(196, 166, 139, 0.2), transparent 62%),
     radial-gradient(45% 45% at 88% 92%, rgba(174, 160, 190, 0.14), transparent 62%);
 }
 
-/* Fio dourado sutil — divisores e molduras de imagem. */
+/* Fio nude sutil — divisores e molduras de imagem. */
 .hairline-gold {
-  box-shadow: inset 0 0 0 1px rgba(194, 160, 94, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(196, 166, 139, 0.45);
 }
 
 /* ============================================================================

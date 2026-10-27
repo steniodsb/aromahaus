@@ -37,7 +37,7 @@ export default function SobrePage() {
       <section className="border-b border-line bg-linen-100">
         <div className="mx-auto grid max-w-7xl items-stretch lg:grid-cols-[1fr_1fr]">
           <div className="order-2 flex flex-col justify-center px-6 py-16 sm:px-10 lg:order-1 lg:py-24 lg:pr-16">
-            <BrandMark className="h-12 w-auto text-champagne-600" />
+            <BrandMark className="h-12 w-auto" />
             <p className="eyebrow mt-8">A Haus</p>
             <h1 className="font-display-xl mt-5 text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.08] text-ink">
               Uma casa tem cheiro antes de ter mobília

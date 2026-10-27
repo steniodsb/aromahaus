@@ -47,7 +47,7 @@ export function MobileMenu({
         onClick={() => setOpen(true)}
         aria-label="Abrir menu"
         aria-expanded={open}
-        className="flex items-center p-1.5 text-linen-200 transition-colors hover:text-champagne-300"
+        className="flex items-center p-1.5 text-linen-800 transition-colors hover:text-champagne-600"
       >
         <Menu className="h-6 w-6" strokeWidth={1.4} />
       </button>
@@ -59,12 +59,12 @@ export function MobileMenu({
             className="absolute left-0 top-0 flex h-full w-[22rem] max-w-[90%] flex-col bg-linen-50 shadow-[0_0_60px_-10px_rgba(43,39,34,0.5)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="surface-ink flex items-center justify-between px-4 py-4">
-              <BrandLockup tone="light" showSignature={false} />
+            <div className="flex items-center justify-between border-b border-line bg-linen-100 px-4 py-4">
+              <BrandLockup showSignature={false} className="h-8" />
               <button
                 onClick={close}
                 aria-label="Fechar menu"
-                className="p-1.5 text-linen-300 transition-colors hover:text-champagne-300"
+                className="p-1.5 text-linen-700 transition-colors hover:text-champagne-600"
               >
                 <X className="h-5 w-5" strokeWidth={1.4} />
               </button>

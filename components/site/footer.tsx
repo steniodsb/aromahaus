@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MessageCircle, Mail } from "lucide-react";
 import { InstagramIcon } from "@/components/site/icons";
 import { PaymentBadges } from "@/components/site/payment-badges";
-import { BrandLockup, BRAND_SIGNATURE } from "@/components/site/brand";
+import { BrandLockup } from "@/components/site/brand";
 import { COLECOES, AJUDA, LEGAL } from "@/components/site/nav-data";
 import { whatsappLink } from "@/lib/utils";
 import { getTopCategories } from "@/lib/queries";
@@ -22,13 +22,11 @@ export async function Footer() {
     <footer className="surface-ink text-linen-300">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div className="space-y-5">
-          <BrandLockup tone="light" showSignature={false} />
+          {/* A assinatura completa já traz "Perfumaria por Galvão Amorim". */}
+          <BrandLockup tone="light" className="h-12" />
           <p className="max-w-xs text-sm leading-relaxed text-linen-400">
             Perfumaria de ambiente feita em pequenos lotes: difusores de varetas,
             home sprays, sabonetes líquidos e refis em fragrâncias autorais.
-          </p>
-          <p className="text-[0.625rem] uppercase tracking-[0.18em] text-linen-500">
-            {BRAND_SIGNATURE}
           </p>
 
           <div className="flex gap-3 pt-1">

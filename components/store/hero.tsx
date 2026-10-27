@@ -62,7 +62,7 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
       aria-roledescription="carrossel"
       aria-label="Destaques da loja"
     >
-      <div className="relative min-h-[30rem] sm:min-h-[34rem] lg:min-h-[38rem]">
+      <div className="relative min-h-[40rem] sm:min-h-[34rem] lg:min-h-[38rem]">
         {slides.map((s, idx) => {
           const ativo = idx === atual;
           return (
@@ -100,7 +100,7 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
                   porque lá o texto fica embaixo do produto, não ao lado. */}
               <div className="absolute inset-0 bg-gradient-to-t from-linen-900/92 from-35% via-linen-900/45 to-transparent sm:bg-gradient-to-r sm:from-linen-900/75 sm:from-0% sm:via-linen-900/25 sm:to-transparent" />
 
-              <div className="relative mx-auto flex min-h-[30rem] max-w-7xl items-end px-6 pb-14 sm:min-h-[34rem] sm:items-center sm:pb-0 lg:min-h-[38rem]">
+              <div className="relative mx-auto flex min-h-[40rem] max-w-7xl items-end px-6 pb-14 sm:min-h-[34rem] sm:items-center sm:pb-0 lg:min-h-[38rem]">
                 <div className="max-w-2xl">
                   <p className="text-[0.6875rem] uppercase tracking-[0.24em] text-champagne-300">
                     {s.eyebrow}

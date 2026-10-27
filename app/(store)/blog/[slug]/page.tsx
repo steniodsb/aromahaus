@@ -44,7 +44,7 @@ export default async function BlogPostPage(props: PageProps<"/blog/[slug]">) {
     <article className="mx-auto max-w-2xl px-6 py-14">
       <JsonLd data={jsonLd} />
       <nav className="mb-8 text-[0.6875rem] uppercase tracking-[0.14em] text-linen-500">
-        <Link href="/blog" className="transition-colors hover:text-champagne-500">
+        <Link href="/blog" className="transition-colors hover:text-champagne-700">
           Diário
         </Link>
         <span className="mx-2.5">/</span>
