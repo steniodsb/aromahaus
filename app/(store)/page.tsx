@@ -65,6 +65,10 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     badge: null,
     ctaLabel: "Ver fragrâncias",
     ctaHref: "/produtos",
+    detail: "/home/detalhe-fita.webp",
+    cardEyebrow: "Linha Blanc",
+    cardTitle: "Difusor de varetas em cerâmica",
+    keywords: ["Fragrâncias autorais", "Pequenos lotes", "Feito à mão"],
   },
   {
     image: "/home/banner-kits.webp",
@@ -78,6 +82,10 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     badgeNote: "nos kits",
     ctaLabel: "Ver kits",
     ctaHref: "/categoria/kits-presentes",
+    detail: "/home/detalhe-tag.webp",
+    cardEyebrow: "Embalagem da casa",
+    cardTitle: "Sacola, fita e tag de presente",
+    keywords: ["Embrulho incluso", "Cartão à mão", "Sem preço à vista"],
   },
   {
     image: "/home/banner-refis.webp",
@@ -91,6 +99,10 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     badgeNote: "250 ml",
     ctaLabel: "Ver refis",
     ctaHref: "/categoria/refis",
+    detail: "/home/detalhe-refil.webp",
+    cardEyebrow: "Blend Floral",
+    cardTitle: "Refil para o seu difusor",
+    keywords: ["Mesma essência", "Menos vidro", "Varetas novas"],
   },
 ];
 
