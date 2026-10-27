@@ -8,15 +8,16 @@ import { cn } from "@/lib/utils";
 
 export interface HeroSlide {
   image: string | null;
-  /** Arte em retrato para o celular. Sem ela, usa a mesma do desktop. */
+  /** Arte própria para o celular. Sem ela, usa a mesma do desktop. */
   imageMobile?: string | null;
+  /** Cor de fundo da moldura enquanto a foto carrega (ou sem foto). */
   bg?: string | null;
   eyebrow: string;
   title: string;
-  /** Segunda linha do título, em itálico — o respiro da composição. */
+  /** Segunda linha do título, em cacau — o respiro da composição. */
   titleAccent?: string;
   subtitle: string;
-  /** Selo redondo no canto: "até 20% OFF", "frete grátis"… */
+  /** Destaque ao lado do botão: "até 20% OFF", "a partir de R$ 109"… */
   badge?: string | null;
   badgeNote?: string | null;
   ctaLabel: string;
@@ -28,13 +29,15 @@ const INTERVALO = 7000;
 /**
  * Banner principal da loja.
  *
- * É carrossel de verdade: a vitrine precisa girar entre a chamada da marca, o
- * kit de presente e a promoção de refil, e cada uma dessas tem um público
- * diferente chegando na mesma home.
+ * Segue a página da apresentação da marca: marfim de fundo, texto em cacau à
+ * esquerda e a foto emoldurada à direita, com o número do slide no olho do
+ * título ("01 / Perfumaria de ambiente"). Nada de foto em tela cheia com véu
+ * escuro por cima — a marca é "elegância silenciosa", e a foto escura de
+ * ponta a ponta brigava com o resto da loja, que é clara.
  *
- * A arte é só cenário — toda a tipografia vive aqui, no HTML. É o que permite
- * ao painel trocar a chamada sem refazer a imagem, e é o que faz o banner
- * continuar legível no celular, onde texto gravado sempre sai pequeno demais.
+ * Continua carrossel: a vitrine gira entre a chamada da marca, o kit de
+ * presente e o refil, e cada um fala com um público diferente. Toda a
+ * tipografia vive no HTML, para o painel trocar a chamada sem refazer a arte.
  */
 export function Hero({ slides }: { slides: HeroSlide[] }) {
   const [i, setI] = useState(0);
@@ -56,13 +59,15 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
 
   return (
     <section
-      className="relative isolate overflow-hidden bg-linen-200"
+      className="relative isolate overflow-hidden border-b border-line bg-linen-100"
       onMouseEnter={() => setPausado(true)}
       onMouseLeave={() => setPausado(false)}
       aria-roledescription="carrossel"
       aria-label="Destaques da loja"
     >
-      <div className="relative min-h-[40rem] sm:min-h-[34rem] lg:min-h-[38rem]">
+      {/* Todos os slides na mesma célula da grade: a seção assume a altura
+          do maior e a troca é só de opacidade, sem pulo de layout. */}
+      <div className="grid">
         {slides.map((s, idx) => {
           const ativo = idx === atual;
           return (
@@ -70,73 +75,84 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
               key={`${s.title}-${idx}`}
               aria-hidden={!ativo}
               className={cn(
-                "inset-0 transition-opacity duration-700",
-                ativo ? "relative opacity-100" : "absolute opacity-0",
+                "[grid-area:1/1] transition-opacity duration-700",
+                ativo ? "opacity-100" : "pointer-events-none opacity-0",
               )}
-              style={s.bg ? { background: s.bg } : undefined}
             >
-              {s.image ? (
-                <>
-                  <Image
-                    src={s.image}
-                    alt=""
-                    fill
-                    priority={idx === 0}
-                    sizes="100vw"
-                    className="hidden object-cover object-right sm:block"
-                  />
-                  <Image
-                    src={s.imageMobile || s.image}
-                    alt=""
-                    fill
-                    priority={idx === 0}
-                    sizes="100vw"
-                    className="object-cover object-top sm:hidden"
-                  />
-                </>
-              ) : null}
+              <div className="mx-auto grid max-w-7xl items-center gap-8 px-6 pb-6 pt-6 lg:grid-cols-[1fr_1.08fr] lg:gap-16 lg:pb-8 lg:pt-12">
+                {/* Foto emoldurada */}
+                <div
+                  className="relative aspect-[5/4] overflow-hidden rounded-sm bg-linen-200 lg:order-2 lg:aspect-[6/5]"
+                  style={s.bg ? { background: s.bg } : undefined}
+                >
+                  {s.image ? (
+                    <>
+                      <Image
+                        src={s.image}
+                        alt=""
+                        fill
+                        priority={idx === 0}
+                        sizes="(min-width: 1024px) 52vw, 100vw"
+                        className={cn(
+                          "object-cover transition-transform duration-[7000ms] ease-out",
+                          s.imageMobile ? "hidden lg:block" : "",
+                          ativo ? "scale-[1.04]" : "scale-100",
+                        )}
+                      />
+                      {s.imageMobile ? (
+                        <Image
+                          src={s.imageMobile}
+                          alt=""
+                          fill
+                          priority={idx === 0}
+                          sizes="100vw"
+                          className="object-cover lg:hidden"
+                        />
+                      ) : null}
+                    </>
+                  ) : null}
+                </div>
 
-              {/* Véu quente do lado do texto. No celular ele vem de baixo,
-                  porque lá o texto fica embaixo do produto, não ao lado. */}
-              <div className="absolute inset-0 bg-gradient-to-t from-linen-900/92 from-35% via-linen-900/45 to-transparent sm:bg-gradient-to-r sm:from-linen-900/75 sm:from-0% sm:via-linen-900/25 sm:to-transparent" />
-
-              <div className="relative mx-auto flex min-h-[40rem] max-w-7xl items-end px-6 pb-14 sm:min-h-[34rem] sm:items-center sm:pb-0 lg:min-h-[38rem]">
-                <div className="max-w-2xl">
-                  <p className="text-[0.6875rem] uppercase tracking-[0.24em] text-champagne-300">
+                {/* Texto */}
+                <div className="lg:order-1 lg:py-6">
+                  <p className="text-[0.6875rem] uppercase tracking-[0.22em] text-linen-600">
+                    <span className="numeral">{String(idx + 1).padStart(2, "0")}</span>
+                    <span className="mx-2 text-linen-400">/</span>
                     {s.eyebrow}
                   </p>
 
-                  <h1 className="font-display-xl mt-4 text-[clamp(2rem,5vw,3.75rem)] text-linen-50">
+                  <h1 className="font-display-xl mt-5 text-[clamp(2.1rem,4.4vw,3.6rem)] text-ink">
                     {s.title}
                     {s.titleAccent ? (
                       // Sem itálico: Marcellus não tem um, e o oblíquo que o
                       // navegador fabricaria entorta o desenho. A segunda
                       // linha se separa pela cor, que já basta.
-                      <span className="mt-1 block text-champagne-300">
+                      <span className="mt-1 block text-champagne-600">
                         {s.titleAccent}
                       </span>
                     ) : null}
                   </h1>
 
-                  <p className="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-linen-200">
+                  <p className="mt-6 max-w-md text-[0.9375rem] leading-relaxed text-linen-700">
                     {s.subtitle}
                   </p>
 
-                  <div className="mt-8 flex flex-wrap items-center gap-5">
+                  <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
                     <Link
                       href={s.ctaHref}
-                      className="rounded-full bg-champagne-500 px-9 py-3.5 text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-linen-900 transition-colors hover:bg-champagne-400"
+                      tabIndex={ativo ? undefined : -1}
+                      className="rounded-full bg-champagne-600 px-9 py-3.5 text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-linen-50 transition-colors hover:bg-champagne-700"
                     >
                       {s.ctaLabel}
                     </Link>
 
                     {s.badge ? (
-                      <span className="flex flex-col leading-tight">
-                        <span className="font-display text-3xl text-linen-50">
+                      <span className="flex flex-col border-l border-linen-300 pl-6 leading-tight">
+                        <span className="font-display text-2xl text-ink">
                           {s.badge}
                         </span>
                         {s.badgeNote ? (
-                          <span className="text-[0.625rem] uppercase tracking-[0.16em] text-linen-300">
+                          <span className="mt-1 text-[0.625rem] uppercase tracking-[0.16em] text-linen-600">
                             {s.badgeNote}
                           </span>
                         ) : null}
@@ -151,23 +167,8 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
       </div>
 
       {total > 1 && (
-        <>
-          <button
-            onClick={() => vai(-1)}
-            aria-label="Banner anterior"
-            className="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/25 bg-linen-900/25 p-3 text-linen-50 backdrop-blur-sm transition-colors hover:bg-linen-900/50 sm:block"
-          >
-            <ChevronLeft className="h-5 w-5" strokeWidth={1.4} />
-          </button>
-          <button
-            onClick={() => vai(1)}
-            aria-label="Próximo banner"
-            className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/25 bg-linen-900/25 p-3 text-linen-50 backdrop-blur-sm transition-colors hover:bg-linen-900/50 sm:block"
-          >
-            <ChevronRight className="h-5 w-5" strokeWidth={1.4} />
-          </button>
-
-          <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-2.5">
+        <div className="mx-auto flex max-w-7xl items-center gap-5 px-6 pb-8 lg:pb-12">
+          <div className="flex gap-2.5">
             {slides.map((s, idx) => (
               <button
                 key={`${s.title}-dot-${idx}`}
@@ -175,15 +176,32 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
                 aria-label={`Ver ${s.title}`}
                 aria-current={idx === atual}
                 className={cn(
-                  "h-2 rounded-full transition-all",
+                  "h-1.5 rounded-full transition-all",
                   idx === atual
-                    ? "w-8 bg-champagne-400"
-                    : "w-2 bg-linen-50/50 hover:bg-linen-50/80",
+                    ? "w-8 bg-champagne-600"
+                    : "w-1.5 bg-linen-300 hover:bg-linen-400",
                 )}
               />
             ))}
           </div>
-        </>
+
+          <div className="ml-auto flex gap-2 lg:ml-0">
+            <button
+              onClick={() => vai(-1)}
+              aria-label="Banner anterior"
+              className="rounded-full border border-linen-300 p-2.5 text-linen-700 transition-colors hover:border-champagne-600 hover:text-champagne-600"
+            >
+              <ChevronLeft className="h-4 w-4" strokeWidth={1.4} />
+            </button>
+            <button
+              onClick={() => vai(1)}
+              aria-label="Próximo banner"
+              className="rounded-full border border-linen-300 p-2.5 text-linen-700 transition-colors hover:border-champagne-600 hover:text-champagne-600"
+            >
+              <ChevronRight className="h-4 w-4" strokeWidth={1.4} />
+            </button>
+          </div>
+        </div>
       )}
     </section>
   );

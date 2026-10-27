@@ -56,7 +56,6 @@ const CATEGORY_ART: Record<string, string> = {
 const DEFAULT_SLIDES: HeroSlide[] = [
   {
     image: "/home/banner-casa.webp",
-    imageMobile: "/home/banner-casa-mobile.webp",
     bg: null,
     eyebrow: "Perfumaria de ambiente",
     title: "A casa também tem",
@@ -69,7 +68,6 @@ const DEFAULT_SLIDES: HeroSlide[] = [
   },
   {
     image: "/home/banner-kits.webp",
-    imageMobile: "/home/banner-kits-mobile.webp",
     bg: null,
     eyebrow: "Kits & presentes",
     title: "Um presente que",
@@ -83,7 +81,6 @@ const DEFAULT_SLIDES: HeroSlide[] = [
   },
   {
     image: "/home/banner-refis.webp",
-    imageMobile: "/home/banner-refis-mobile.webp",
     bg: null,
     eyebrow: "Refis",
     title: "O mesmo perfume,",
