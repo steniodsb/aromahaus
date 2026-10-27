@@ -7,10 +7,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface HeroSlide {
+  /** Arte de largura total: marfim à esquerda, cena entrando pela direita. */
   image: string | null;
-  /** Arte própria para o celular. Sem ela, usa a mesma do desktop. */
+  /** Recorte no produto para o celular. Sem ele, usa a arte do desktop. */
   imageMobile?: string | null;
-  /** Cor de fundo da moldura enquanto a foto carrega (ou sem foto). */
+  /** Cor de fundo enquanto a arte carrega (ou sem arte). */
   bg?: string | null;
   eyebrow: string;
   title: string;
@@ -22,9 +23,9 @@ export interface HeroSlide {
   badgeNote?: string | null;
   ctaLabel: string;
   ctaHref: string;
-  /** Foto de detalhe sobreposta no canto (fita, tag, refil). Opcional. */
+  /** Foto de detalhe em octógono, no canto (fita, tag, refil). Opcional. */
   detail?: string | null;
-  /** Ficha sobre a foto: o produto em destaque. Opcional. */
+  /** Ficha do produto em destaque. Opcional. */
   cardEyebrow?: string | null;
   cardTitle?: string | null;
   /** Linha de palavras sob um fio, como na apresentação da marca. Opcional. */
@@ -34,20 +35,21 @@ export interface HeroSlide {
 const INTERVALO = 7000;
 
 /**
- * Banner principal da loja.
+ * Banner principal da loja, de largura total.
  *
- * Composição tirada da apresentação da marca: marfim de fundo, texto em cacau
- * à esquerda e, à direita, uma peça em camadas —
- *   · a foto principal na moldura em octógono do monograma "ah";
- *   · uma foto de detalhe sobreposta no canto (fita, tag, refil);
- *   · o selo com "Perfumaria por Galvão Amorim" girando em círculo;
- *   · a ficha do produto em destaque;
- *   · a linha sinuosa do manual ("o caminho do aroma no ar") por trás.
- * Cada canto tem um papel, e nada fica por cima do texto.
+ * A arte ocupa a tela de ponta a ponta, mas com a luz da marca: a área do
+ * texto é marfim e a cena entra pela direita num degradê longo — nada de
+ * foto escura com véu por cima, que brigava com o resto da loja, que é clara.
+ * Sobre a arte, os elementos da identidade, cada um num canto:
+ *   · o selo com "Perfumaria por Galvão Amorim" girando em volta do "ah";
+ *   · a foto de detalhe na moldura em octógono do monograma, com a ficha
+ *     do produto ao lado;
+ *   · a linha sinuosa do manual ("o caminho do aroma no ar"), que corre por
+ *     baixo e sobe pela direita até o selo, sem cruzar o texto.
  *
- * Os extras são opcionais: um banner do painel só com foto e texto vira a
- * mesma composição, sem detalhe e sem ficha. Toda a tipografia vive no HTML,
- * para o painel trocar a chamada sem refazer a arte.
+ * Os extras são opcionais: um banner do painel só com arte e texto funciona
+ * igual, sem detalhe e sem ficha. Toda a tipografia vive no HTML, para o
+ * painel trocar a chamada sem refazer a arte.
  */
 export function Hero({ slides }: { slides: HeroSlide[] }) {
   const [i, setI] = useState(0);
@@ -84,7 +86,7 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
       </div>
 
       {total > 1 && (
-        <div className="mx-auto flex max-w-7xl items-center gap-5 px-6 pb-8 lg:pb-12">
+        <div className="relative z-20 mx-auto flex max-w-7xl items-center gap-5 px-6 pb-8 lg:absolute lg:inset-x-0 lg:bottom-0 lg:pb-10">
           <div className="flex gap-2.5">
             {slides.map((s, idx) => (
               <button
@@ -106,14 +108,14 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
             <button
               onClick={() => vai(-1)}
               aria-label="Banner anterior"
-              className="rounded-full border border-linen-300 p-2.5 text-linen-700 transition-colors hover:border-champagne-600 hover:text-champagne-600"
+              className="rounded-full border border-linen-300 bg-linen-100/70 p-2.5 text-linen-700 transition-colors hover:border-champagne-600 hover:text-champagne-600"
             >
               <ChevronLeft className="h-4 w-4" strokeWidth={1.4} />
             </button>
             <button
               onClick={() => vai(1)}
               aria-label="Próximo banner"
-              className="rounded-full border border-linen-300 p-2.5 text-linen-700 transition-colors hover:border-champagne-600 hover:text-champagne-600"
+              className="rounded-full border border-linen-300 bg-linen-100/70 p-2.5 text-linen-700 transition-colors hover:border-champagne-600 hover:text-champagne-600"
             >
               <ChevronRight className="h-4 w-4" strokeWidth={1.4} />
             </button>
@@ -125,100 +127,101 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
 }
 
 function Slide({ s, idx, ativo }: { s: HeroSlide; idx: number; ativo: boolean }) {
+  const entra = ativo ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0";
+
   return (
     <div
       aria-hidden={!ativo}
       className={cn(
-        "[grid-area:1/1] transition-opacity duration-700",
+        "relative [grid-area:1/1] transition-opacity duration-700 lg:min-h-[40rem]",
         ativo ? "opacity-100" : "pointer-events-none opacity-0",
       )}
     >
-      <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 pb-6 pt-8 lg:grid-cols-[1fr_1.1fr] lg:gap-14 lg:pb-8 lg:pt-14">
-        {/* ── Composição ───────────────────────────────────────────── */}
-        <div className="relative pb-10 pl-5 pr-3 pt-5 sm:pb-14 sm:pl-12 sm:pr-4 sm:pt-8 lg:order-2">
-          {/* Linha do aroma: renderizada só no slide ativo, para se
-              redesenhar a cada entrada. */}
-          {ativo ? <AromaLine /> : null}
-
-          <div
-            className="clip-octagon relative aspect-[6/5] overflow-hidden bg-linen-200 [--cut:1.5rem] sm:[--cut:2.25rem]"
-            style={s.bg ? { background: s.bg } : undefined}
-          >
-            {s.image ? (
-              <>
-                <Image
-                  src={s.image}
-                  alt=""
-                  fill
-                  priority={idx === 0}
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  className={cn(
-                    "object-cover transition-transform duration-[7000ms] ease-out",
-                    s.imageMobile ? "hidden lg:block" : "",
-                    ativo ? "scale-[1.05]" : "scale-100",
-                  )}
-                />
-                {s.imageMobile ? (
-                  <Image
-                    src={s.imageMobile}
-                    alt=""
-                    fill
-                    priority={idx === 0}
-                    sizes="100vw"
-                    className="object-cover lg:hidden"
-                  />
-                ) : null}
-              </>
-            ) : null}
-
-            {/* Ficha do produto em destaque */}
-            {s.cardTitle ? (
-              <div className="absolute bottom-4 right-4 hidden max-w-[15rem] border border-linen-200/70 bg-linen-50/95 px-5 py-4 shadow-[0_18px_40px_-22px_rgba(51,35,29,0.6)] backdrop-blur-sm sm:block lg:bottom-6 lg:right-6">
-                {s.cardEyebrow ? (
-                  <p className="text-[0.5625rem] uppercase tracking-[0.22em] text-champagne-700">
-                    {s.cardEyebrow}
-                  </p>
-                ) : null}
-                <p className="font-display mt-1.5 text-[1.0625rem] leading-snug text-ink">
-                  {s.cardTitle}
-                </p>
-              </div>
-            ) : null}
-          </div>
-
-          {/* Detalhe sobreposto, com passe-partout marfim */}
-          {s.detail ? (
-            <div
+      {/* ── Arte ─────────────────────────────────────────────────────
+          Desktop: de ponta a ponta, atrás do texto. Celular: um bloco em
+          cima, que se desfaz no marfim antes do texto. */}
+      <div
+        className="relative aspect-[6/5] overflow-hidden sm:aspect-[16/10] lg:absolute lg:inset-0 lg:aspect-auto"
+        style={s.bg ? { background: s.bg } : undefined}
+      >
+        {s.image ? (
+          <>
+            <Image
+              src={s.image}
+              alt=""
+              fill
+              priority={idx === 0}
+              sizes="100vw"
               className={cn(
-                "clip-octagon absolute bottom-0 left-0 w-[34%] bg-linen-100 p-1.5 [--cut:0.9rem] sm:p-2 sm:[--cut:1.15rem]",
-                "transition-all duration-700",
-                ativo ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
+                "object-cover object-right transition-transform duration-[7000ms] ease-out",
+                s.imageMobile ? "hidden lg:block" : "",
+                ativo ? "scale-[1.03]" : "scale-100",
               )}
-            >
-              <div className="clip-octagon relative aspect-square overflow-hidden bg-linen-200 [--cut:0.75rem] sm:[--cut:0.95rem]">
-                <Image
-                  src={s.detail}
-                  alt=""
-                  fill
-                  sizes="(min-width: 1024px) 18vw, 34vw"
-                  className="object-cover"
-                />
-              </div>
+            />
+            {s.imageMobile ? (
+              <Image
+                src={s.imageMobile}
+                alt=""
+                fill
+                priority={idx === 0}
+                sizes="100vw"
+                className="object-cover lg:hidden"
+              />
+            ) : null}
+          </>
+        ) : null}
+
+        {/* Celular: a foto se desfaz no marfim, onde o texto começa */}
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-linen-100 to-transparent lg:hidden" />
+
+        {ativo ? <AromaLine /> : null}
+
+        <Seal className="absolute right-4 top-4 h-[5.25rem] w-[5.25rem] sm:right-6 sm:top-6 sm:h-28 sm:w-28 lg:right-10 lg:top-10" />
+
+        {/* Celular: detalhe no canto da foto */}
+        {s.detail ? (
+          <Detail
+            src={s.detail}
+            className={cn("absolute bottom-4 left-4 w-24 sm:w-32 lg:hidden", entra)}
+          />
+        ) : null}
+      </div>
+
+      {/* Desktop: ficha em cima do detalhe, empilhados no canto inferior
+          direito — à direita do produto, sem cobri-lo. */}
+      {s.detail || s.cardTitle ? (
+        <div
+          className={cn(
+            "absolute bottom-10 right-10 z-10 hidden flex-col items-end gap-3 transition-all delay-150 duration-700 lg:flex",
+            entra,
+          )}
+        >
+          {s.cardTitle ? (
+            <div className="max-w-[14rem] border border-linen-200/70 bg-linen-50/95 px-5 py-4 shadow-[0_18px_40px_-22px_rgba(51,35,29,0.6)] backdrop-blur-sm">
+              {s.cardEyebrow ? (
+                <p className="text-[0.5625rem] uppercase tracking-[0.22em] text-champagne-700">
+                  {s.cardEyebrow}
+                </p>
+              ) : null}
+              <p className="font-display mt-1.5 text-[1.0625rem] leading-snug text-ink">
+                {s.cardTitle}
+              </p>
             </div>
           ) : null}
-
-          <Seal className="absolute -top-1 right-0 h-[5.5rem] w-[5.5rem] sm:-top-2 sm:h-28 sm:w-28" />
+          {s.detail ? <Detail src={s.detail} className="w-40 xl:w-44" /> : null}
         </div>
+      ) : null}
 
-        {/* ── Texto ────────────────────────────────────────────────── */}
-        <div className="lg:order-1 lg:py-6">
+      {/* ── Texto ──────────────────────────────────────────────────── */}
+      <div className="relative z-10 mx-auto max-w-7xl px-6 pb-6 pt-2 lg:flex lg:min-h-[40rem] lg:items-center lg:pb-24 lg:pt-16">
+        <div className="lg:max-w-[36rem]">
           <p className="text-[0.6875rem] uppercase tracking-[0.22em] text-linen-600">
             <span className="numeral">{String(idx + 1).padStart(2, "0")}</span>
             <span className="mx-2 text-linen-400">/</span>
             {s.eyebrow}
           </p>
 
-          <h1 className="font-display-xl mt-5 text-[clamp(2.1rem,4.4vw,3.6rem)] text-ink">
+          <h1 className="font-display-xl mt-5 text-[clamp(2.1rem,3.9vw,3.3rem)] text-ink">
             {s.title}
             {s.titleAccent ? (
               // Sem itálico: Marcellus não tem um, e o oblíquo que o
@@ -264,6 +267,22 @@ function Slide({ s, idx, ativo }: { s: HeroSlide; idx: number; ativo: boolean })
   );
 }
 
+/** Foto de detalhe na moldura em octógono, com passe-partout marfim. */
+function Detail({ src, className }: { src: string; className?: string }) {
+  return (
+    <div
+      className={cn(
+        "clip-octagon bg-linen-100 p-1.5 transition-all duration-700 [--cut:0.8rem] sm:p-2 sm:[--cut:1.1rem]",
+        className,
+      )}
+    >
+      <div className="clip-octagon relative aspect-square overflow-hidden bg-linen-200 [--cut:0.65rem] sm:[--cut:0.9rem]">
+        <Image src={src} alt="" fill sizes="(min-width: 1024px) 11rem, 8rem" className="object-cover" />
+      </div>
+    </div>
+  );
+}
+
 /** Monograma com "Perfumaria por Galvão Amorim" em volta, girando devagar. */
 function Seal({ className }: { className?: string }) {
   const id = useId().replace(/:/g, "");
@@ -301,19 +320,21 @@ function Seal({ className }: { className?: string }) {
   );
 }
 
-/** A linha sinuosa do manual: o caminho do aroma no ar. */
+/**
+ * A linha sinuosa do manual: o caminho do aroma no ar. Corre pela base, por
+ * baixo do texto, e sobe pela direita até o selo — nunca cruza a chamada.
+ * Só no desktop: no celular a foto é pequena demais para ela respirar.
+ */
 function AromaLine() {
   return (
     <svg
-      viewBox="0 0 600 500"
+      viewBox="0 0 1000 1000"
       preserveAspectRatio="none"
-      className="pointer-events-none absolute -left-16 -right-6 inset-y-0 -z-10 h-full w-[calc(100%+5.5rem)] text-linen-400"
+      className="pointer-events-none absolute inset-0 hidden h-full w-full text-champagne-400 lg:block"
       aria-hidden="true"
     >
       <path
-        // Contorna a moldura por fora — sobe pela margem esquerda e corre
-        // pelo topo até o selo — para não sumir atrás da foto.
-        d="M0 495 C 40 470, 70 420, 72 330 S 60 120, 80 40 S 200 8, 330 14 S 470 20, 520 6"
+        d="M-10 975 C 220 950, 430 995, 620 955 S 840 900, 875 720 S 860 330, 905 200 S 935 120, 935 120"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.3"
