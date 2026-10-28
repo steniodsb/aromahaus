@@ -32,9 +32,9 @@ export interface PromoBanner {
 export const DEFAULT_PROMO: PromoBanner = {
   enabled: true,
   image: "/home/promo-kits.webp",
-  eyebrow: "Kits & presentes",
+  eyebrow: "Para presentear",
   title: "Pronto para presentear, com embrulho e cartão",
-  ctaLabel: "Ver kits",
+  ctaLabel: "Ver presentes",
   ctaHref: "/presentes",
 };
 

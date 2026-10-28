@@ -22,7 +22,7 @@ export const COLECOES: NavItem[] = [
   { label: "Mais vendidos", href: "/mais-vendidos", note: "O que mais sai daqui" },
   { label: "Promoções", href: "/promocoes", note: "Com desconto agora", accent: true },
   { label: "Novidades", href: "/novidades", note: "Acabou de chegar" },
-  { label: "Para presentear", href: "/presentes", note: "Kits, embrulho e cartão" },
+  { label: "Para presentear", href: "/presentes", note: "Embrulho e cartão à mão" },
 ];
 
 /** Institucional e ajuda — o dropdown "Atendimento" e a coluna do rodapé. */

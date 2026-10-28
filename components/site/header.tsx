@@ -223,7 +223,7 @@ export async function Header() {
                             Para presentear
                           </p>
                           <p className="font-display mt-1.5 text-xl leading-tight text-linen-50">
-                            Kits prontos, com embrulho e cartão
+                            Embrulho e cartão escrito à mão
                           </p>
                         </div>
                       </Link>

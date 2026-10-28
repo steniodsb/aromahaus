@@ -17,7 +17,7 @@ import type { ProductWithDetails } from "@/lib/types";
 export const metadata: Metadata = {
   title: "Para presentear",
   description:
-    "Kits prontos, embrulho em papel seda, cartão escrito à mão e nota fiscal fora da caixa. Perfumaria de ambiente para presentear, da Aroma Haus.",
+    "Embrulho em papel seda, cartão escrito à mão e nota fiscal fora da caixa. Perfumaria de ambiente para presentear, da Aroma Haus.",
 };
 
 /**

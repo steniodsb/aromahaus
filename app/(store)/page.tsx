@@ -27,10 +27,10 @@ import type { ProductWithDetails } from "@/lib/types";
 /** Os cinco formatos, na ordem em que o cliente costuma decidir. */
 const FORMAT_SLUGS = [
   "difusores",
+  "difusores-porcelana",
   "home-sprays",
   "sabonetes-liquidos",
   "refis",
-  "kits-presentes",
 ];
 
 /**
@@ -41,6 +41,7 @@ const FORMAT_SLUGS = [
  */
 const CATEGORY_ART: Record<string, string> = {
   difusores: "/categorias/difusores.webp",
+  "difusores-porcelana": "/categorias/difusores-porcelana.webp",
   "home-sprays": "/categorias/home-sprays.webp",
   "sabonetes-liquidos": "/categorias/sabonetes-liquidos.webp",
   refis: "/categorias/refis.webp",
@@ -72,22 +73,22 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     keywords: ["Fragrâncias autorais", "Pequenos lotes", "Feito à mão"],
   },
   {
-    image: "/home/banner-kits.webp",
-    imageMobile: "/home/banner-kits-mobile.webp",
+    image: "/home/banner-porcelana.webp",
+    imageMobile: "/home/banner-porcelana-mobile.webp",
     bg: null,
-    eyebrow: "Kits & presentes",
-    title: "Um presente que",
-    titleAccent: "fica na casa",
+    eyebrow: "Difusor de porcelana",
+    title: "Uma flor que",
+    titleAccent: "perfuma a casa",
     subtitle:
-      "Combinações prontas na caixa da casa, com embrulho e cartão escrito à mão — e a nota fiscal do lado de fora, sem preço à vista.",
-    badge: "até 20% OFF",
-    badgeNote: "nos kits",
-    ctaLabel: "Ver kits",
-    ctaHref: "/categoria/kits-presentes",
+      "No lugar das varetas, pétalas de porcelana: a essência sobe por elas e se espalha devagar, sem chama e sem tomada. Frasco de 500 ml, laço de cetim e detalhe dourado.",
+    badge: "R$ 580",
+    badgeNote: "500 ml",
+    ctaLabel: "Conhecer o difusor",
+    ctaHref: "/categoria/difusores-porcelana",
     detail: "/home/detalhe-tag.webp",
-    cardEyebrow: "Embalagem da casa",
-    cardTitle: "Sacola, fita e tag de presente",
-    keywords: ["Embrulho incluso", "Cartão à mão", "Sem preço à vista"],
+    cardEyebrow: "Blend Floral",
+    cardTitle: "Difusor de porcelana 500 ml",
+    keywords: ["Flor de porcelana", "Sem chama", "Peça de decoração"],
   },
   {
     image: "/home/banner-refis.webp",
@@ -98,7 +99,7 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     titleAccent: "no frasco que já é seu",
     subtitle:
       "Recarregue o difusor em vez de comprar outro: mesma essência, menos vidro e menos preço. Vem com um jogo novo de varetas.",
-    badge: "a partir de R$ 109",
+    badge: "R$ 150",
     badgeNote: "250 ml",
     ctaLabel: "Ver refis",
     ctaHref: "/categoria/refis",
@@ -114,10 +115,10 @@ const PROMO_TILES: PromoTile[] = [
   {
     image: "/home/promo-kits.webp",
     eyebrow: "Para presentear",
-    title: "Kit Lavabo",
-    text: "Sabonete e home spray na mesma fragrância, em cerâmica com rosas em relevo. O presente de casa nova que mais sai daqui.",
-    ctaLabel: "Montar meu kit",
-    href: "/categoria/kits-presentes",
+    title: "Para o lavabo",
+    text: "Sabonete líquido e home spray em cerâmica com rosas em relevo. Com embrulho e cartão escrito à mão, é o presente de casa nova que mais sai daqui.",
+    ctaLabel: "Ver presentes",
+    href: "/presentes",
     align: "left",
   },
   {

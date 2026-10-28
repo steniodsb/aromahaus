@@ -12,7 +12,7 @@ import { ProductFilters } from "@/components/store/product-filters";
 export const metadata: Metadata = {
   title: "Catálogo",
   description:
-    "Todas as fragrâncias da Aroma Haus: difusores de varetas, home sprays, sabonetes líquidos, refis e kits de presente, com envio para todo o Brasil.",
+    "Todas as fragrâncias da Aroma Haus: difusores de varetas e de porcelana, home sprays, sabonetes líquidos e refis, com envio para todo o Brasil.",
 };
 
 export default async function ProdutosPage(props: PageProps<"/produtos">) {
