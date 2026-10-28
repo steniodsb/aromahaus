@@ -25,7 +25,7 @@ import {
 import { getTopCategories, getFragrances } from "@/lib/queries";
 import type { CategoryType } from "@/lib/types";
 
-/** Um ícone por formato — a nav de categoria lê muito mais rápido com eles. */
+/** Um ícone por formato — o dropdown de produtos lê muito mais rápido com eles. */
 const ICON_BY_TYPE: Record<CategoryType, typeof Flower2> = {
   difusor: Flower2,
   home_spray: SprayCan,
@@ -33,6 +33,16 @@ const ICON_BY_TYPE: Record<CategoryType, typeof Flower2> = {
   refil: RefreshCw,
   kit: Gift,
   acessorio: Sparkles,
+};
+
+/** Uma linha de apoio por formato, no dropdown "Produtos". */
+const NOTE_BY_TYPE: Partial<Record<CategoryType, string>> = {
+  difusor: "Perfume contínuo, sem chama",
+  home_spray: "Para o antes das visitas",
+  sabonete: "Para o lavabo e as mãos",
+  refil: "Recarregue o seu difusor",
+  kit: "Prontos para presentear",
+  acessorio: "Varetas e complementos",
 };
 
 export async function Header() {
@@ -110,33 +120,53 @@ export async function Header() {
         </div>
 
         <nav className="border-t border-line">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-4 gap-y-2.5 px-6 py-3.5 xl:gap-x-[1.125rem]">
-            {COLECOES.slice(0, 2).map((c) => (
-              <Link
-                key={c.href}
-                href={c.href}
-                className={
-                  c.accent
-                    ? "whitespace-nowrap text-[0.6875rem] uppercase tracking-[0.08em] text-champagne-700 transition-colors hover:text-champagne-600 xl:tracking-[0.1em]"
-                    : navLink
-                }
-              >
-                {c.label}
-              </Link>
-            ))}
-
-            {categories.map((cat) => {
-              const Icon = ICON_BY_TYPE[cat.type] ?? Sparkles;
-              return (
-                <Link key={cat.id} href={`/categoria/${cat.slug}`} className={navLink}>
-                  <Icon
-                    className="hidden h-[1.05rem] w-[1.05rem] text-champagne-600 transition-colors group-hover/item:text-champagne-700 2xl:block"
-                    strokeWidth={1.3}
-                  />
-                  {cat.name}
-                </Link>
-              );
-            })}
+          {/* Seis itens numa linha: os formatos moram no dropdown "Produtos",
+              em vez de ocupar a barra inteira com cinco links. */}
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-8 gap-y-2.5 px-6 py-3.5 xl:gap-x-10">
+            {/* ── Produtos: os formatos ─────────────────────────────────── */}
+            {categories.length > 0 && (
+              <div className="group relative">
+                <button className={navLink}>
+                  Produtos
+                  <ChevronDown className="h-3 w-3" strokeWidth={1.6} />
+                </button>
+                <div className="invisible absolute left-1/2 top-full z-50 w-[19rem] -translate-x-1/2 pt-3.5 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+                  <div className="border border-line bg-linen-50 py-2 shadow-[0_20px_50px_-20px_rgba(51,35,29,0.55)]">
+                    {categories.map((cat) => {
+                      const Icon = ICON_BY_TYPE[cat.type] ?? Sparkles;
+                      return (
+                        <Link
+                          key={cat.id}
+                          href={`/categoria/${cat.slug}`}
+                          className="group/cat flex items-center gap-3.5 px-5 py-2.5 transition-colors hover:bg-linen-100"
+                        >
+                          <Icon
+                            className="h-[1.15rem] w-[1.15rem] shrink-0 text-champagne-600 transition-colors group-hover/cat:text-champagne-700"
+                            strokeWidth={1.3}
+                          />
+                          <span>
+                            <span className="block text-sm text-ink">{cat.name}</span>
+                            {NOTE_BY_TYPE[cat.type] ? (
+                              <span className="mt-0.5 block text-xs text-linen-600">
+                                {NOTE_BY_TYPE[cat.type]}
+                              </span>
+                            ) : null}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                    <div className="mx-5 mt-2 border-t border-line pt-2.5">
+                      <Link
+                        href="/produtos"
+                        className="block py-1 text-[0.625rem] uppercase tracking-[0.18em] text-champagne-700 hover:text-champagne-600"
+                      >
+                        Ver todos os produtos
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* ── Mega menu de fragrâncias ────────────────────────────────
                 Largura cheia e agrupado por família: a fragrância é o que o
@@ -218,8 +248,16 @@ export async function Header() {
               </div>
             )}
 
-            {COLECOES.slice(2).map((c) => (
-              <Link key={c.href} href={c.href} className={navLink}>
+            {COLECOES.map((c) => (
+              <Link
+                key={c.href}
+                href={c.href}
+                className={
+                  c.accent
+                    ? "whitespace-nowrap text-[0.6875rem] uppercase tracking-[0.08em] text-champagne-700 transition-colors hover:text-champagne-600 xl:tracking-[0.1em]"
+                    : navLink
+                }
+              >
                 {c.label}
               </Link>
             ))}

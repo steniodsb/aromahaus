@@ -71,8 +71,30 @@ export function MobileMenu({
             </div>
 
             <div className="flex-1 overflow-y-auto pb-6" onClick={close}>
-              {/* Coleções primeiro: é o que vende. */}
-              <p className={secao}>Comprar</p>
+              {/* Produtos primeiro, como no cabeçalho do desktop. */}
+              {categories.length > 0 && (
+                <>
+                  <p className={secao}>Produtos</p>
+                  {categories.map((c) => (
+                    <Link key={c.id} href={`/categoria/${c.slug}`} className={linha}>
+                      {c.name}
+                      <ChevronRight
+                        className="h-4 w-4 shrink-0 text-linen-400"
+                        strokeWidth={1.4}
+                      />
+                    </Link>
+                  ))}
+                  <Link href="/produtos" className={linha}>
+                    <span className="text-champagne-700">Ver todos os produtos</span>
+                    <ChevronRight
+                      className="h-4 w-4 shrink-0 text-linen-400"
+                      strokeWidth={1.4}
+                    />
+                  </Link>
+                </>
+              )}
+
+              <p className={secao}>Coleções</p>
               {COLECOES.map((c) => (
                 <Link key={c.href} href={c.href} className={linha}>
                   <span>
@@ -91,21 +113,6 @@ export function MobileMenu({
                   />
                 </Link>
               ))}
-
-              {categories.length > 0 && (
-                <>
-                  <p className={secao}>Formatos</p>
-                  {categories.map((c) => (
-                    <Link key={c.id} href={`/categoria/${c.slug}`} className={linha}>
-                      {c.name}
-                      <ChevronRight
-                        className="h-4 w-4 shrink-0 text-linen-400"
-                        strokeWidth={1.4}
-                      />
-                    </Link>
-                  ))}
-                </>
-              )}
 
               {familias.length > 0 && (
                 <>

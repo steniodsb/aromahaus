@@ -102,7 +102,7 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     badgeNote: "250 ml",
     ctaLabel: "Ver refis",
     ctaHref: "/categoria/refis",
-    detail: "/home/detalhe-refil.webp",
+    detail: "/home/detalhe-difusor.webp",
     cardEyebrow: "Blend Floral",
     cardTitle: "Refil para o seu difusor",
     keywords: ["Mesma essência", "Menos vidro", "Varetas novas"],
