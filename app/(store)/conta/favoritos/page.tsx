@@ -36,7 +36,7 @@ export default async function FavoritosPage() {
       </h1>
 
       {products.length > 0 ? (
-        <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
           {products.map((p) => (
             // Todos aqui estão salvos por definição — o coração nasce pintado,
             // e desmarcar tira o item da lista na próxima visita.

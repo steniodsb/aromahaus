@@ -410,7 +410,7 @@ export function ProductFilters({
         </div>
 
         {filtered.length > 0 ? (
-          <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
             {filtered.map((p) => (
               <ProductCard key={p.id} product={p} saved={savedIds?.has(p.id) ?? false} />
             ))}

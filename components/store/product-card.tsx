@@ -115,17 +115,17 @@ export function ProductCard({
           : "Adicionar à sacola";
 
   return (
-    <article className="group relative flex h-full flex-col">
+    // O card é uma peça fechada — moldura, foto, ficha e botão — para cada
+    // produto se separar do vizinho. Antes era foto e texto soltos no fundo,
+    // e numa grade de oito difusores iguais um card emendava no outro.
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-sm border border-line bg-linen-50 transition-[border-color,box-shadow] duration-300 hover:border-linen-300 hover:shadow-[0_22px_44px_-30px_rgba(51,35,29,0.6)]">
       <WishlistButton
         productId={product.id}
         initialSaved={saved}
-        className="absolute right-2.5 top-2.5 z-10 rounded-full shadow-sm transition-opacity focus-visible:opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
+        className="absolute right-3 top-3 z-10 rounded-full shadow-sm transition-opacity focus-visible:opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
       />
 
-      <Link
-        href={`/produto/${product.slug}`}
-        className="flex flex-1 flex-col overflow-hidden rounded-sm bg-linen-50 transition-shadow duration-300 group-hover:shadow-[0_18px_40px_-26px_rgba(43,39,34,0.55)]"
-      >
+      <Link href={`/produto/${product.slug}`} className="flex flex-1 flex-col">
         <div className="relative aspect-[4/5] overflow-hidden bg-linen-100">
           <Image
             src={cover}
@@ -134,7 +134,7 @@ export function ProductCard({
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             priority={priority}
             className={cn(
-              "object-cover transition-opacity duration-500",
+              "object-cover transition-[opacity,transform] duration-700 group-hover:scale-[1.03]",
               hover && "group-hover:opacity-0",
             )}
           />
@@ -149,14 +149,17 @@ export function ProductCard({
           ) : null}
 
           {/* Selos. No máximo um — dois viram poluição. */}
-          <div className="absolute left-0 top-3">
+          <div className="absolute left-3 top-3">
             {discount > 0 && !soldOut ? (
-              <span className="bg-champagne-600 px-2.5 py-1 text-[0.625rem] font-medium uppercase tracking-[0.12em] text-linen-50">
+              <span className="numeral rounded-full bg-champagne-600 px-2.5 py-1 text-[0.625rem] font-medium tracking-[0.08em] text-linen-50">
                 −{discount}%
               </span>
             ) : product.featured && !soldOut ? (
-              <span className="bg-lilac-400 px-2.5 py-1 text-[0.625rem] font-medium uppercase tracking-[0.12em] text-linen-50">
-                Favorito da casa
+              <span className="rounded-full border border-linen-200 bg-linen-50/95 px-2.5 py-1 text-[0.5625rem] font-medium uppercase tracking-[0.16em] text-champagne-700 backdrop-blur-sm">
+                {/* No celular o coração fica sempre à vista: o selo encurta
+                    para não passar por baixo dele. */}
+                <span className="sm:hidden">Favorito</span>
+                <span className="hidden sm:inline">Favorito da casa</span>
               </span>
             ) : null}
           </div>
@@ -170,10 +173,12 @@ export function ProductCard({
           )}
         </div>
 
-        <div className="flex flex-1 flex-col px-1 pt-4">
+        <div className="flex flex-1 flex-col border-t border-line px-3.5 pb-4 pt-4 sm:px-5">
           {eyebrow ? <p className="eyebrow mb-2">{eyebrow}</p> : null}
 
-          <h3 className="font-display text-base leading-snug text-ink">{title}</h3>
+          <h3 className="font-display text-[1.0625rem] leading-snug text-ink transition-colors group-hover:text-champagne-700">
+            {title}
+          </h3>
 
           <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
             {product.olfactory_family ? (
@@ -184,7 +189,9 @@ export function ProductCard({
             ) : null}
           </div>
 
-          <div className="mt-auto pt-4">
+          {/* Preço no pé da ficha, separado por um fio: alinha entre cards
+              de alturas diferentes. */}
+          <div className="mt-auto border-t border-line pt-3.5">
             {onRequest ? (
               <span className="text-sm uppercase tracking-[0.14em] text-champagne-700">
                 Sob consulta
@@ -196,9 +203,11 @@ export function ProductCard({
                     {formatBRL(compareAt)}
                   </span>
                 )}
-                <div className="flex items-baseline gap-1.5">
+                <div className="flex flex-wrap items-baseline gap-x-1.5">
                   {fromPrice ? (
-                    <span className="text-[0.6875rem] text-linen-600">a partir de</span>
+                    <span className="whitespace-nowrap text-[0.6875rem] text-linen-600">
+                      a partir de
+                    </span>
                   ) : null}
                   <span className="numeral text-lg text-ink">{formatBRL(price)}</span>
                 </div>
@@ -214,26 +223,28 @@ export function ProductCard({
 
       {/* Fora do link: botão dentro de âncora é HTML inválido, e o clique de
           comprar não pode virar navegação. */}
-      <button
-        type="button"
-        onClick={comprar}
-        disabled={soldOut}
-        className={cn(
-          "mt-4 inline-flex w-full items-center justify-center gap-2 border px-4 py-3 text-[0.625rem] uppercase tracking-[0.16em] transition-colors",
-          soldOut
-            ? "cursor-not-allowed border-line text-linen-500"
-            : added
-              ? "border-champagne-600 bg-champagne-600 text-linen-50"
-              : "border-linen-900 text-ink hover:bg-linen-900 hover:text-linen-50",
-        )}
-      >
-        {added ? (
-          <Check className="h-3.5 w-3.5" strokeWidth={2} />
-        ) : soldOut ? null : (
-          <ShoppingBag className="h-3.5 w-3.5" strokeWidth={1.5} />
-        )}
-        {rotulo}
-      </button>
+      <div className="px-3.5 pb-4 sm:px-5 sm:pb-5">
+        <button
+          type="button"
+          onClick={comprar}
+          disabled={soldOut}
+          className={cn(
+            "inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full border px-2 py-3 text-[0.5625rem] uppercase tracking-[0.08em] transition-colors sm:px-4 sm:text-[0.625rem] sm:tracking-[0.16em]",
+            soldOut
+              ? "cursor-not-allowed border-line text-linen-500"
+              : added
+                ? "border-champagne-600 bg-champagne-600 text-linen-50"
+                : "border-champagne-600 text-champagne-700 hover:bg-champagne-600 hover:text-linen-50",
+          )}
+        >
+          {added ? (
+            <Check className="h-3.5 w-3.5" strokeWidth={2} />
+          ) : soldOut ? null : (
+            <ShoppingBag className="hidden h-3.5 w-3.5 sm:block" strokeWidth={1.5} />
+          )}
+          {rotulo}
+        </button>
+      </div>
     </article>
   );
 }

@@ -59,7 +59,7 @@ export function ProductCarousel({
 
       <div
         ref={ref}
-        className="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2"
+        className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-4 sm:gap-5"
       >
         {products.map((p) => (
           <div

@@ -122,7 +122,7 @@ export default async function PresentesPage() {
               Ver todos
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
             {kits.slice(0, 4).map((p) => (
               <ProductCard key={p.id} product={p} saved={savedIds.has(p.id)} />
             ))}
@@ -147,7 +147,7 @@ export default async function PresentesPage() {
                 partir de {formatBRL(precoDe(f.itens[0]))}
               </span>
             </div>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
               {f.itens.slice(0, 4).map((p) => (
                 <ProductCard key={p.id} product={p} saved={savedIds.has(p.id)} />
               ))}
